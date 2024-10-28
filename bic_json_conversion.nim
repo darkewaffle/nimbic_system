@@ -1,11 +1,11 @@
 import std/[strutils, algorithm, streams, json, tables]
-import neverwinternim/[gff, gffjson, nwn_gff_excerpts]
+import neverwinterdotnim/neverwinter/[gff, gffjson]
 import io_operations
+import nwn_gff_excerpts
 
 
 proc BICtoJSON*(InputFile: string, OutputDirectory: string)
 proc JSONtoBIC*(InputFile: string, OutputDirectory: string)
-proc postProcessJson(j: JsonNode)
 
 
 proc BICtoJSON*(InputFile: string, OutputDirectory: string) =

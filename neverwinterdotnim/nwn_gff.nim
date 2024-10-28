@@ -1,3 +1,4 @@
+#[
 import shared
 
 const SupportedFormatsSimple = ["gff", "json"]
@@ -85,3 +86,4 @@ of "json":
              output.write(if args["--pretty"]: j.pretty() else: $j)
              output.write("\n")
 else: quit("Unsupported outformat: " & outformat)
+]#

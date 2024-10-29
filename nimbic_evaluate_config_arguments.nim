@@ -7,6 +7,8 @@ proc EvaluateOutputDirectory()
 proc Evaluate2DADirectory()
 proc EvaluateProduction()
 
+var ProductionState*: bool
+
 proc ReconcileCommandLineArgumentsAndConfigSettings*() =
   EvaluateInputDirectory()
   EvaluateOutputDirectory()
@@ -28,7 +30,8 @@ proc Evaluate2DADirectory() =
     ConfigInput2DA = Input2DA
 
 proc EvaluateProduction() =
-  if InputProduction and ConfigProduction:
+  ProductionState = InputProduction and ConfigProduction
+  if ProductionState:
     ConfigInputBIC = ConfigServerVault
     ConfigInputJSON = ConfigServerVault
     ConfigOutputBIC = ConfigServerVault

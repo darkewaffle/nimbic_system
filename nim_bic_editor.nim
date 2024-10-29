@@ -117,12 +117,12 @@ proc PerformModeOperation() =
   if Mode in ModeFileConversion:
     case Mode:
       of "bictojson":
-        FilesToChange = GetBICFiles(ConfigInputBIC, ReadSubdirectories)
+        FilesToChange = GetBICFiles(ConfigInputBIC, ConfigReadSubdirectories)
         for i in FilesToChange.low .. FilesToChange.high:
           BICtoJSON(FilesToChange[i], ConfigOutputJSON, ConfigSqlite)
 
       of "jsontobic":
-        FilesToChange = GetJSONFiles(ConfigInputJSON, ReadSubdirectories)
+        FilesToChange = GetJSONFiles(ConfigInputJSON, ConfigReadSubdirectories)
         for i in FilesToChange.low .. FilesToChange.high:
           JSONtoBIC(FilesToChange[i], ConfigOutputBIC, ConfigSqlite)
 
@@ -130,7 +130,7 @@ proc PerformModeOperation() =
     if Mode in ModeRequires2DA:
       GetCore2DAFiles()
 
-    FilesToChange = GetJSONFiles(ConfigInputJSON, ReadSubdirectories)
+    FilesToChange = GetJSONFiles(ConfigInputJSON, ConfigReadSubdirectories)
     for i in FilesToChange.low .. FilesToChange.high:
       EchoBlank()
       CharacterJSON = parseFile(FilesToChange[i])

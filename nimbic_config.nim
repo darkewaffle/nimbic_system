@@ -15,6 +15,7 @@ const
   KeyInputJSON = "inputjson"
   KeyOutputBIC = "outputbic"
   KeyInput2DA = "2dadir"
+  KeySqlite = "sqlite"
   KeyProduction = "production"
   KeyServerVault = "servervault"
 
@@ -25,6 +26,7 @@ var
   ConfigInputJSON*: string
   ConfigOutputBIC*: string
   ConfigInput2DA*: string
+  ConfigSqlite*: string
   ConfigProduction*: string
   ConfigServerVault*: string
 
@@ -71,6 +73,9 @@ proc AssignConfigurationValues() =
       of KeyInput2DA:
         ConfigInput2DA = $ConfigurationSettings[i][1]
 
+      of KeySqlite:
+        ConfigSqlite = $ConfigurationSettings[i][1]
+
       of KeyProduction:
         ConfigProduction = $ConfigurationSettings[i][1]
 
@@ -88,5 +93,6 @@ proc EchoConfigurationValues() =
   echo "injson  " & $ConfigInputJSON
   echo "outbic  " & $ConfigOutputBIC
   echo "in2da   " & $ConfigInput2DA
+  echo "sqlite  " & $ConfigSqlite
   echo "prod    " & $ConfigProduction
   echo "svault  " & $ConfigServerVault

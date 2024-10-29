@@ -178,34 +178,30 @@ proc EvaluateCharacterRequirements(CharacterJSON: JsonNode, CharacterFileLocatio
     RequirementTotalLevel = true
     RequirementResult: bool
 
-#  EchoMessageNamePath("Requirements evaluation beginning ", CharacterJSON, CharacterFileLocation)
-
   if RequiredRace != DefaultRace:
     RequirementRace = RequirementRace and CharacterHasRace(CharacterJSON, RequiredRace)
-#    echo "Has required race = " & $RequirementRace
+    #echo "Has required race = " & $RequirementRace
 
   if RequiredSubrace != DefaultSubrace:
     RequirementSubrace = RequirementSubrace and CharacterHasSubrace(CharacterJSON, RequiredSubrace)
-#    echo "Has required subrace = " & $RequirementSubrace
+    #echo "Has required subrace = " & $RequirementSubrace
 
   if Mode == "addclassfeat" or Mode == "removeclassfeat":
     RequirementClassLevel = RequirementClassLevel and CharacterHasClassLevel(CharacterJSON, RequiredClass, RequiredLevel)
-#    echo "Has required class level = " & $RequirementClassLevel
+    #echo "Has required class level = " & $RequirementClassLevel
   else:
     if RequiredLevel != DefaultLevel:
       RequirementTotalLevel = RequirementTotalLevel and CharacterHasTotalLevel(CharacterJSON, RequiredLevel)
-#      echo "Has required total level = " & $RequirementTotalLevel
+      #echo "Has required total level = " & $RequirementTotalLevel
     if RequiredClass != DefaultClass:
       RequirementClass = RequirementClass and CharacterHasClass(CharacterJSON, RequiredClass)
-#      echo "Has required class = " & $RequirementClass
+      #echo "Has required class = " & $RequirementClass
 
   RequirementResult = RequirementRace and RequirementSubrace and RequirementClass and RequirementClassLevel and RequirementTotalLevel
   if RequirementResult:
     EchoMessageNameFilename("Operation requirements met, " & Mode & " will begin.", CharacterJSON, CharacterFileLocation)
-#    echo "Operation requirements met, " & Mode & " will begin."
   else:
     EchoMessageNameFilename("Operation requirements not met, " & Mode & " will be skipped.", CharacterJSON, CharacterFileLocation)
-#    echo "Operation requirements not met, " & Mode & " will be skipped."
   return RequirementResult
 
 proc GetCore2DAFiles() =

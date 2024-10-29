@@ -17,6 +17,10 @@ proc BICtoJSON*(InputFile: string, OutputDirectory: string, ExpectSqlite: bool) 
   var InputAsGFF: GffRoot
   InputAsGFF = InputStream.readGffRoot(false)
 
+  if ExpectSqlite:
+    var OutputPathSQL = CreateOutputPathSqlite(InputFile, OutputDirectory)
+    ExtractSqliteFromGFF(InputAsGFF, OutputPathSQL)
+
   #Translate GFF to JSON
   var OutputJSON = InputAsGFF.toJson
   #Sorts JSON before write/use
@@ -41,6 +45,10 @@ proc JSONtoBIC*(InputFile: string, OutputDirectory: string, ExpectSqlite: bool) 
   #Translate raw string to JSON and then to GFF
   var InputAsGFF: GffRoot
   InputAsGFF = InputStream.parseJson(InputFile).gffRootFromJson()
+
+  if ExpectSqlite:
+    var OutputPathSQL = CreateOutputPathSqlite(InputFile, OutputDirectory)
+    PackSqliteIntoGFF(InputAsGFF, """C:\Users\jorda\Documents\NWN_Docs\nimbic_json\test.sqlite3""")
 
   #Creates path for BIC to be saved to
   var OutputPath = CreateOutputPathBIC(InputFile, OutputDirectory)

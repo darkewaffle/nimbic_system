@@ -1,4 +1,4 @@
-import std/[strutils, algorithm, streams, json, tables]
+import std/[strutils, algorithm, streams, json, tables, os]
 import neverwinterdotnim/neverwinter/[gff, gffjson]
 import io_operations
 import nwn_gff_excerpts
@@ -47,8 +47,9 @@ proc JSONtoBIC*(InputFile: string, OutputDirectory: string, ExpectSqlite: bool) 
   InputAsGFF = InputStream.parseJson(InputFile).gffRootFromJson()
 
   if ExpectSqlite:
-    var OutputPathSQL = CreateOutputPathSqlite(InputFile, OutputDirectory)
-    PackSqliteIntoGFF(InputAsGFF, """C:\Users\jorda\Documents\NWN_Docs\nimbic_json\test.sqlite3""")
+    var InputPathSQL = SetFileExtensionSqlite(InputFile)
+    if fileExists(InputPathSQL):
+      PackSqliteIntoGFF(InputAsGFF, InputPathSQL)
 
   #Creates path for BIC to be saved to
   var OutputPath = CreateOutputPathBIC(InputFile, OutputDirectory)

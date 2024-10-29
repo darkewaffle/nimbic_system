@@ -26,8 +26,8 @@ var
   ConfigInputJSON*: string
   ConfigOutputBIC*: string
   ConfigInput2DA*: string
-  ConfigSqlite*: string
-  ConfigProduction*: string
+  ConfigSqlite*: bool
+  ConfigProduction*: bool
   ConfigServerVault*: string
 
 proc GetSettingsFromConfigFile*() =
@@ -74,10 +74,10 @@ proc AssignConfigurationValues() =
         ConfigInput2DA = $ConfigurationSettings[i][1]
 
       of KeySqlite:
-        ConfigSqlite = $ConfigurationSettings[i][1]
+        ConfigSqlite = ($ConfigurationSettings[i][1]).parseBool
 
       of KeyProduction:
-        ConfigProduction = $ConfigurationSettings[i][1]
+        ConfigProduction = ($ConfigurationSettings[i][1]).parseBool
 
       of KeyServerVault:
         ConfigServerVault = $ConfigurationSettings[i][1]

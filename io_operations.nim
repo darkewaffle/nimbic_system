@@ -1,9 +1,9 @@
 import std/[dirs, os, paths, sequtils, strutils, times]
 import echo_feedback
 
-proc GetFilesByPattern(DirectoryPath: string, FileTypePattern: string, ReadSubdirectories: bool = false): seq
-proc GetBICFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq
-proc GetJSONFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq
+proc GetFilesByPattern(DirectoryPath: string, FileTypePattern: string, ReadSubdirectories: bool = false): seq[string]
+proc GetBICFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq[string]
+proc GetJSONFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq[string]
 
 proc CreateOutputPath(FileLocation: string, OutputDirectory: string, FileExtension: string): string
 proc CreateOutputPathJSON*(FileLocation: string, OutputDirectory: string): string
@@ -15,7 +15,7 @@ proc SetFileExtensionJSON*(FileLocation: string): string
 proc SetFileExtensionBIC*(FileLocation: string): string
 proc SetFileExtensionSqlite*(FileLocation: string): string
 
-proc GetSubDirectories*(ParentDirectory: string): seq
+proc GetSubDirectories*(ParentDirectory: string): seq[string]
 
 proc TimestampString(): string
 
@@ -29,17 +29,28 @@ const
   FilterSubDirectories = """\*"""
 
 
-proc GetFilesByPattern(DirectoryPath: string, FileTypePattern: string, ReadSubdirectories: bool = false): seq =
-  var SearchPattern = DirectoryPath & FileTypePattern
-  echo "Searching for " & SearchPattern
-  var PatternMatches = toSeq(walkPattern(SearchPattern))
-  return PatternMatches
+proc GetFilesByPattern(DirectoryPath: string, FileTypePattern: string, ReadSubdirectories: bool = false): seq[string] =
+  var DirectoriesToSearch: seq[string]
+  var SearchPattern: string
+  var FileResults: seq[string]
 
-proc GetBICFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq =
-  GetFilesByPattern(DirectoryPath, FilterExtensionBIC)
+  if ReadSubdirectories:
+    DirectoriesToSearch = GetSubDirectories(DirectoryPath)
+  else:
+    DirectoriesToSearch.add(DirectoryPath)
 
-proc GetJSONFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq =
-  GetFilesByPattern(DirectoryPath, FilterExtensionJSON)
+  for i in DirectoriesToSearch.low .. DirectoriesToSearch.high:
+    SearchPattern = DirectoriesToSearch[i] & FileTypePattern
+    echo "Searching for " & SearchPattern
+    FileResults = concat(FileResults, toSeq(walkPattern(SearchPattern)))
+
+  return FileResults
+
+proc GetBICFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq[string] =
+  GetFilesByPattern(DirectoryPath, FilterExtensionBIC, ReadSubdirectories)
+
+proc GetJSONFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq[string] =
+  GetFilesByPattern(DirectoryPath, FilterExtensionJSON, ReadSubdirectories)
 
 
 proc CreateOutputPath(FileLocation: string, OutputDirectory: string, FileExtension: string): string =
@@ -76,7 +87,7 @@ proc SetFileExtensionBIC*(FileLocation: string): string =
 proc SetFileExtensionSqlite*(FileLocation: string): string =
   return ReplaceFileExtension(FileLocation, ExtensionSqlite)
 
-proc GetSubDirectories*(ParentDirectory: string): seq =
+proc GetSubDirectories*(ParentDirectory: string): seq[string] =
   var SubPattern = ParentDirectory & FilterSubDirectories
   echo "Searching for subdirectories " & SubPattern
   return toSeq(walkDirs(SubPattern))
@@ -88,3 +99,9 @@ proc TimestampString(): string =
   NowString = replace(NowString, "T", "_")
   delete(NowString, len(NowString)-4 .. len(NowString)-1)
   return NowString
+
+var seqfiles: seq[string]
+#seqfiles = GetBICFiles("""C:\Users\jorda\Documents\Neverwinter Nights\servervault""", true)
+seqfiles = GetBICFiles("""C:\Users\jorda\Documents\Neverwinter Nights\servervault\QR6RKGPV""", false)
+for i in seqfiles.low .. seqfiles.high:
+  echo seqfiles[i]

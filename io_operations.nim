@@ -10,6 +10,11 @@ proc CreateOutputPathJSON*(FileLocation: string, OutputDirectory: string): strin
 proc CreateOutputPathBIC*(FileLocation: string, OutputDirectory: string): string
 proc CreateOutputPathSqlite*(FileLocation: string, OutputDirectory: string): string
 
+proc ReplaceFileExtension*(FileLocation: string, NewExtension: string): string
+proc SetFileExtensionJSON*(FileLocation: string): string
+proc SetFileExtensionBIC*(FileLocation: string): string
+proc SetFileExtensionSqlite*(FileLocation: string): string
+
 proc TimestampString(): string
 
 const
@@ -52,6 +57,21 @@ proc CreateOutputPathBIC*(FileLocation: string, OutputDirectory: string): string
 
 proc CreateOutputPathSqlite*(FileLocation: string, OutputDirectory: string): string =
   return CreateOutputPath(FileLocation, OutputDirectory, ExtensionSQLite)
+
+proc ReplaceFileExtension*(FileLocation: string, NewExtension: string): string =
+  var SplitPath = splitFile(Path FileLocation)
+  var NewPath = SplitPath.dir / SplitPath.name
+  NewPath = addFileExt(NewPath, NewExtension)
+  return $NewPath
+
+proc SetFileExtensionJSON*(FileLocation: string): string =
+  return ReplaceFileExtension(FileLocation, ExtensionJSON)
+
+proc SetFileExtensionBIC*(FileLocation: string): string =
+  return ReplaceFileExtension(FileLocation, ExtensionBIC)
+
+proc SetFileExtensionSqlite*(FileLocation: string): string =
+  return ReplaceFileExtension(FileLocation, ExtensionSqlite)
 
 proc TimestampString(): string =
   var NowString = $now()

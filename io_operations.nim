@@ -15,15 +15,18 @@ proc SetFileExtensionJSON*(FileLocation: string): string
 proc SetFileExtensionBIC*(FileLocation: string): string
 proc SetFileExtensionSqlite*(FileLocation: string): string
 
+proc GetChildDirectories*(ParentDirectory: string): seq
+
 proc TimestampString(): string
 
 const
   ExtensionJSON* = """.json"""
   ExtensionBIC* = """.bic"""
-  ExtensionSQLite*: string = """.sqlite3"""
+  ExtensionSQLite* = """.sqlite3"""
   FilterExtensionJSON = """\*""" & ExtensionJSON
   FilterExtensionBIC = """\*""" & ExtensionBIC
   FilterExtensionSQlite = """\*""" & ExtensionSQLite
+  FilterChildDirectories = """\*"""
 
 
 proc GetFilesByPattern(DirectoryPath: string, FileTypePattern: string): seq =
@@ -72,6 +75,11 @@ proc SetFileExtensionBIC*(FileLocation: string): string =
 
 proc SetFileExtensionSqlite*(FileLocation: string): string =
   return ReplaceFileExtension(FileLocation, ExtensionSqlite)
+
+proc GetChildDirectories*(ParentDirectory: string): seq =
+  var ChildPattern = ParentDirectory & FilterChildDirectories
+  echo "Searching for subdirectories " & ChildPattern
+  return toSeq(walkDirs(ChildPattern))
 
 proc TimestampString(): string =
   var NowString = $now()

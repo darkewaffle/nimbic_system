@@ -1,9 +1,9 @@
 import std/[dirs, os, paths, sequtils, strutils, times]
 import echo_feedback
 
-proc GetFilesByPattern(DirectoryPath: string, FileTypePattern: string): seq
-proc GetBICFiles*(DirectoryPath: string): seq
-proc GetJSONFiles*(DirectoryPath: string): seq
+proc GetFilesByPattern(DirectoryPath: string, FileTypePattern: string, ReadSubdirectories: bool = false): seq
+proc GetBICFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq
+proc GetJSONFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq
 
 proc CreateOutputPath(FileLocation: string, OutputDirectory: string, FileExtension: string): string
 proc CreateOutputPathJSON*(FileLocation: string, OutputDirectory: string): string
@@ -29,16 +29,16 @@ const
   FilterSubDirectories = """\*"""
 
 
-proc GetFilesByPattern(DirectoryPath: string, FileTypePattern: string): seq =
+proc GetFilesByPattern(DirectoryPath: string, FileTypePattern: string, ReadSubdirectories: bool = false): seq =
   var SearchPattern = DirectoryPath & FileTypePattern
   echo "Searching for " & SearchPattern
   var PatternMatches = toSeq(walkPattern(SearchPattern))
   return PatternMatches
 
-proc GetBICFiles*(DirectoryPath: string): seq =
+proc GetBICFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq =
   GetFilesByPattern(DirectoryPath, FilterExtensionBIC)
 
-proc GetJSONFiles*(DirectoryPath: string): seq =
+proc GetJSONFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq =
   GetFilesByPattern(DirectoryPath, FilterExtensionJSON)
 
 

@@ -26,10 +26,12 @@ const
   DefaultInputDirectory* = "defaultinput"
   DefaultOutputDirectory* = "defaultoutput"
   DefaultInput2DA* = "default2da"
+  DefaultInputProduction* = false
 var
   InputDirectory* = DefaultInputDirectory
   OutputDirectory* = DefaultOutputDirectory
   Input2DA* = DefaultInput2DA
+  InputProduction* = DefaultInputProduction
 
 
 proc AssignArgumentsToVariables*(CommandLineArguments: var OptParser) =
@@ -80,6 +82,9 @@ proc AssignArgumentsToVariables*(CommandLineArguments: var OptParser) =
 
           of "input2da", "i2da":
             Input2DA = val
+
+          of "production", "prod":
+            InputProduction = true
 
           else:
             discard

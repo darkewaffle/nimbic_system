@@ -7,9 +7,9 @@ proc EvaluateOutputDirectory()
 proc Evaluate2DADirectory()
 proc EvaluateProduction()
 
-var ProductionState*: bool
-var ReadSubdirectories*: bool
-var OverwriteInPlace*: bool
+var ConfigProductionState*: bool
+var ConfigReadSubdirectories*: bool
+var ConfigWriteInPlace*: bool
 
 proc ReconcileCommandLineArgumentsAndConfigSettings*() =
   EvaluateInputDirectory()
@@ -32,11 +32,11 @@ proc Evaluate2DADirectory() =
     ConfigInput2DA = Input2DA
 
 proc EvaluateProduction() =
-  ProductionState = InputProduction and ConfigProduction
-  if ProductionState:
+  ConfigProductionState = InputProduction and ConfigProduction
+  if ConfigProductionState:
     ConfigInputBIC = ConfigServerVault
     ConfigInputJSON = ConfigServerVault
     ConfigOutputBIC = ConfigServerVault
     ConfigOutputJSON = ConfigServerVault
-    ReadSubdirectories = true
-    OverwriteInPlace = true
+    ConfigReadSubdirectories = true
+    ConfigWriteInPlace = true

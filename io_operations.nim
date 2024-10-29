@@ -8,14 +8,17 @@ proc GetJSONFiles*(DirectoryPath: string): seq
 proc CreateOutputPath(FileLocation: string, OutputDirectory: string, FileExtension: string): string
 proc CreateOutputPathJSON*(FileLocation: string, OutputDirectory: string): string
 proc CreateOutputPathBIC*(FileLocation: string, OutputDirectory: string): string
+proc CreateOutputPathSqlite*(FileLocation: string, OutputDirectory: string): string
 
 proc TimestampString(): string
 
 const
   ExtensionJSON* = """.json"""
   ExtensionBIC* = """.bic"""
+  ExtensionSQLite*: string = """.sqlite3"""
   FilterExtensionJSON = """\*""" & ExtensionJSON
   FilterExtensionBIC = """\*""" & ExtensionBIC
+  FilterExtensionSQlite = """\*""" & ExtensionSQLite
 
 
 proc GetFilesByPattern(DirectoryPath: string, FileTypePattern: string): seq =
@@ -47,6 +50,8 @@ proc CreateOutputPathJSON*(FileLocation: string, OutputDirectory: string): strin
 proc CreateOutputPathBIC*(FileLocation: string, OutputDirectory: string): string =
   return CreateOutputPath(FileLocation, OutputDirectory, ExtensionBIC)
 
+proc CreateOutputPathSqlite*(FileLocation: string, OutputDirectory: string): string =
+  return CreateOutputPath(FileLocation, OutputDirectory, ExtensionSQLite)
 
 proc TimestampString(): string =
   var NowString = $now()

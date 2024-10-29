@@ -1,14 +1,12 @@
 nimbic TODO / notes
 
 Translate JSON to HTML table, htmlout directory
-bic sqlite export and repack
 --inplace option to keep json in folder with bic
 search by pattern support for subfolders
 autobackup bic with timestamp, set timestamp at operation start so every change uses the same TS
 --production config setting
 --restorebic option that accepts foldername and/or timestamp to restore backup .bic
 --cleanup option to remove old backups
-original path/sqlite file name/etc could be stored within the JSON and then deleted prior to conversion to GFF
 
 
 Ugly down here

@@ -4,11 +4,11 @@ import io_operations
 import nwn_gff_excerpts
 
 
-proc BICtoJSON*(InputFile: string, OutputDirectory: string)
-proc JSONtoBIC*(InputFile: string, OutputDirectory: string)
+proc BICtoJSON*(InputFile: string, OutputDirectory: string, ExpectSqlite: bool)
+proc JSONtoBIC*(InputFile: string, OutputDirectory: string, ExpectSqlite: bool)
 
 
-proc BICtoJSON*(InputFile: string, OutputDirectory: string) =
+proc BICtoJSON*(InputFile: string, OutputDirectory: string, ExpectSqlite: bool) =
   echo "Attempting translation to JSON: " & InputFile
   #Streams data from InputFile as a string
   var InputStream = newStringStream(readFile(InputFile))
@@ -33,7 +33,7 @@ proc BICtoJSON*(InputFile: string, OutputDirectory: string) =
   echo "Translation to JSON complete: " & OutputPath
 
 
-proc JSONtoBIC*(InputFile: string, OutputDirectory: string) =
+proc JSONtoBIC*(InputFile: string, OutputDirectory: string, ExpectSqlite: bool) =
   echo "Attempting translation to BIC: " & InputFile
   #Streams data from InputFile as a string
   var InputStream = newStringStream(readFile(InputFile))
@@ -41,7 +41,7 @@ proc JSONtoBIC*(InputFile: string, OutputDirectory: string) =
   #Translate raw string to JSON and then to GFF
   var InputAsGFF: GffRoot
   InputAsGFF = InputStream.parseJson(InputFile).gffRootFromJson()
-    
+
   #Creates path for BIC to be saved to
   var OutputPath = CreateOutputPathBIC(InputFile, OutputDirectory)
 

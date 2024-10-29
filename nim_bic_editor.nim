@@ -119,12 +119,12 @@ proc PerformModeOperation() =
       of "bictojson":
         FilesToChange = GetBICFiles(ConfigInputBIC)
         for i in FilesToChange.low .. FilesToChange.high:
-          BICtoJSON(FilesToChange[i], ConfigOutputJSON)
+          BICtoJSON(FilesToChange[i], ConfigOutputJSON, ConfigSqlite)
 
       of "jsontobic":
         FilesToChange = GetJSONFiles(ConfigInputJSON)
         for i in FilesToChange.low .. FilesToChange.high:
-          JSONtoBIC(FilesToChange[i], ConfigOutputBIC)
+          JSONtoBIC(FilesToChange[i], ConfigOutputBIC, ConfigSqlite)
 
   if Mode in ModeCharacterModify:
     if Mode in ModeRequires2DA:

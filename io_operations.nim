@@ -20,6 +20,7 @@ proc GetSubDirectories*(ParentDirectory: string): seq[string]
 proc TimestampString(): string
 
 const
+  BackupDirectoryPrefix = """BIC_Backup_"""
   ExtensionJSON* = """.json"""
   ExtensionBIC* = """.bic"""
   ExtensionSQLite* = """.sqlite3"""
@@ -28,6 +29,9 @@ const
   FilterExtensionSQlite = """\*""" & ExtensionSQLite
   FilterSubDirectories = """\*"""
 
+let
+  OperationTimestamp* = TimestampString()
+  BackupDirectoryFullName* = BackupDirectoryPrefix & OperationTimestamp
 
 proc GetFilesByPattern(DirectoryPath: string, FileTypePattern: string, ReadSubdirectories: bool = false): seq[string] =
   var DirectoriesToSearch: seq[string]

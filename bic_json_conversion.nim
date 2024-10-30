@@ -72,8 +72,9 @@ proc JSONtoBIC*(InputFile: string, OutputDirectory: string, ExpectSqlite: bool =
   if fileExists(OutputPath):
     var OutputSplit = splitFile(Path OutputPath)
     var BackupPath = OutputSplit.dir / Path(BackupDirectoryFullName)
-    if existsOrCreateDir(BackupPath):
-      copyFileToDir(OutputPath, $BackupPath)
+    if not(dirExists(BackupPath)):
+      createDir(BackupPath)
+    copyFileToDir(OutputPath, $BackupPath)
 
   var OutputStream = openFileStream(OutputPath, fmWrite)
   OutputStream.write(InputAsGFF)

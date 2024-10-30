@@ -1,4 +1,5 @@
-import std/[strutils, algorithm, streams, json, tables, os, paths]
+import std/[strutils, algorithm, streams, json, tables, os, paths, dirs]
+import std/private/osfiles
 import neverwinterdotnim/neverwinter/[gff, gffjson]
 import io_operations
 import nwn_gff_excerpts
@@ -61,12 +62,18 @@ proc JSONtoBIC*(InputFile: string, OutputDirectory: string, ExpectSqlite: bool =
 
   #Creates path for BIC to be saved to
   var OutputPath: string
-
   if ConfigWriteInPlace:
     var InputSplit = splitFile(Path InputFile)
     OutputPath = CreateOutputPathBIC(InputFile, $InputSplit.dir)
   else:
     OutputPath = CreateOutputPathBIC(InputFile, OutputDirectory)
+
+  #Option to autobackup .bic before it is overwritten
+  if fileExists(OutputPath):
+    var OutputSplit = splitFile(Path OutputPath)
+    var BackupPath = OutputSplit.dir / Path(BackupDirectoryFullName)
+    if existsOrCreateDir(BackupPath):
+      copyFileToDir(OutputPath, $BackupPath)
 
   var OutputStream = openFileStream(OutputPath, fmWrite)
   OutputStream.write(InputAsGFF)

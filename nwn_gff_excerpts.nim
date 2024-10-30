@@ -22,6 +22,7 @@ proc ExtractSqliteFromGFF*(GFFInput: GffRoot, SqlitePath: string) =
   if GFFInput.hasField("SQLite", GffStruct) and GFFInput["SQLite", GffStruct].hasField("Data", GffVoid):
     let blob = GFFInput["SQLite", GffStruct]["Data", GffVoid].string
     writeFile(SqlitePath, decompress(blob, makeMagic("SQL3")))
+    echo "Embedded SQLite database written to " & $SqlitePath
 
 
 #Proceduralized code found in lines ~67-71

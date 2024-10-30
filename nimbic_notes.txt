@@ -2,10 +2,9 @@ nimbic TODO / notes
 
 Translate JSON to HTML table, htmlout directory
 
-autobackup bic with timestamp, set timestamp at operation start so every change uses the same TS
-
 --restorebic option that accepts foldername and/or timestamp to restore backup .bic
---cleanup option to remove old backups
+--purge option to remove old backups
+--cleanup option to remove sqlite/json after jsontobic
 
 
 Ugly down here

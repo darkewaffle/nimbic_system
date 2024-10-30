@@ -124,7 +124,7 @@ proc PerformModeOperation() =
       of "jsontobic":
         FilesToChange = GetJSONFiles(ConfigInputJSON, ConfigReadSubdirectories)
         for i in FilesToChange.low .. FilesToChange.high:
-          JSONtoBIC(FilesToChange[i], ConfigOutputBIC, ConfigSqlite)
+          JSONtoBIC(FilesToChange[i], ConfigOutputBIC, ConfigSqlite, ConfigWriteInPlace)
 
   if Mode in ModeCharacterModify:
     if Mode in ModeRequires2DA:

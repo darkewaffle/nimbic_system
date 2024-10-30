@@ -1,4 +1,4 @@
-import nim_bic_editor_argument_parse
+import nimbic_arguments
 import nimbic_config
 
 proc ReconcileCommandLineArgumentsAndConfigSettings*()

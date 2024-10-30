@@ -1,7 +1,7 @@
 import std/[dirs, json, os, parseopt, paths]
 import nim_bic_editor_help
 import nimbic_config
-import nim_bic_editor_argument_parse
+import nimbic_arguments
 import nimbic_evaluate_config_arguments
 import bic_json_conversion
 import character_getters_setters

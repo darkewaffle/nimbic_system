@@ -17,6 +17,8 @@ const
   KeyInput2DA = "2dadir"
   KeySqlite = "sqlite"
   KeyProduction = "production"
+  KeyAutoCleanup = "autocleanup"
+  KeyAutoBackup= "autobackup"
   KeyServerVault = "servervault"
 
 var
@@ -28,6 +30,8 @@ var
   ConfigInput2DA*: string
   ConfigSqlite*: bool
   ConfigProduction*: bool
+  ConfigAutoCleanup*: bool
+  ConfigAutoBackup*: bool
   ConfigServerVault*: string
 
 proc GetSettingsFromConfigFile*() =
@@ -79,6 +83,12 @@ proc AssignConfigurationValues() =
       of KeyProduction:
         ConfigProduction = ($ConfigurationSettings[i][1]).parseBool
 
+      of KeyAutoCleanup:
+        ConfigAutoCleanup = ($ConfigurationSettings[i][1]).parseBool
+
+      of KeyAutoBackup:
+        ConfigAutoBackup = ($ConfigurationSettings[i][1]).parseBool
+
       of KeyServerVault:
         ConfigServerVault = $ConfigurationSettings[i][1]
 
@@ -94,5 +104,7 @@ proc EchoConfigurationValues() =
   echo "outbic  " & $ConfigOutputBIC
   echo "in2da   " & $ConfigInput2DA
   echo "sqlite  " & $ConfigSqlite
+  echo "cleanup " & $ConfigAutoCleanup
+  echo "backup  " & $ConfigAutoBackup
   echo "prod    " & $ConfigProduction
   echo "svault  " & $ConfigServerVault

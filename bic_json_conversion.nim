@@ -19,8 +19,8 @@ proc BICtoJSON*(InputFile: string, OutputDirectory: string, ExpectSqlite: bool =
 
   var WriteToDirectory: string
   if ConfigWriteInPlace:
-    var SplitPath = splitFile(Path InputFile)
-    WriteToDirectory = $SplitPath.dir
+    var InputSplit = splitFile(Path InputFile)
+    WriteToDirectory = $InputSplit.dir
   else:
     WriteToDirectory = OutputDirectory
 
@@ -60,7 +60,13 @@ proc JSONtoBIC*(InputFile: string, OutputDirectory: string, ExpectSqlite: bool =
       echo "Packing SQL into BIC " & InputPathSQL
 
   #Creates path for BIC to be saved to
-  var OutputPath = CreateOutputPathBIC(InputFile, OutputDirectory)
+  var OutputPath: string
+
+  if ConfigWriteInPlace:
+    var InputSplit = splitFile(Path InputFile)
+    OutputPath = CreateOutputPathBIC(InputFile, $InputSplit.dir)
+  else:
+    OutputPath = CreateOutputPathBIC(InputFile, OutputDirectory)
 
   var OutputStream = openFileStream(OutputPath, fmWrite)
   OutputStream.write(InputAsGFF)

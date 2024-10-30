@@ -119,7 +119,7 @@ proc PerformModeOperation() =
       of "bictojson":
         FilesToChange = GetBICFiles(ConfigInputBIC, ConfigReadSubdirectories)
         for i in FilesToChange.low .. FilesToChange.high:
-          BICtoJSON(FilesToChange[i], ConfigOutputJSON, ConfigSqlite)
+          BICtoJSON(FilesToChange[i], ConfigOutputJSON, ConfigSqlite, ConfigWriteInPlace)
 
       of "jsontobic":
         FilesToChange = GetJSONFiles(ConfigInputJSON, ConfigReadSubdirectories)

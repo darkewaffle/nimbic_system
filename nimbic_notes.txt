@@ -1,10 +1,9 @@
 nimbic TODO / notes
 
 Translate JSON to HTML table, htmlout directory
---inplace option to keep json in folder with bic
-search by pattern support for subfolders
+
 autobackup bic with timestamp, set timestamp at operation start so every change uses the same TS
---production config setting
+
 --restorebic option that accepts foldername and/or timestamp to restore backup .bic
 --cleanup option to remove old backups
 

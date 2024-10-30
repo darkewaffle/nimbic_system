@@ -100,8 +100,10 @@ proc TimestampString(): string =
   delete(NowString, len(NowString)-4 .. len(NowString)-1)
   return NowString
 
+#[
 var seqfiles: seq[string]
 #seqfiles = GetBICFiles("""C:\Users\jorda\Documents\Neverwinter Nights\servervault""", true)
 seqfiles = GetBICFiles("""C:\Users\jorda\Documents\Neverwinter Nights\servervault\QR6RKGPV""", false)
 for i in seqfiles.low .. seqfiles.high:
   echo seqfiles[i]
+]#

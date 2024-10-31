@@ -21,6 +21,7 @@ proc PerformModeOperationFromPackage()
 proc ValidateModeArguments()
 proc ValidateModeArgumentsFromPackage()
 proc EvaluateCharacterRequirements(CharacterJSON: JsonNode, CharacterFileLocation: string): bool
+proc EvaluateCharacterRequirementsFromPackage(CharacterJSON: JsonNode, CharacterFileLocation: string): bool
 proc GetCore2DAFiles()
 
 
@@ -47,16 +48,18 @@ const
 #####
 EchoSeparator()
 OperationSettings = GetOperationSettings()
+OperationSettings.EchoSettings()
 #GetSettingsFromConfigFile()
 #AssignArgumentsToVariables(CommandLineArguments)
 #ReconcileCommandLineArgumentsAndConfigSettings()
 #ValidateModeArguments()
 ValidateModeArgumentsFromPackage()
-PerformModeOperation()
+#PerformModeOperation()
+PerformModeOperationFromPackage()
 
 proc ValidateModeArgumentsFromPackage() =
   if not(OperationSettings.Mode in ValidModes):
-    echo "Invalid --OperationSettings.Mode argument specified."
+    echo "Invalid --mode argument specified."
     quit(QuitSuccess)
 
   if OperationSettings.Mode in ModeFileConversion:
@@ -138,7 +141,7 @@ proc PerformModeOperationFromPackage() =
     for i in FilesToChange.low .. FilesToChange.high:
       EchoBlank()
       CharacterJSON = parseFile(FilesToChange[i])
-      MeetsRequirements = EvaluateCharacterRequirements(CharacterJSON, FilesToChange[i])
+      MeetsRequirements = EvaluateCharacterRequirementsFromPackage(CharacterJSON, FilesToChange[i])
 
       if not(MeetsRequirements):
         discard
@@ -172,6 +175,41 @@ proc PerformModeOperationFromPackage() =
       if MeetsRequirements:
         writeFile(FilesToChange[i], pretty(CharacterJSON, 4))
         echo "Writing to " & FilesToChange[i]
+
+proc EvaluateCharacterRequirementsFromPackage(CharacterJSON: JsonNode, CharacterFileLocation: string): bool =
+  var
+    RequirementRace = true
+    RequirementSubrace = true
+    RequirementClass = true
+    RequirementClassLevel = true
+    RequirementTotalLevel = true
+    RequirementResult: bool
+
+  if OperationSettings.RaceActive:
+    RequirementRace = RequirementRace and CharacterHasRace(CharacterJSON, OperationSettings.Race)
+    #echo "Has required race = " & $RequirementRace
+
+  if OperationSettings.SubraceActive :
+    RequirementSubrace = RequirementSubrace and CharacterHasSubrace(CharacterJSON, OperationSettings.Subrace)
+    #echo "Has required subrace = " & $RequirementSubrace
+
+  if OperationSettings.Mode == "addclassfeat" or OperationSettings.Mode == "removeclassfeat":
+    RequirementClassLevel = RequirementClassLevel and CharacterHasClassLevel(CharacterJSON, OperationSettings.Class, OperationSettings.Level)
+    #echo "Has required class level = " & $RequirementClassLevel
+  else:
+    if OperationSettings.LevelActive:
+      RequirementTotalLevel = RequirementTotalLevel and CharacterHasTotalLevel(CharacterJSON, OperationSettings.Level)
+      #echo "Has required total level = " & $RequirementTotalLevel
+    if OperationSettings.ClassActive:
+      RequirementClass = RequirementClass and CharacterHasClass(CharacterJSON, OperationSettings.Class)
+      #echo "Has required class = " & $RequirementClass
+
+  RequirementResult = RequirementRace and RequirementSubrace and RequirementClass and RequirementClassLevel and RequirementTotalLevel
+  if RequirementResult:
+    EchoMessageNameFilename("Operation requirements met, " & OperationSettings.Mode & " will begin.", CharacterJSON, CharacterFileLocation)
+  else:
+    EchoMessageNameFilename("Operation requirements not met, " & OperationSettings.Mode & " will be skipped.", CharacterJSON, CharacterFileLocation)
+  return RequirementResult
 
 
 proc ValidateModeArguments() =

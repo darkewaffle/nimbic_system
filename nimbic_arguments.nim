@@ -5,12 +5,14 @@ proc AssignArgumentsToVariables*(CommandLineArguments: var OptParser)
 
 #Variables for input from arguments
 const
-  DefaultMode* = "test"
+  DefaultMode* = "defaultmode"
   DefaultRace* = -1
   DefaultSubrace* = "defaultsubrace"
-  DefaultClass* = 255
+  DefaultClass* = -1
   DefaultLevel* = -1
-  DefaultFeatID* = 9999
+  DefaultFeatID* = -1
+  DefaultAbilityInput* = [0, 0, 0, 0, 0, 0]
+  DefaultHPInput* = 0
 var
   Mode* = DefaultMode
   RequiredRace* = DefaultRace
@@ -18,8 +20,8 @@ var
   RequiredClass* = DefaultClass
   RequiredLevel* = DefaultLevel
   FeatID* = DefaultFeatID
-  AbilityInput* = [0, 0, 0, 0, 0, 0]
-  HPInput* = 0
+  AbilityInput* = DefaultAbilityInput
+  HPInput* = DefaultHPInput
 
 #Variables for input relating to file input/output
 const
@@ -28,10 +30,10 @@ const
   DefaultInput2DA* = "default2da"
   DefaultInputProduction* = false
 var
-  InputDirectory* = DefaultInputDirectory
-  OutputDirectory* = DefaultOutputDirectory
-  Input2DA* = DefaultInput2DA
-  InputProduction* = DefaultInputProduction
+  ArgInputDirectory* = DefaultInputDirectory
+  ArgOutputDirectory* = DefaultOutputDirectory
+  ArgInput2DA* = DefaultInput2DA
+  ArgInputProduction* = DefaultInputProduction
 
 
 proc AssignArgumentsToVariables*(CommandLineArguments: var OptParser) =
@@ -75,16 +77,16 @@ proc AssignArgumentsToVariables*(CommandLineArguments: var OptParser) =
 
         #Input/output parameters
           of "input", "id":
-            InputDirectory = val
+            ArgInputDirectory = val
 
           of "output", "od":
-            OutputDirectory = val
+            ArgOutputDirectory = val
 
           of "input2da", "i2da":
-            Input2DA = val
+            ArgInput2DA = val
 
           of "production", "prod":
-            InputProduction = true
+            ArgInputProduction = true
 
           else:
             discard

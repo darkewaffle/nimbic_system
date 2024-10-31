@@ -1,9 +1,12 @@
 import std/[dirs, os, paths, sequtils, strutils, times]
 import echo_feedback
+import object_settingspackage
 
-proc GetFilesByPattern(DirectoryPath: string, FileTypePattern: string, ReadSubdirectories: bool = false): seq[string]
-proc GetBICFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq[string]
-proc GetJSONFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq[string]
+proc GetFilesByPattern(DirectoryPath: string, ReadSubdirectories: bool, FileTypePattern: string): seq[string]
+#proc GetBICFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq[string]
+#proc GetJSONFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq[string]
+proc GetBICFiles*(OperationSettings: SettingsPackage): seq[string]
+proc GetJSONFiles*(OperationSettings: SettingsPackage): seq[string]
 
 proc CreateOutputPath(FileLocation: string, OutputDirectory: string, FileExtension: string): string
 proc CreateOutputPathJSON*(FileLocation: string, OutputDirectory: string): string
@@ -33,7 +36,7 @@ let
   OperationTimestamp* = TimestampString()
   BackupDirectoryFullName* = BackupDirectoryPrefix & OperationTimestamp
 
-proc GetFilesByPattern(DirectoryPath: string, FileTypePattern: string, ReadSubdirectories: bool = false): seq[string] =
+proc GetFilesByPattern(DirectoryPath: string, ReadSubdirectories: bool, FileTypePattern: string): seq[string] =
   var DirectoriesToSearch: seq[string]
   var SearchPattern: string
   var FileResults: seq[string]
@@ -50,12 +53,19 @@ proc GetFilesByPattern(DirectoryPath: string, FileTypePattern: string, ReadSubdi
 
   return FileResults
 
+
+proc GetBICFiles*(OperationSettings: SettingsPackage): seq[string] =
+    GetFilesByPattern(OperationSettings.InputBIC, OperationSettings.ReadSubdirectories, FilterExtensionBIC)
+
+proc GetJSONFiles*(OperationSettings: SettingsPackage): seq[string] =
+    GetFilesByPattern(OperationSettings.InputJSON, OperationSettings.ReadSubdirectories, FilterExtensionJSON)
+#[
 proc GetBICFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq[string] =
   GetFilesByPattern(DirectoryPath, FilterExtensionBIC, ReadSubdirectories)
 
 proc GetJSONFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq[string] =
   GetFilesByPattern(DirectoryPath, FilterExtensionJSON, ReadSubdirectories)
-
+]#
 
 proc CreateOutputPath(FileLocation: string, OutputDirectory: string, FileExtension: string): string =
   var SplitPath = splitFile(Path FileLocation)

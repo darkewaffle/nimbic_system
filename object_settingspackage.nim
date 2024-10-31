@@ -4,7 +4,7 @@
 #So Class = 0 and ClassActive = false means no class, whereas class = 0 and ClassActive = true means barbarian.
 
 type SettingsPackage* = object
-    OperationMode*: string
+    Mode*: string
     Race*: int
     RaceActive*: bool
     Subrace*: string

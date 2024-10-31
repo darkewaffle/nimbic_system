@@ -50,7 +50,7 @@ proc GetOperationSettings(): SettingsPackage =
     var ResultSettings: SettingsPackage
 
     #Set values that can only come from command line.
-    ResultSettings.OperationMode = CommandLineSettings.OperationMode
+    ResultSettings.Mode = CommandLineSettings.Mode
     ResultSettings.Race = CommandLineSettings.Race
     ResultSettings.RaceActive = CommandLineSettings.RaceActive
     ResultSettings.Subrace = CommandLineSettings.Subrace

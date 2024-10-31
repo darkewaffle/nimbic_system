@@ -55,7 +55,7 @@ proc GetSettingsFromCommandLine*(): SettingsPackage =
                 case key
                     #Operational parameters
                     of "mode", "m":
-                        CommandLineSettings.OperationMode = val
+                        CommandLineSettings.Mode = val
 
                     of "feat", "f":
                         CommandLineSettings.Feat = parseInt(val)

@@ -16,11 +16,11 @@ import object_settingspackage
 from read2da import Initialize2DAs
 
 
-proc PerformModeOperation()
+#proc PerformModeOperation()
 proc PerformModeOperationFromPackage()
-proc ValidateModeArguments()
+#proc ValidateModeArguments()
 proc ValidateModeArgumentsFromPackage()
-proc EvaluateCharacterRequirements(CharacterJSON: JsonNode, CharacterFileLocation: string): bool
+#proc EvaluateCharacterRequirements(CharacterJSON: JsonNode, CharacterFileLocation: string): bool
 proc EvaluateCharacterRequirementsFromPackage(CharacterJSON: JsonNode, CharacterFileLocation: string): bool
 proc GetCore2DAFiles()
 
@@ -124,12 +124,12 @@ proc PerformModeOperationFromPackage() =
   if OperationSettings.Mode in ModeFileConversion:
     case OperationSettings.Mode:
       of "bictojson":
-        FilesToChange = GetBICFiles(OperationSettings.InputBIC, OperationSettings.ReadSubdirectories)
+        FilesToChange = GetBICFiles(OperationSettings)
         for i in FilesToChange.low .. FilesToChange.high:
           BICtoJSON(FilesToChange[i], OperationSettings.OutputJSON, OperationSettings.ExpectSqlite, OperationSettings.WriteInPlace)
 
       of "jsontobic":
-        FilesToChange = GetJSONFiles(OperationSettings.InputJSON, OperationSettings.ReadSubdirectories)
+        FilesToChange = GetJSONFiles(OperationSettings)
         for i in FilesToChange.low .. FilesToChange.high:
           JSONtoBIC(FilesToChange[i], OperationSettings.OutputBIC, OperationSettings.ExpectSqlite, OperationSettings.WriteInPlace)
 
@@ -137,7 +137,7 @@ proc PerformModeOperationFromPackage() =
     if OperationSettings.Mode in ModeRequires2DA:
       GetCore2DAFiles()
 
-    FilesToChange = GetJSONFiles(OperationSettings.InputJSON, OperationSettings.ReadSubdirectories)
+    FilesToChange = GetJSONFiles(OperationSettings)
     for i in FilesToChange.low .. FilesToChange.high:
       EchoBlank()
       CharacterJSON = parseFile(FilesToChange[i])
@@ -211,7 +211,7 @@ proc EvaluateCharacterRequirementsFromPackage(CharacterJSON: JsonNode, Character
     EchoMessageNameFilename("Operation requirements not met, " & OperationSettings.Mode & " will be skipped.", CharacterJSON, CharacterFileLocation)
   return RequirementResult
 
-
+#[
 proc ValidateModeArguments() =
   if not(Mode in ValidModes):
     echo "Invalid --mode argument specified."
@@ -366,7 +366,7 @@ proc EvaluateCharacterRequirements(CharacterJSON: JsonNode, CharacterFileLocatio
   else:
     EchoMessageNameFilename("Operation requirements not met, " & Mode & " will be skipped.", CharacterJSON, CharacterFileLocation)
   return RequirementResult
-
+]#
 proc GetCore2DAFiles() =
   Initialize2DAs(ConfigInput2DA)
   FillRDDHPLookup()

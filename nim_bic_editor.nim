@@ -17,6 +17,7 @@ from read2da import Initialize2DAs
 
 
 proc PerformModeOperation()
+proc PerformModeOperationFromPackage()
 proc ValidateModeArguments()
 proc ValidateModeArgumentsFromPackage()
 proc EvaluateCharacterRequirements(CharacterJSON: JsonNode, CharacterFileLocation: string): bool
@@ -108,6 +109,69 @@ proc ValidateModeArgumentsFromPackage() =
       of "modifyability":
         #No specific requirements.
         discard
+
+proc PerformModeOperationFromPackage() =
+  if OperationSettings.Mode in ModeNoOperation:
+    case OperationSettings.Mode:
+      of "help":
+        EchoBlank()
+        DisplayHelp()
+        quit(QuitSuccess)
+
+  if OperationSettings.Mode in ModeFileConversion:
+    case OperationSettings.Mode:
+      of "bictojson":
+        FilesToChange = GetBICFiles(OperationSettings.InputBIC, OperationSettings.ReadSubdirectories)
+        for i in FilesToChange.low .. FilesToChange.high:
+          BICtoJSON(FilesToChange[i], OperationSettings.OutputJSON, OperationSettings.ExpectSqlite, OperationSettings.WriteInPlace)
+
+      of "jsontobic":
+        FilesToChange = GetJSONFiles(OperationSettings.InputJSON, OperationSettings.ReadSubdirectories)
+        for i in FilesToChange.low .. FilesToChange.high:
+          JSONtoBIC(FilesToChange[i], OperationSettings.OutputBIC, OperationSettings.ExpectSqlite, OperationSettings.WriteInPlace)
+
+  if OperationSettings.Mode in ModeCharacterModify:
+    if OperationSettings.Mode in ModeRequires2DA:
+      GetCore2DAFiles()
+
+    FilesToChange = GetJSONFiles(OperationSettings.InputJSON, OperationSettings.ReadSubdirectories)
+    for i in FilesToChange.low .. FilesToChange.high:
+      EchoBlank()
+      CharacterJSON = parseFile(FilesToChange[i])
+      MeetsRequirements = EvaluateCharacterRequirements(CharacterJSON, FilesToChange[i])
+
+      if not(MeetsRequirements):
+        discard
+      else:
+        case OperationSettings.Mode:
+          of "addclassfeat":
+            AddClassFeat(CharacterJSON, OperationSettings.Class, OperationSettings.Level, OperationSettings.Feat)
+
+          of "removeclassfeat":
+            RemovalSuccessful = RemoveClassFeat(CharacterJSON, OperationSettings.Class, OperationSettings.Level, OperationSettings.Feat)
+            MeetsRequirements = MeetsRequirements and RemovalSuccessful
+
+          of "alterclasshp":
+            ModificationSuccessful = AlterClassHP(CharacterJSON, OperationSettings.Class, OperationSettings.HPInput)
+            MeetsRequirements = MeetsRequirements and ModificationSuccessful
+
+          of "maxhp":
+            ModificationSuccessful = MaximizeHP(CharacterJSON)
+            MeetsRequirements = MeetsRequirements and ModificationSuccessful
+
+          of "addfeat":
+            AddLevelFeat(CharacterJSON, IfNoLevelThen1(OperationSettings.Level), OperationSettings.Feat)
+
+          of "removefeat":
+            RemovalSuccessful = RemoveLevelFeat(CharacterJSON, IfNoLevelThen1(OperationSettings.Level), OperationSettings.Feat)
+            MeetsRequirements = MeetsRequirements and RemovalSuccessful
+
+          of "modifyability":
+            ModifyAbilities(CharacterJSON, OperationSettings.AbilityInput)
+
+      if MeetsRequirements:
+        writeFile(FilesToChange[i], pretty(CharacterJSON, 4))
+        echo "Writing to " & FilesToChange[i]
 
 
 proc ValidateModeArguments() =

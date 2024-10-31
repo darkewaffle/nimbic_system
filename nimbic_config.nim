@@ -1,6 +1,7 @@
 import std/[os, strutils]
 import nimbic_config_template
 import echo_feedback
+import object_settingspackage
 
 proc GetSettingsFromConfigFile*()
 proc ReadConfigurationFile()

@@ -12,23 +12,26 @@ import io_operations
 import echo_feedback
 import utility_procs
 import hp_modify
+import object_settingspackage
 from read2da import Initialize2DAs
 
 
 proc PerformModeOperation()
 proc ValidateModeArguments()
+proc ValidateModeArgumentsFromPackage()
 proc EvaluateCharacterRequirements(CharacterJSON: JsonNode, CharacterFileLocation: string): bool
 proc GetCore2DAFiles()
 
 
 #Operational variables
 var
-  CommandLineArguments = initOptParser(quoteShellCommand(commandLineParams()))
+#  CommandLineArguments = initOptParser(quoteShellCommand(commandLineParams()))
   MeetsRequirements = false
   FilesToChange: seq[string]
   CharacterJSON: JsonNode
   RemovalSuccessful: bool
   ModificationSuccessful: bool
+  OperationSettings: SettingsPackage
 const
   ValidModes = ["help", "bictojson", "jsontobic", "addclassfeat", "removeclassfeat", "alterclasshp", "maxhp", "addfeat", "removefeat", "modifyability"]
   ModeNoOperation = ["help"]
@@ -42,11 +45,69 @@ const
 #Program begins here
 #####
 EchoSeparator()
-GetSettingsFromConfigFile()
-AssignArgumentsToVariables(CommandLineArguments)
-ReconcileCommandLineArgumentsAndConfigSettings()
-ValidateModeArguments()
+OperationSettings = GetOperationSettings()
+#GetSettingsFromConfigFile()
+#AssignArgumentsToVariables(CommandLineArguments)
+#ReconcileCommandLineArgumentsAndConfigSettings()
+#ValidateModeArguments()
+ValidateModeArgumentsFromPackage()
 PerformModeOperation()
+
+proc ValidateModeArgumentsFromPackage() =
+  if not(OperationSettings.Mode in ValidModes):
+    echo "Invalid --OperationSettings.Mode argument specified."
+    quit(QuitSuccess)
+
+  if OperationSettings.Mode in ModeFileConversion:
+    case OperationSettings.Mode:
+      of "bictojson":
+        if not(dirExists(Path OperationSettings.InputBIC)):
+          EchoError("Directory is not valid - " & $OperationSettings.InputBic)
+          quit(QuitSuccess)
+
+      of "jsontobic":
+        if not(dirExists(Path OperationSettings.InputJSON)):
+          EchoError("Directory is not valid - " & $OperationSettings.InputJSON)
+          quit(QuitSuccess)
+
+  if OperationSettings.Mode in ModeCharacterModify:
+    if OperationSettings.Mode in ModeRequires2DA:
+      if not(dirExists(Path OperationSettings.Input2DA)):
+        EchoError("Directory is not valid - " & $OperationSettings.Input2DA)
+        quit(QuitSuccess)
+
+    if not(dirExists(Path OperationSettings.InputJSON)):
+      EchoError("Directory is not valid - " & $OperationSettings.InputJSON)
+      quit(QuitSuccess)
+
+    case OperationSettings.Mode:
+      of "addclassfeat", "removeclassfeat":
+        if not(OperationSettings.ClassActive and OperationSettings.FeatActive and OperationSettings.LevelActive):
+          EchoError("A class, feat and level must be input.")
+          quit(QuitSuccess)
+
+      of "alterclasshp":
+        if not(OperationSettings.ClassActive):
+          EchoError("A class must be input.")
+          quit(QuitSuccess)
+
+      of "maxhp":
+        #No specific requirements.
+        discard
+
+      of "addfeat":
+        if not(OperationSettings.FeatActive):
+          EchoError("A feat ID must be input.")
+          quit(QuitSuccess)
+
+      of "removefeat":
+        if not(OperationSettings.FeatActive):
+          EchoError("A feat ID must be input.")
+          quit(QuitSuccess)
+
+      of "modifyability":
+        #No specific requirements.
+        discard
 
 
 proc ValidateModeArguments() =

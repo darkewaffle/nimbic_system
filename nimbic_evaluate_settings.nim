@@ -99,6 +99,10 @@ proc GetOperationSettings*(): SettingsPackage =
     #Evaluate if production mode is active. ReadSubDirectories and WriteInPlace only apply to Production operations
     #on server vaults which contain .bic files spread out into subdirectories.
     if CommandLineSettings.ProductionState and ConfigFileSettings.ProductionState:
+        ResultSettings.InputBIC = ConfigFileSettings.ServerVault
+        ResultSettings.OutputJSON = ConfigFileSettings.ServerVault
+        ResultSettings.InputJSON = ConfigFileSettings.ServerVault
+        ResultSettings.OutputBIC = ConfigFileSettings.ServerVault
         ResultSettings.ProductionState = true
         ResultSettings.ReadSubdirectories = true
         ResultSettings.WriteInPlace = true

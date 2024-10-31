@@ -4,46 +4,55 @@ import echo_feedback
 import object_settingspackage
 
 proc GetSettingsFromConfigFile*()
+proc GetSettingsPackageFromConfigFile*(): SettingsPackage
 proc ReadConfigurationFile()
 proc CleanseConfigurationValues()
 proc AssignConfigurationValues()
+proc AssignConfigurationValuesToSettingsPackage(): SettingsPackage
 proc EchoConfigurationValues()
 
 const
-  ConfigurationFileName = "nimbic.ini"
-  KeyInputBIC = "inputbic"
-  KeyOutputJSON = "outputjson"
-  KeyInputJSON = "inputjson"
-  KeyOutputBIC = "outputbic"
-  KeyInput2DA = "2dadir"
-  KeySqlite = "sqlite"
-  KeyProduction = "production"
-  KeyAutoCleanup = "autocleanup"
-  KeyAutoBackup= "autobackup"
-  KeyServerVault = "servervault"
+    ConfigurationFileName = "nimbic.ini"
+    KeyInputBIC = "inputbic"
+    KeyOutputJSON = "outputjson"
+    KeyInputJSON = "inputjson"
+    KeyOutputBIC = "outputbic"
+    KeyInput2DA = "2dadir"
+    KeySqlite = "sqlite"
+    KeyProduction = "production"
+    KeyAutoCleanup = "autocleanup"
+    KeyAutoBackup= "autobackup"
+    KeyServerVault = "servervault"
 
 var
-  ConfigurationSettings: seq[seq[string]]
-  ConfigInputBIC*: string
-  ConfigOutputJSON*: string
-  ConfigInputJSON*: string
-  ConfigOutputBIC*: string
-  ConfigInput2DA*: string
-  ConfigSqlite*: bool
-  ConfigProduction*: bool
-  ConfigAutoCleanup*: bool
-  ConfigAutoBackup*: bool
-  ConfigServerVault*: string
+    ConfigurationSettings: seq[seq[string]]
+    ConfigInputBIC*: string
+    ConfigOutputJSON*: string
+    ConfigInputJSON*: string
+    ConfigOutputBIC*: string
+    ConfigInput2DA*: string
+    ConfigSqlite*: bool
+    ConfigProduction*: bool
+    ConfigAutoCleanup*: bool
+    ConfigAutoBackup*: bool
+    ConfigServerVault*: string
 
 proc GetSettingsFromConfigFile*() =
   if fileExists(ConfigurationFileName):
     ReadConfigurationFile()
     CleanseConfigurationValues()
     AssignConfigurationValues()
-#    EchoConfigurationValues()
+    #EchoConfigurationValues()
   else:
     EchoNotice("No configuration file found. Creating " & getAppDir() & """\""" & ConfigurationFileName)
     writeFile(ConfigurationFileName, ConfigurationFileStarterText)
+
+proc GetSettingsPackageFromConfigFile*(): SettingsPackage =
+  if fileExists(ConfigurationFileName):
+    ReadConfigurationFile()
+    CleanseConfigurationValues()
+    return AssignConfigurationValuesToSettingsPackage()
+
 
 proc ReadConfigurationFile() =
   for line in ConfigurationFileName.lines:
@@ -59,6 +68,43 @@ proc CleanseConfigurationValues() =
     if endsWith(ConfigurationSettings[i][1], """\"""):
       removeSuffix(ConfigurationSettings[i][1], """\""")
 
+proc AssignConfigurationValuesToSettingsPackage(): SettingsPackage =
+    var ConfigFileSettings: SettingsPackage
+    for i in ConfigurationSettings.low .. ConfigurationSettings.high:
+        case ConfigurationSettings[i][0]:
+            of KeyInputBIC:
+                ConfigFileSettings.InputBIC = $ConfigurationSettings[i][1]
+
+            of KeyOutputJSON:
+                ConfigFileSettings.OutputJSON = $ConfigurationSettings[i][1]
+
+            of KeyInputJSON:
+                ConfigFileSettings.InputJSON = $ConfigurationSettings[i][1]
+
+            of KeyOutputBIC:
+                ConfigFileSettings.OutputBIC = $ConfigurationSettings[i][1]
+
+            of KeyInput2DA:
+                ConfigFileSettings.Input2DA = $ConfigurationSettings[i][1]
+
+            of KeySqlite:
+                ConfigFileSettings.ExpectSqlite = ($ConfigurationSettings[i][1]).parseBool
+
+            of KeyProduction:
+                ConfigFileSettings.ProductionState = ($ConfigurationSettings[i][1]).parseBool
+
+            of KeyAutoCleanup:
+                ConfigFileSettings.AutoCleanup = ($ConfigurationSettings[i][1]).parseBool
+
+            of KeyAutoBackup:
+                ConfigFileSettings.AutoBackup = ($ConfigurationSettings[i][1]).parseBool
+
+            of KeyServerVault:
+                ConfigFileSettings.ServerVault = $ConfigurationSettings[i][1]
+
+            else:
+              discard
+    return ConfigFileSettings
 
 proc AssignConfigurationValues() =
   for i in ConfigurationSettings.low .. ConfigurationSettings.high:

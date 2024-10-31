@@ -7,7 +7,7 @@ proc EvaluateInputDirectory()
 proc EvaluateOutputDirectory()
 proc Evaluate2DADirectory()
 proc EvaluateProduction()
-
+proc GetOperationSettings*(): SettingsPackage
 
 
 var ConfigProductionState*: bool
@@ -44,7 +44,7 @@ proc EvaluateProduction() =
     ConfigReadSubdirectories = true
     ConfigWriteInPlace = true
 
-proc GetOperationSettings(): SettingsPackage =
+proc GetOperationSettings*(): SettingsPackage =
     var CommandLineSettings = GetSettingsFromCommandLine()
     var ConfigFileSettings = GetSettingsPackageFromConfigFile()
     var ResultSettings: SettingsPackage

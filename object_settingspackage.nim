@@ -31,3 +31,32 @@ type SettingsPackage* = object
     ReadSubdirectories*: bool
     WriteInPlace*: bool
     ServerVault*: string
+
+proc EchoSettings*(Input: SettingsPackage) =
+    echo "Mode           " & $Input.Mode
+    echo "Race           " & $Input.Race
+    echo "RaceActive     " & $Input.RaceActive
+    echo "Subrace        " & $Input.Subrace
+    echo "SubraceActive  " & $Input.SubraceActive
+    echo "Class          " & $Input.Class
+    echo "ClassActive    " & $Input.ClassActive
+    echo "Level          " & $Input.Level
+    echo "LevelActive    " & $Input.LevelActive
+    echo "Feat           " & $Input.Feat
+    echo "FeatActive     " & $Input.FeatActive
+    echo "AbilityInput   " & $Input.AbilityInput
+    echo "HPInput        " & $Input.HPInput
+
+    echo "Input2DA       " & $Input.Input2DA
+    echo "InputBIC       " & $Input.InputBIC
+    echo "OutputJSON     " & $Input.OutputJSON
+    echo "InputJSON      " & $Input.InputJSON
+    echo "OutputBIC      " & $Input.OutputBIC
+    echo "ExpectSqlite   " & $Input.ExpectSqlite
+
+    echo "ProductionState    " & $Input.ProductionState
+    echo "AutoCleanup        " & $Input.AutoCleanup
+    echo "AutoBackup         " & $Input.AutoBackup
+    echo "ReadSubdirectories " & $Input.ReadSubdirectories
+    echo "WriteInPlace       " & $Input.WriteInPlace
+    echo "ServerVault        " & $Input.ServerVault

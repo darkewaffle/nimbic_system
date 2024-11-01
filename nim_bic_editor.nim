@@ -163,7 +163,7 @@ proc PerformModeOperationFromPackage() =
             MeetsRequirements = MeetsRequirements and ModificationSuccessful
 
           of "addfeat":
-            AddLevelFeat(CharacterJSON, OperationSettings.Level)
+            AddLevelFeat(CharacterJSON, OperationSettings)
 
           of "removefeat":
             RemovalSuccessful = RemoveLevelFeat(CharacterJSON, IfNoLevelThen1(OperationSettings.Level), OperationSettings.Feat)

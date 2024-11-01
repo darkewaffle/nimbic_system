@@ -22,7 +22,7 @@ proc PerformModeOperationFromPackage()
 proc ValidateModeArgumentsFromPackage()
 #proc EvaluateCharacterRequirements(CharacterJSON: JsonNode, CharacterFileLocation: string): bool
 proc EvaluateCharacterRequirementsFromPackage(CharacterJSON: JsonNode, CharacterFileLocation: string): bool
-proc GetCore2DAFiles()
+proc GetCore2DAFiles(OperationSettings: SettingsPackage)
 
 
 #Operational variables
@@ -135,7 +135,7 @@ proc PerformModeOperationFromPackage() =
 
   if OperationSettings.Mode in ModeCharacterModify:
     if OperationSettings.Mode in ModeRequires2DA:
-      GetCore2DAFiles()
+      GetCore2DAFiles(OperationSettings)
 
     FilesToChange = GetJSONFiles(OperationSettings)
     for i in FilesToChange.low .. FilesToChange.high:
@@ -367,6 +367,6 @@ proc EvaluateCharacterRequirements(CharacterJSON: JsonNode, CharacterFileLocatio
     EchoMessageNameFilename("Operation requirements not met, " & Mode & " will be skipped.", CharacterJSON, CharacterFileLocation)
   return RequirementResult
 ]#
-proc GetCore2DAFiles() =
-  Initialize2DAs(ConfigInput2DA)
+proc GetCore2DAFiles(OperationSettings: SettingsPackage) =
+  Initialize2DAs(OperationSettings)
   FillRDDHPLookup()

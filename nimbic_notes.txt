@@ -2,7 +2,8 @@ nimbic TODO / notes
 
 Translate JSON to HTML table, htmlout directory
 --validate settings.
-  feat/race/leve/class must > 0, verify that directories exist
+  feat/race/level/class must > 0, verify that directories exist
+  if no level specified, set to 1?
 --restorebic option that accepts foldername and/or timestamp to restore backup .bic
 --purge option to remove old backups
 --cleanup option to remove sqlite/json after jsontobic

@@ -1,20 +1,39 @@
 import std/json
 import echo_feedback
 import jsonbic_iteration_navigation
+import object_settingspackage
 
-proc AddClassFeat*(CharacterJSON: JsonNode, AddToClass: int, AddToLevel: int, FeatID: int, FirstOrLastPosition: string = "Last")
-proc AddLevelFeat*(CharacterJSON: JsonNode, AddToLevel: int, FeatID: int, FirstOrLastPosition: string = "Last")
+#proc AddClassFeat*(CharacterJSON: JsonNode, AddToClass: int, AddToLevel: int, FeatID: int, FirstOrLastPosition: string = "Last")
+#proc AddLevelFeat*(CharacterJSON: JsonNode, AddToLevel: int, FeatID: int, FirstOrLastPosition: string = "Last")
+
+proc AddClassFeat*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage, FirstOrLastPosition: string = "Last")
+proc AddLevelFeat*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage, FirstOrLastPosition: string = "Last")
 
 proc AddFeatToLvlStatList(CharacterJSON: JsonNode, LvlStatListIndex: int, FirstOrLastPosition: string = "Last")
 proc AddFeatToFeatList(CharacterJSON: JsonNode, AfterFeatID: int)
-proc AssignFeatIDToJObjects(FeatID: int)
+proc InitializeFeatJSONObjects(FeatID: int)
 
-let 
+let
   FeatJSON_LvlStatList = %*{"__struct_id": 0,"Feat": {"type": "word", "value": nil}}
   FeatJSON_FeatList = %*{"__struct_id": 1,"Feat": {"type": "word", "value": nil}}
 
+proc AddClassFeat*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage, FirstOrLastPosition: string = "Last") =
+  InitializeFeatJSONObjects(OperationSettings.Feat)
+  var LvlStatListIndex = FindLvlStatListIndexOfClassLevel(CharacterJSON, OperationSettings.Class, OperationSettings.Level)
+  AddFeatToLvlStatList(CharacterJSON, LvlStatListIndex, FirstOrLastPosition)
+  var PreviousFeat = FindPreviousFeatInFeatList(CharacterJSON, OperationSettings.Feat)
+  AddFeatToFeatList(CharacterJSON, PreviousFeat)
+
+
+proc AddLevelFeat*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage, FirstOrLastPosition: string = "Last") =
+  InitializeFeatJSONObjects(OperationSettings.Feat)
+  AddFeatToLvlStatList(CharacterJSON, OperationSettings.Level - 1, FirstOrLastPosition)
+  var PreviousFeat = FindPreviousFeatInFeatList(CharacterJSON, OperationSettings.Feat)
+  AddFeatToFeatList(CharacterJSON, PreviousFeat)
+
+#[
 proc AddClassFeat*(CharacterJSON: JsonNode, AddToClass: int, AddToLevel: int, FeatID: int, FirstOrLastPosition: string = "Last") =
-  AssignFeatIDToJObjects(FeatID)
+  InitializeFeatJSONObjects(FeatID)
   var LvlStatListIndex = FindLvlStatListIndexOfClassLevel(CharacterJSON, AddToClass, AddToLevel)
   AddFeatToLvlStatList(CharacterJSON, LvlStatListIndex, FirstOrLastPosition)
   var PreviousFeat = FindPreviousFeatInFeatList(CharacterJSON, FeatID)
@@ -22,11 +41,11 @@ proc AddClassFeat*(CharacterJSON: JsonNode, AddToClass: int, AddToLevel: int, Fe
 
 
 proc AddLevelFeat*(CharacterJSON: JsonNode, AddToLevel: int, FeatID: int, FirstOrLastPosition: string = "Last") =
-  AssignFeatIDToJObjects(FeatID)
+  InitializeFeatJSONObjects(FeatID)
   AddFeatToLvlStatList(CharacterJSON, AddToLevel - 1, FirstOrLastPosition)
   var PreviousFeat = FindPreviousFeatInFeatList(CharacterJSON, FeatID)
   AddFeatToFeatList(CharacterJSON, PreviousFeat)
-
+]#
 
 proc AddFeatToLvlStatList(CharacterJSON: JsonNode, LvlStatListIndex: int, FirstOrLastPosition: string = "Last") =
   var InsertIndex: int
@@ -49,6 +68,6 @@ proc AddFeatToFeatList(CharacterJSON: JsonNode, AfterFeatID: int) =
       break
 
 
-proc AssignFeatIDToJObjects(FeatID: int) = 
+proc InitializeFeatJSONObjects(FeatID: int) = 
   FeatJSON_LvlStatList["Feat"]["value"] = %FeatID
   FeatJSON_FeatList["Feat"]["value"] = %FeatID

@@ -6,7 +6,6 @@ Translate JSON to HTML table, htmlout directory
 
 --restorebic option that accepts foldername and/or timestamp to restore backup .bic
 --purge option to remove old backups
---cleanup option to remove sqlite/json after jsontobic
 
 
 Ugly down here

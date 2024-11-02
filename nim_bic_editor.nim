@@ -35,9 +35,9 @@ var
     ModificationSuccessful: bool
     OperationSettings = NewSettingsPackage()
 const
-    ValidModes = ["help", "bictojson", "jsontobic", "addclassfeat", "removeclassfeat", "alterclasshp", "maxhp", "addfeat", "removefeat", "modifyability"]
+    ValidModes = ["help", "bictojson", "jsontobic", "addclassfeat", "removeclassfeat", "alterclasshp", "maxhp", "addfeat", "removefeat", "modifyability", "purgebackups", "purgebackupsall"]
     ModeNoOperation = ["help"]
-    ModeFileConversion = ["bictojson", "jsontobic"]
+    ModeFileOperations = ["bictojson", "jsontobic", "purgebackups", "purgebackupsall"]
     ModeCharacterModify = ["addclassfeat", "removeclassfeat", "alterclasshp", "maxhp", "addfeat", "removefeat", "modifyability"]
     ModeRequires2DA = ["maxhp"]
     ModeRequiresClassAndLevel = ["addclassfeat", "removeclassfeat"]
@@ -62,7 +62,7 @@ proc ValidateModeArgumentsFromPackage() =
         echo "Invalid --mode argument specified."
         quit(QuitSuccess)
 
-    if OperationSettings.Mode in ModeFileConversion:
+    if OperationSettings.Mode in ModeFileOperations:
         case OperationSettings.Mode:
             of "bictojson":
                 if not(dirExists(Path OperationSettings.InputBIC)):
@@ -72,6 +72,11 @@ proc ValidateModeArgumentsFromPackage() =
             of "jsontobic":
                 if not(dirExists(Path OperationSettings.InputJSON)):
                     EchoError("Directory is not valid - " & $OperationSettings.InputJSON)
+                    quit(QuitSuccess)
+
+            of "purgebackups", "purgebackupsall":
+                if not(dirExists(Path OperationSettings.OutputBIC)):
+                    EchoError("Directory is not valid - " & $OperationSettings.OutputBIC)
                     quit(QuitSuccess)
 
     if OperationSettings.Mode in ModeCharacterModify:
@@ -121,7 +126,7 @@ proc PerformModeOperationFromPackage() =
                 DisplayHelp()
                 quit(QuitSuccess)
 
-    if OperationSettings.Mode in ModeFileConversion:
+    if OperationSettings.Mode in ModeFileOperations:
         case OperationSettings.Mode:
             of "bictojson":
                 FilesToChange = GetBICFiles(OperationSettings)
@@ -132,6 +137,9 @@ proc PerformModeOperationFromPackage() =
                 FilesToChange = GetJSONFiles(OperationSettings)
                 for i in FilesToChange.low .. FilesToChange.high:
                     JSONtoBIC(FilesToChange[i], OperationSettings)
+
+            of "purgebackups", "purgebackupsall":
+                PurgeBackupDirectories(OperationSettings)
 
     if OperationSettings.Mode in ModeCharacterModify:
         if OperationSettings.Mode in ModeRequires2DA:
@@ -217,7 +225,7 @@ proc ValidateModeArguments() =
         echo "Invalid --mode argument specified."
         quit(QuitSuccess)
 
-    if Mode in ModeFileConversion:
+    if Mode in ModeFileOperations:
         case Mode:
             of "bictojson":
                 if not(dirExists(Path ConfigInputBIC)):
@@ -277,7 +285,7 @@ proc PerformModeOperation() =
                 DisplayHelp()
                 quit(QuitSuccess)
 
-    if Mode in ModeFileConversion:
+    if Mode in ModeFileOperations:
         case Mode:
             of "bictojson":
                 FilesToChange = GetBICFiles(ConfigInputBIC, ConfigReadSubdirectories)

@@ -17,6 +17,7 @@ const
     KeyOutputJSON = "outputjson"
     KeyInputJSON = "inputjson"
     KeyOutputBIC = "outputbic"
+    KeyOutputHTML = "outputhtml"
     KeyInput2DA = "2dadir"
     KeySqlite = "sqlite"
     KeyProduction = "production"
@@ -87,6 +88,9 @@ proc AssignConfigurationValuesToSettingsPackage(): SettingsPackage =
 
             of KeyOutputBIC:
                 ConfigFileSettings.OutputBIC = $ConfigurationSettings[i][1]
+
+            of KeyOutputHTML:
+                ConfigFileSettings.OutputHTML = $ConfigurationSettings[i][1]
 
             of KeyInput2DA:
                 ConfigFileSettings.Input2DA = $ConfigurationSettings[i][1]

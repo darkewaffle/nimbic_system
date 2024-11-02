@@ -39,6 +39,7 @@ type SettingsPackage* = object
     OutputJSON*: string
     InputJSON*: string
     OutputBIC*: string
+    OutputHTML*: string
 
     #Production settings that only apply to Server Vault operations
     ProductionState*: bool
@@ -75,6 +76,7 @@ proc NewSettingsPackage*(): SettingsPackage =
     NewSettings.OutputJSON = ""
     NewSettings.InputJSON = ""
     NewSettings.OutputBIC = ""
+    NewSettings.OutputHTML = ""
 
     NewSettings.ProductionState = false
     NewSettings.ReadSubdirectories = false
@@ -113,6 +115,7 @@ proc EchoSettings*(Input: SettingsPackage) =
     echo "OutputJSON     " & $Input.OutputJSON
     echo "InputJSON      " & $Input.InputJSON
     echo "OutputBIC      " & $Input.OutputBIC
+    echo "OutputHTML     " & $Input.OutputHTML
     echo ""
 
     echo "Production Settings"

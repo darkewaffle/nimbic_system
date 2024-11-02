@@ -13,6 +13,7 @@ import echo_feedback
 import utility_procs
 import hp_modify
 import object_settingspackage
+import json_to_html
 from read2da import Initialize2DAs
 
 
@@ -35,9 +36,9 @@ var
     ModificationSuccessful: bool
     OperationSettings = NewSettingsPackage()
 const
-    ValidModes = ["help", "bictojson", "jsontobic", "addclassfeat", "removeclassfeat", "alterclasshp", "maxhp", "addfeat", "removefeat", "modifyability", "purgebackups", "purgebackupsall", "restorebackup"]
+    ValidModes = ["help", "bictojson", "jsontobic", "jsontohtml", "purgebackups", "purgebackupsall", "restorebackup", "addclassfeat", "removeclassfeat", "alterclasshp", "maxhp", "addfeat", "removefeat", "modifyability"]
     ModeNoOperation = ["help"]
-    ModeFileOperations = ["bictojson", "jsontobic", "purgebackups", "purgebackupsall", "restorebackup"]
+    ModeFileOperations = ["bictojson", "jsontobic", "jsontohtml", "purgebackups", "purgebackupsall", "restorebackup"]
     ModeCharacterModify = ["addclassfeat", "removeclassfeat", "alterclasshp", "maxhp", "addfeat", "removefeat", "modifyability"]
     ModeRequires2DA = ["maxhp"]
     ModeRequiresClassAndLevel = ["addclassfeat", "removeclassfeat"]
@@ -69,7 +70,7 @@ proc ValidateModeArgumentsFromPackage() =
                     EchoError("Directory is not valid - " & $OperationSettings.InputBIC)
                     quit(QuitSuccess)
 
-            of "jsontobic":
+            of "jsontobic", "jsontohtml":
                 if not(dirExists(Path OperationSettings.InputJSON)):
                     EchoError("Directory is not valid - " & $OperationSettings.InputJSON)
                     quit(QuitSuccess)
@@ -145,6 +146,11 @@ proc PerformModeOperationFromPackage() =
                 FilesToChange = GetJSONFiles(OperationSettings)
                 for i in FilesToChange.low .. FilesToChange.high:
                     JSONtoBIC(FilesToChange[i], OperationSettings)
+
+            of "jsontohtml":
+                FilesToChange = GetJSONFiles(OperationSettings)
+                for i in FilesToChange.low .. FilesToChange.high:
+                    JSONtoHTML(FilesToChange[i], OperationSettings)
 
             of "purgebackups", "purgebackupsall":
                 PurgeBackupDirectories(OperationSettings)

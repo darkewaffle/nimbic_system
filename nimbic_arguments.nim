@@ -95,11 +95,12 @@ proc GetSettingsFromCommandLine*(): SettingsPackage =
                         CommandLineSettings.InputBIC = val
                         CommandLineSettings.InputJSON = val
 
-                    #Assign to both Output settings since it could be either depending on the chosen mode.
+                    #Assign to all Output settings since it could be any of them depending on the chosen mode.
                     #Modes only use one Output directory per operation so this will not have any adverse effects.
                     of "output":
                         CommandLineSettings.OutputBIC = val
                         CommandLineSettings.OutputJSON = val
+                        CommandLineSettings.OutputHTML = val
 
                     of "input2da", "2da":
                         CommandLineSettings.Input2DA = val

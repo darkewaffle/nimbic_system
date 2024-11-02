@@ -97,6 +97,11 @@ proc GetOperationSettings*(): SettingsPackage =
     else:
         ResultSettings.OutputBIC = ConfigFileSettings.OutputBIC
 
+    if CommandLineSettings.OutputHTML != "":
+        ResultSettings.OutputHTML = CommandLineSettings.OutputHTML
+    else:
+        ResultSettings.OutputHTML = ConfigFileSettings.OutputHTML
+
     #Evaluate if production mode is active. ReadSubDirectories and WriteInPlace only apply to Production operations
     #on server vaults which contain .bic files spread out into subdirectories.
     if CommandLineSettings.ProductionState and ConfigFileSettings.ProductionState:

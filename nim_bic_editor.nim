@@ -170,7 +170,7 @@ proc PerformModeOperationFromPackage() =
             MeetsRequirements = MeetsRequirements and RemovalSuccessful
 
           of "modifyability":
-            ModifyAbilities(CharacterJSON, OperationSettings.AbilityInput)
+            ModifyAbilities(CharacterJSON, OperationSettings)
 
       if MeetsRequirements:
         writeFile(FilesToChange[i], pretty(CharacterJSON, 4))

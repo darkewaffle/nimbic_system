@@ -52,7 +52,10 @@ proc GetSettingsPackageFromConfigFile*(): SettingsPackage =
     ReadConfigurationFile()
     CleanseConfigurationValues()
     return AssignConfigurationValuesToSettingsPackage()
-
+  else:
+    EchoNotice("No configuration file found. Creating " & getAppDir() & """\""" & ConfigurationFileName)
+    writeFile(ConfigurationFileName, ConfigurationFileStarterText)
+    return NewSettingsPackage()
 
 proc ReadConfigurationFile() =
   for line in ConfigurationFileName.lines:
@@ -69,7 +72,8 @@ proc CleanseConfigurationValues() =
       removeSuffix(ConfigurationSettings[i][1], """\""")
 
 proc AssignConfigurationValuesToSettingsPackage(): SettingsPackage =
-    var ConfigFileSettings: SettingsPackage
+#    var ConfigFileSettings: SettingsPackage
+    var ConfigFileSettings = NewSettingsPackage()
     for i in ConfigurationSettings.low .. ConfigurationSettings.high:
         case ConfigurationSettings[i][0]:
             of KeyInputBIC:

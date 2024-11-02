@@ -63,6 +63,7 @@ proc GetOperationSettings*(): SettingsPackage =
     ResultSettings.FeatActive = CommandLineSettings.FeatActive
     ResultSettings.AbilityInput = CommandLineSettings.AbilityInput
     ResultSettings.HPInput = CommandLineSettings.HPInput
+    ResultSettings.RestoreFrom = CommandLineSettings.RestoreFrom
 
     #Set values that can only come from config.ini
     ResultSettings.ExpectSqlite = ConfigFileSettings.ExpectSqlite
@@ -99,21 +100,12 @@ proc GetOperationSettings*(): SettingsPackage =
     #Evaluate if production mode is active. ReadSubDirectories and WriteInPlace only apply to Production operations
     #on server vaults which contain .bic files spread out into subdirectories.
     if CommandLineSettings.ProductionState and ConfigFileSettings.ProductionState:
+        ResultSettings.ProductionState = true
+        ResultSettings.ReadSubdirectories = true
+        ResultSettings.WriteInPlace = true
         ResultSettings.InputBIC = ConfigFileSettings.ServerVault
         ResultSettings.OutputJSON = ConfigFileSettings.ServerVault
         ResultSettings.InputJSON = ConfigFileSettings.ServerVault
         ResultSettings.OutputBIC = ConfigFileSettings.ServerVault
-        ResultSettings.ProductionState = true
-        ResultSettings.ReadSubdirectories = true
-        ResultSettings.WriteInPlace = true
 
     return ResultSettings
-
-#expose results as Setting vars
-#expose settinghasvalue():bool functions
-#settings imports config and arguments
-#all/most files import settings and reference settings 'final' vars directly
-#cut down on function args?
-#evaluate requirements refactored into separate modules, import settings, simply return bool/necessary value
-#should settings all be packed into a Settings object/struct and passed into functions as a whole?
-#editor calls GetSettingsPackage > that performs all settings gets and evaluations and returns Type/Object to be passed into all subsequent functions as needed

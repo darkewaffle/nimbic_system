@@ -10,40 +10,44 @@ type
     FeatRange* = range[0 .. high(int)]
 
 type SettingsPackage* = object
+    #Command line only
     Mode*: string
-    #Race*: int
     Race*: RaceRange
     RaceActive*: bool
     Subrace*: string
     SubraceActive*: bool
-    #Class*: int
     Class*: ClassRange
     ClassActive*: bool
-    #Level*: int
     Level*: LevelRange
     LevelActive*: bool
-    #Feat*: int
     Feat*: FeatRange
     FeatActive*: bool
     AbilityInput*: array[0..5, int]
     HPInput*: int
+    RestoreFrom*: string
 
+    #Config file only
+    ExpectSqlite*: bool
+    AutoCleanup*: bool
+    AutoBackup*: bool
+    ServerVault*: string
+
+    #Directories can be input from command line or config.
+    #Evaluated and assigned in nimbic_evaluate_settings
     Input2DA*: string
     InputBIC*: string
     OutputJSON*: string
     InputJSON*: string
     OutputBIC*: string
-    ExpectSqlite*: bool
-    RestoreFrom*: string
 
+    #Production settings that only apply to Server Vault operations
     ProductionState*: bool
-    AutoCleanup*: bool
-    AutoBackup*: bool
     ReadSubdirectories*: bool
     WriteInPlace*: bool
-    ServerVault*: string
+
 
 proc NewSettingsPackage*(): SettingsPackage =
+    #Ranges do not initialize with a value and must be assigned manually to create a new object.
     var NewSettings = SettingsPackage(Race: 0, Class: 0, Level: 1, Feat: 0)
 
     NewSettings.Mode = ""
@@ -53,30 +57,33 @@ proc NewSettingsPackage*(): SettingsPackage =
     NewSettings.SubraceActive = false
     #NewSettings.Class = 0
     NewSettings.ClassActive = false
-    #NewSettings.Level = 0
+    #NewSettings.Level = 1
     NewSettings.LevelActive = false
     #NewSettings.Feat = 0
     NewSettings.FeatActive = false
     NewSettings.AbilityInput = [0, 0, 0, 0, 0, 0]
     NewSettings.HPInput = 0
+    NewSettings.RestoreFrom = ""
+
+    NewSettings.ExpectSqlite = false
+    NewSettings.AutoCleanup = false
+    NewSettings.AutoBackup = false
+    NewSettings.ServerVault = ""
 
     NewSettings.Input2DA = ""
     NewSettings.InputBIC = ""
     NewSettings.OutputJSON = ""
     NewSettings.InputJSON = ""
     NewSettings.OutputBIC = ""
-    NewSettings.ExpectSqlite = false
-    NewSettings.RestoreFrom = ""
 
     NewSettings.ProductionState = false
-    NewSettings.AutoCleanup = false
-    NewSettings.AutoBackup = false
     NewSettings.ReadSubdirectories = false
     NewSettings.WriteInPlace = false
-    NewSettings.ServerVault = ""
+
     return NewSettings
 
 proc EchoSettings*(Input: SettingsPackage) =
+    echo "Command Line   "
     echo "Mode           " & $Input.Mode
     echo "Race           " & $Input.Race
     echo "RaceActive     " & $Input.RaceActive
@@ -90,18 +97,25 @@ proc EchoSettings*(Input: SettingsPackage) =
     echo "FeatActive     " & $Input.FeatActive
     echo "AbilityInput   " & $Input.AbilityInput
     echo "HPInput        " & $Input.HPInput
+    echo "RestoreFrom    " & $Input.RestoreFrom
+    echo ""
 
+    echo "Config file    "
+    echo "ExpectSqlite   " & $Input.ExpectSqlite
+    echo "AutoCleanup    " & $Input.AutoCleanup
+    echo "AutoBackup     " & $Input.AutoBackup
+    echo "ServerVault    " & $Input.ServerVault
+    echo ""
+
+    echo "Directory eval "
     echo "Input2DA       " & $Input.Input2DA
     echo "InputBIC       " & $Input.InputBIC
     echo "OutputJSON     " & $Input.OutputJSON
     echo "InputJSON      " & $Input.InputJSON
     echo "OutputBIC      " & $Input.OutputBIC
-    echo "ExpectSqlite   " & $Input.ExpectSqlite
-    echo "RestoreFrom  " & $Input.RestoreFrom
+    echo ""
 
+    echo "Production Settings"
     echo "ProductionState    " & $Input.ProductionState
-    echo "AutoCleanup        " & $Input.AutoCleanup
-    echo "AutoBackup         " & $Input.AutoBackup
     echo "ReadSubdirectories " & $Input.ReadSubdirectories
     echo "WriteInPlace       " & $Input.WriteInPlace
-    echo "ServerVault        " & $Input.ServerVault

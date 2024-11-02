@@ -1,9 +1,7 @@
 nimbic TODO / notes
 
 Translate JSON to HTML table, htmlout directory
-
---restorebic option that accepts foldername and/or timestamp to restore backup .bic
---purge option to remove old backups saving 1, --purgeall removes all
+nim_bic_editor - try to use solely for orchestration, put all procs/code into imports
 
 
 Ugly down here

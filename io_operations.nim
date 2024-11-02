@@ -22,6 +22,9 @@ proc GetSubdirectoriesByPattern(ParentDirectory: string, SearchPattern: string):
 proc GetSubdirectoriesAll(ParentDirectory: string): seq[string]
 proc GetSubdirectoriesBackup(ParentDirectory: string): seq[string]
 
+proc PurgeBackupDirectories*(OperationSettings: SettingsPackage)
+proc DeleteBackupDirectories(DirectoryList: var seq[string], BackupsToKeep: int)
+
 proc TimestampString(): string
 
 const
@@ -123,29 +126,28 @@ proc TimestampString(): string =
     delete(NowString, len(NowString)-4 .. len(NowString)-1)
     return NowString
 
-proc DeleteBackupDirectories(DirectoryList: var seq[string]) =
-    sort(DirectoryList, Descending)
-    for i in DirectoryList.low ..< DirectoryList.high:
-        #removeDir(DirectoryList[i])
-        echo $DirectoryList[i]
-
 proc PurgeBackupDirectories(OperationSettings: SettingsPackage) =
+    var KeepBackups: int
+    if OperationSettings.Mode == "purgebackups":
+        KeepBackups = 1
+    elif OperationSettings.Mode == "purgebackupsall":
+        KeepBackups = 0
+    else:
+        KeepBackups = 1
+
     var TargetDirectory = OperationSettings.OutputBIC
 
     if OperationSettings.ReadSubdirectories:
         var SubdirectoriesInTarget = GetSubdirectoriesAll(TargetDirectory)
         for i in SubdirectoriesInTarget.low .. SubdirectoriesInTarget.high:
             var BackupDirectories = GetSubdirectoriesBackup(SubdirectoriesInTarget[i])
-            DeleteBackupDirectories(BackupDirectories)
+            DeleteBackupDirectories(BackupDirectories, KeepBackups)
     else:
         var BackupDirectories = GetSubdirectoriesBackup(TargetDirectory)
-        DeleteBackupDirectories(BackupDirectories)
+        DeleteBackupDirectories(BackupDirectories, KeepBackups)
 
-
-#[
-var seqfiles: seq[string]
-#seqfiles = GetBICFiles("""C:\Users\jorda\Documents\Neverwinter Nights\servervault""", true)
-seqfiles = GetBICFiles("""C:\Users\jorda\Documents\Neverwinter Nights\servervault\QR6RKGPV""", false)
-for i in seqfiles.low .. seqfiles.high:
-    echo seqfiles[i]
-]#
+proc DeleteBackupDirectories(DirectoryList: var seq[string], BackupsToKeep: int) =
+    sort(DirectoryList, Ascending)
+    for i in DirectoryList.low .. DirectoryList.high - BackupsToKeep:
+        #removeDir(DirectoryList[i])
+        echo "To delete " & $DirectoryList[i]

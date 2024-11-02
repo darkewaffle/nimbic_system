@@ -1,9 +1,14 @@
 import std/json
 import echo_feedback
 import jsonbic_iteration_navigation
+import object_settingspackage
 
-proc RemoveClassFeat*(CharacterJSON: JsonNode, RemoveFromClass: int, RemoveFromLevel: int, FeatID: int): bool
-proc RemoveLevelFeat*(CharacterJSON: JsonNode, RemoveFromLevel: int, FeatID: int): bool
+#proc RemoveClassFeat*(CharacterJSON: JsonNode, RemoveFromClass: int, RemoveFromLevel: int, FeatID: int): bool
+#proc RemoveLevelFeat*(CharacterJSON: JsonNode, RemoveFromLevel: int, FeatID: int): bool
+
+proc RemoveClassFeat*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage): bool
+proc RemoveLevelFeat*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage): bool
+
 proc RemoveFeatFromLvlStatList(CharacterJSON: JsonNode, LvlStatListIndex: int, FeatID: int): bool
 proc RemoveFeatFromFeatList(CharacterJSON: JsonNode, FeatID: int)
 proc RemoveFeatFromQB(CharacterJSON: JsonNode, FeatID: int)
@@ -40,6 +45,27 @@ QBMeta
 ]#
 
 
+proc RemoveClassFeat*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage): bool =
+  var LvlStatListIndex = FindLvlStatListIndexOfClassLevel(CharacterJSON, OperationSettings.Class, OperationSettings.Level)
+  if RemoveFeatFromLvlStatList(CharacterJSON, LvlStatListIndex, OperationSettings.Feat):
+    RemoveFeatFromFeatList(CharacterJSON, OperationSettings.Feat)
+    RemoveFeatFromQB(CharacterJSON, OperationSettings.Feat)
+    return true
+  else:
+    EchoMessageName("Feat " & $OperationSettings.Feat & " not found in LvlStatList", CharacterJSON)
+    return false
+
+
+proc RemoveLevelFeat*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage): bool =
+  if RemoveFeatFromLvlStatList(CharacterJSON, OperationSettings.Level - 1, OperationSettings.Feat):
+    RemoveFeatFromFeatList(CharacterJSON, OperationSettings.Feat)
+    RemoveFeatFromQB(CharacterJSON, OperationSettings.Feat)
+    return true
+  else:
+    EchoMessageName("Feat " & $OperationSettings.Feat & " not found in LvlStatList", CharacterJSON)
+    return false
+
+#[
 proc RemoveClassFeat*(CharacterJSON: JsonNode, RemoveFromClass: int, RemoveFromLevel: int, FeatID: int): bool =
   var LvlStatListIndex = FindLvlStatListIndexOfClassLevel(CharacterJSON, RemoveFromClass, RemoveFromLevel)
   if RemoveFeatFromLvlStatList(CharacterJSON, LvlStatListIndex, FeatID):
@@ -59,7 +85,7 @@ proc RemoveLevelFeat*(CharacterJSON: JsonNode, RemoveFromLevel: int, FeatID: int
   else:
     EchoMessageName("Feat " & $FeatID & " not found in LvlStatList", CharacterJSON)
     return false
-
+]#
 
 proc RemoveFeatFromLvlStatList(CharacterJSON: JsonNode, LvlStatListIndex: int, FeatID: int): bool =
   for i in CharacterJSON["LvlStatList"]["value"][LvlStatListIndex]["FeatList"]["value"].elems.low .. CharacterJSON["LvlStatList"]["value"][LvlStatListIndex]["FeatList"]["value"].elems.high:

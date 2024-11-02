@@ -151,7 +151,7 @@ proc PerformModeOperationFromPackage() =
             AddClassFeat(CharacterJSON, OperationSettings)
 
           of "removeclassfeat":
-            RemovalSuccessful = RemoveClassFeat(CharacterJSON, OperationSettings.Class, OperationSettings.Level, OperationSettings.Feat)
+            RemovalSuccessful = RemoveClassFeat(CharacterJSON, OperationSettings)
             MeetsRequirements = MeetsRequirements and RemovalSuccessful
 
           of "alterclasshp":
@@ -166,7 +166,7 @@ proc PerformModeOperationFromPackage() =
             AddLevelFeat(CharacterJSON, OperationSettings)
 
           of "removefeat":
-            RemovalSuccessful = RemoveLevelFeat(CharacterJSON, IfNoLevelThen1(OperationSettings.Level), OperationSettings.Feat)
+            RemovalSuccessful = RemoveLevelFeat(CharacterJSON, OperationSettings)
             MeetsRequirements = MeetsRequirements and RemovalSuccessful
 
           of "modifyability":

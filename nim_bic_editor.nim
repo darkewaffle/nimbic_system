@@ -66,7 +66,7 @@ proc ValidateModeArgumentsFromPackage() =
         case OperationSettings.Mode:
             of "bictojson":
                 if not(dirExists(Path OperationSettings.InputBIC)):
-                    EchoError("Directory is not valid - " & $OperationSettings.InputBic)
+                    EchoError("Directory is not valid - " & $OperationSettings.InputBIC)
                     quit(QuitSuccess)
 
             of "jsontobic":

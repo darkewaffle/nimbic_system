@@ -41,7 +41,8 @@ var
 proc GetSettingsFromCommandLine*(): SettingsPackage =
     var 
         CommandLineArguments = initOptParser(quoteShellCommand(commandLineParams()))
-        CommandLineSettings: SettingsPackage
+        #CommandLineSettings: SettingsPackage
+        CommandLineSettings = NewSettingsPackage()
 
     for kind, key, val in CommandLineArguments.getopt():
         case kind

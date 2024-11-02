@@ -47,7 +47,7 @@ proc EvaluateProduction() =
 proc GetOperationSettings*(): SettingsPackage =
     var CommandLineSettings = GetSettingsFromCommandLine()
     var ConfigFileSettings = GetSettingsPackageFromConfigFile()
-    var ResultSettings: SettingsPackage
+    var ResultSettings = NewSettingsPackage()
 
     #Set values that can only come from command line.
     ResultSettings.Mode = CommandLineSettings.Mode

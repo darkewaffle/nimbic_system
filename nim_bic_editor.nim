@@ -33,7 +33,7 @@ var
   CharacterJSON: JsonNode
   RemovalSuccessful: bool
   ModificationSuccessful: bool
-  OperationSettings: SettingsPackage
+  OperationSettings = NewSettingsPackage()
 const
   ValidModes = ["help", "bictojson", "jsontobic", "addclassfeat", "removeclassfeat", "alterclasshp", "maxhp", "addfeat", "removefeat", "modifyability"]
   ModeNoOperation = ["help"]

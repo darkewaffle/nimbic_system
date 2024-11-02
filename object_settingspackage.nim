@@ -3,17 +3,27 @@
 #for an int would be 0 but 0 is also a valid identifier for some values (like race 0 = dwarf, class 0 = barbarian).
 #So Class = 0 and ClassActive = false means no class, whereas class = 0 and ClassActive = true means barbarian.
 
+type
+    LevelRange* = range[1 .. 40]
+    ClassRange* = range[0 .. 254]
+    RaceRange* = range[0 .. 254]
+    FeatRange* = range[0 .. high(int)]
+
 type SettingsPackage* = object
     Mode*: string
-    Race*: int
+    #Race*: int
+    Race*: RaceRange
     RaceActive*: bool
     Subrace*: string
     SubraceActive*: bool
-    Class*: int
+    #Class*: int
+    Class*: ClassRange
     ClassActive*: bool
-    Level*: int
+    #Level*: int
+    Level*: LevelRange
     LevelActive*: bool
-    Feat*: int
+    #Feat*: int
+    Feat*: FeatRange
     FeatActive*: bool
     AbilityInput*: array[0..5, int]
     HPInput*: int
@@ -31,6 +41,38 @@ type SettingsPackage* = object
     ReadSubdirectories*: bool
     WriteInPlace*: bool
     ServerVault*: string
+
+proc NewSettingsPackage*(): SettingsPackage =
+    var NewSettings = SettingsPackage(Race: 0, Class: 0, Level: 1, Feat: 0)
+
+    NewSettings.Mode = ""
+    #NewSettings.Race = 0
+    NewSettings.RaceActive = false
+    NewSettings.Subrace = ""
+    NewSettings.SubraceActive = false
+    #NewSettings.Class = 0
+    NewSettings.ClassActive = false
+    #NewSettings.Level = 0
+    NewSettings.LevelActive = false
+    #NewSettings.Feat = 0
+    NewSettings.FeatActive = false
+    NewSettings.AbilityInput = [0, 0, 0, 0, 0, 0]
+    NewSettings.HPInput = 0
+
+    NewSettings.Input2DA = ""
+    NewSettings.InputBIC = ""
+    NewSettings.OutputJSON = ""
+    NewSettings.InputJSON = ""
+    NewSettings.OutputBIC = ""
+    NewSettings.ExpectSqlite = false
+
+    NewSettings.ProductionState = false
+    NewSettings.AutoCleanup = false
+    NewSettings.AutoBackup = false
+    NewSettings.ReadSubdirectories = false
+    NewSettings.WriteInPlace = false
+    NewSettings.ServerVault = ""
+    return NewSettings
 
 proc EchoSettings*(Input: SettingsPackage) =
     echo "Mode           " & $Input.Mode

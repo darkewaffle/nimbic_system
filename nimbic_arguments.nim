@@ -107,6 +107,9 @@ proc GetSettingsFromCommandLine*(): SettingsPackage =
                     of "production", "prod":
                         CommandLineSettings.ProductionState = true
 
+                    of "restorefrom", "rf":
+                        CommandLineSettings.RestoreFrom = val
+
                     else:
                         discard
             else:

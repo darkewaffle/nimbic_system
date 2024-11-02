@@ -34,6 +34,7 @@ type SettingsPackage* = object
     InputJSON*: string
     OutputBIC*: string
     ExpectSqlite*: bool
+    RestoreFrom*: string
 
     ProductionState*: bool
     AutoCleanup*: bool
@@ -65,6 +66,7 @@ proc NewSettingsPackage*(): SettingsPackage =
     NewSettings.InputJSON = ""
     NewSettings.OutputBIC = ""
     NewSettings.ExpectSqlite = false
+    NewSettings.RestoreFrom = ""
 
     NewSettings.ProductionState = false
     NewSettings.AutoCleanup = false
@@ -95,6 +97,7 @@ proc EchoSettings*(Input: SettingsPackage) =
     echo "InputJSON      " & $Input.InputJSON
     echo "OutputBIC      " & $Input.OutputBIC
     echo "ExpectSqlite   " & $Input.ExpectSqlite
+    echo "RestoreFrom  " & $Input.RestoreFrom
 
     echo "ProductionState    " & $Input.ProductionState
     echo "AutoCleanup        " & $Input.AutoCleanup

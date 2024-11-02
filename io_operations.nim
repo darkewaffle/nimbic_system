@@ -25,6 +25,10 @@ proc GetSubdirectoriesBackup(ParentDirectory: string): seq[string]
 proc PurgeBackupDirectories*(OperationSettings: SettingsPackage)
 proc DeleteDirectories(DirectoryList: var seq[string], KeepLast: int)
 
+proc RestoreBackups*(OperationSettings: SettingsPackage)
+proc ValidateBackupName(InputName: var string)
+proc CopyBackupBICs(BackupDirectory: string, ParentDirectory: string)
+
 proc TimestampString(): string
 
 const
@@ -63,10 +67,13 @@ proc GetFilesByPattern(DirectoryPath: string, ReadSubdirectories: bool, FileType
 
 
 proc GetBICFiles*(OperationSettings: SettingsPackage): seq[string] =
-        GetFilesByPattern(OperationSettings.InputBIC, OperationSettings.ReadSubdirectories, PatternExtensionBIC)
+    GetFilesByPattern(OperationSettings.InputBIC, OperationSettings.ReadSubdirectories, PatternExtensionBIC)
+
+proc GetBICFiles*(DirectoryPath: string): seq[string] =
+    GetFilesByPattern(DirectoryPath, false, PatternExtensionBIC)
 
 proc GetJSONFiles*(OperationSettings: SettingsPackage): seq[string] =
-        GetFilesByPattern(OperationSettings.InputJSON, OperationSettings.ReadSubdirectories, PatternExtensionJSON)
+    GetFilesByPattern(OperationSettings.InputJSON, OperationSettings.ReadSubdirectories, PatternExtensionJSON)
 #[
 proc GetBICFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq[string] =
     GetFilesByPattern(DirectoryPath, PatternExtensionBIC, ReadSubdirectories)
@@ -128,7 +135,7 @@ proc TimestampString(): string =
     delete(NowString, len(NowString)-4 .. len(NowString)-1)
     return NowString
 
-proc PurgeBackupDirectories(OperationSettings: SettingsPackage) =
+proc PurgeBackupDirectories*(OperationSettings: SettingsPackage) =
     var LatestBackupsToKeep: int
     if OperationSettings.Mode == "purgebackups":
         LatestBackupsToKeep = 1
@@ -153,3 +160,30 @@ proc DeleteDirectories(DirectoryList: var seq[string], KeepLast: int) =
     for i in DirectoryList.low .. DirectoryList.high - KeepLast:
         removeDir(DirectoryList[i])
         echo "To delete " & $DirectoryList[i]
+
+proc RestoreBackups*(OperationSettings: SettingsPackage) =
+    var TargetDirectory = OperationSettings.OutputBIC
+    var BackupToRestore = OperationSettings.RestoreFrom
+    ValidateBackupName(BackupToRestore)
+
+    if OperationSettings.ReadSubdirectories:
+        var SubdirectoriesInTarget = GetSubdirectoriesAll(TargetDirectory)
+        for i in SubdirectoriesInTarget.low .. SubdirectoriesInTarget.high:
+            var BackupFullPath = SubdirectoriesInTarget[i] & """\""" & BackupToRestore
+            CopyBackupBICs(BackupFullPath, SubdirectoriesInTarget[i])
+    else:
+        var BackupFullPath = TargetDirectory & """\""" & BackupToRestore
+        CopyBackupBICs(BackupFullPath, TargetDirectory)
+
+proc ValidateBackupName(InputName: var string) =
+    if InputName.startsWith("""20"""):
+        InputName = BackupDirectoryPrefix & InputName
+
+proc CopyBackupBICs(BackupDirectory: string, ParentDirectory: string) =
+    if dirExists(BackupDirectory):
+        var BackupBICs = GetBICFiles(BackupDirectory)
+        for i in BackupBICs.low .. BackupBICs.high:
+            #copyFileToDir(BackupBICs[i], SubdirectoriesInTarget[i])
+            echo BackupBICs[i] & " > " & ParentDirectory
+    else:
+        EchoError("Backup directory not found: " & BackupDirectory)

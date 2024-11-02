@@ -25,7 +25,7 @@ proc GetSubdirectoriesBackup(ParentDirectory: string): seq[string]
 proc PurgeBackupDirectories*(OperationSettings: SettingsPackage)
 proc DeleteDirectories(DirectoryList: var seq[string], KeepLast: int)
 
-proc RestoreBackups*(OperationSettings: SettingsPackage)
+proc RestoreBackup*(OperationSettings: SettingsPackage)
 proc ValidateBackupName(InputName: var string)
 proc CopyBackupBICs(BackupDirectory: string, ParentDirectory: string)
 
@@ -159,9 +159,9 @@ proc DeleteDirectories(DirectoryList: var seq[string], KeepLast: int) =
     sort(DirectoryList, Ascending)
     for i in DirectoryList.low .. DirectoryList.high - KeepLast:
         removeDir(DirectoryList[i])
-        echo "To delete " & $DirectoryList[i]
+        EchoNotice("Deleting directory: " & $DirectoryList[i])
 
-proc RestoreBackups*(OperationSettings: SettingsPackage) =
+proc RestoreBackup*(OperationSettings: SettingsPackage) =
     var TargetDirectory = OperationSettings.OutputBIC
     var BackupToRestore = OperationSettings.RestoreFrom
     ValidateBackupName(BackupToRestore)
@@ -183,7 +183,7 @@ proc CopyBackupBICs(BackupDirectory: string, ParentDirectory: string) =
     if dirExists(BackupDirectory):
         var BackupBICs = GetBICFiles(BackupDirectory)
         for i in BackupBICs.low .. BackupBICs.high:
-            #copyFileToDir(BackupBICs[i], SubdirectoriesInTarget[i])
-            echo BackupBICs[i] & " > " & ParentDirectory
+            copyFileToDir(BackupBICs[i], ParentDirectory)
+            EchoNotice("Copying file: " & BackupBICs[i] & " > " & ParentDirectory)
     else:
         EchoError("Backup directory not found: " & BackupDirectory)

@@ -1,7 +1,9 @@
 import std/json
 import read2da
+import object_settingspackage
 
-proc AlterClassHP*(CharacterJSON: JsonNode, ClassID: int, HPChange: int): bool
+#proc AlterClassHP*(CharacterJSON: JsonNode, ClassID: int, HPChange: int): bool
+proc AlterClassHP*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage): bool
 proc MaximizeHP*(CharacterJSON: JsonNode): bool
 proc SetLvlStatListHP(CharacterJSON: JsonNode, LvlStatListIndex: int, LvlStatHP: int)
 proc GetLvlStatListHP(CharacterJSON: JsonNode, LvlStatListIndex: int): int
@@ -24,6 +26,32 @@ var
            [-1, -1],
            [-1, -1]]
 
+
+proc AlterClassHP*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage): bool =
+  var 
+    CurrentLevelHP = 0
+    AlteredHP = 0
+    HPFromClassRolls = 0
+    ChangesMade = false
+
+  for i in CharacterJSON["LvlStatList"]["value"].elems.low .. CharacterJSON["LvlStatList"]["value"].elems.high:
+    if CharacterJSON["LvlStatList"]["value"][i]["LvlStatClass"]["value"].getInt == OperationSettings.Class:
+      CurrentLevelHP = CharacterJSON["LvlStatList"]["value"][i]["LvlStatHitDie"]["value"].getInt
+      AlteredHP = CurrentLevelHP + OperationSettings.HPInput
+      if AlteredHP < 1:
+        SetLvlStatListHP(CharacterJSON, i, 1)
+      else:
+        SetLvlStatListHP(CharacterJSON, i, AlteredHP)
+      ChangesMade = true
+    HPFromClassRolls = HPFromClassRolls + GetLvlStatListHP(CharacterJSON, i)
+
+  if ChangesMade:
+    SetHitPoints(CharacterJSON, HPFromClassRolls)
+    SetCurrentHitPoints(CharacterJSON, HPFromClassRolls)
+
+  return ChangesMade 
+
+#[ 
 proc AlterClassHP*(CharacterJSON: JsonNode, ClassID: int, HPChange: int): bool =
   var 
     CurrentLevelHP = 0
@@ -46,7 +74,8 @@ proc AlterClassHP*(CharacterJSON: JsonNode, ClassID: int, HPChange: int): bool =
     SetHitPoints(CharacterJSON, HPFromClassRolls)
     SetCurrentHitPoints(CharacterJSON, HPFromClassRolls)
 
-  return ChangesMade
+  return ChangesMade 
+]#
 
 
 proc MaximizeHP*(CharacterJSON: JsonNode): bool =

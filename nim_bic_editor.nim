@@ -155,7 +155,7 @@ proc PerformModeOperationFromPackage() =
             MeetsRequirements = MeetsRequirements and RemovalSuccessful
 
           of "alterclasshp":
-            ModificationSuccessful = AlterClassHP(CharacterJSON, OperationSettings.Class, OperationSettings.HPInput)
+            ModificationSuccessful = AlterClassHP(CharacterJSON, OperationSettings)
             MeetsRequirements = MeetsRequirements and ModificationSuccessful
 
           of "maxhp":

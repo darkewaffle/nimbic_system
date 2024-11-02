@@ -35,9 +35,9 @@ var
     ModificationSuccessful: bool
     OperationSettings = NewSettingsPackage()
 const
-    ValidModes = ["help", "bictojson", "jsontobic", "addclassfeat", "removeclassfeat", "alterclasshp", "maxhp", "addfeat", "removefeat", "modifyability", "purgebackups", "purgebackupsall"]
+    ValidModes = ["help", "bictojson", "jsontobic", "addclassfeat", "removeclassfeat", "alterclasshp", "maxhp", "addfeat", "removefeat", "modifyability", "purgebackups", "purgebackupsall", "restorebackup"]
     ModeNoOperation = ["help"]
-    ModeFileOperations = ["bictojson", "jsontobic", "purgebackups", "purgebackupsall"]
+    ModeFileOperations = ["bictojson", "jsontobic", "purgebackups", "purgebackupsall", "restorebackup"]
     ModeCharacterModify = ["addclassfeat", "removeclassfeat", "alterclasshp", "maxhp", "addfeat", "removefeat", "modifyability"]
     ModeRequires2DA = ["maxhp"]
     ModeRequiresClassAndLevel = ["addclassfeat", "removeclassfeat"]
@@ -77,6 +77,14 @@ proc ValidateModeArgumentsFromPackage() =
             of "purgebackups", "purgebackupsall":
                 if not(dirExists(Path OperationSettings.OutputBIC)):
                     EchoError("Directory is not valid - " & $OperationSettings.OutputBIC)
+                    quit(QuitSuccess)
+
+            of "restorebackup":
+                if not(dirExists(Path OperationSettings.OutputBIC)):
+                    EchoError("Directory is not valid - " & $OperationSettings.OutputBIC)
+                    quit(QuitSuccess)
+                elif OperationSettings.RestoreFrom == "":
+                    EchoError("You must specify a backup directory using the --restorefrom:name option.")
                     quit(QuitSuccess)
 
     if OperationSettings.Mode in ModeCharacterModify:
@@ -140,6 +148,9 @@ proc PerformModeOperationFromPackage() =
 
             of "purgebackups", "purgebackupsall":
                 PurgeBackupDirectories(OperationSettings)
+
+            of "restorebackup":
+                RestoreBackup(OperationSettings)
 
     if OperationSettings.Mode in ModeCharacterModify:
         if OperationSettings.Mode in ModeRequires2DA:

@@ -60,8 +60,8 @@ proc JSONtoBIC*(InputFile: string, OperationSettings: SettingsPackage) =
     var InputAsGFF: GffRoot
     InputAsGFF = InputStream.parseJson(InputFile).gffRootFromJson()
 
+    var InputPathSQL = SetFileExtensionSqlite(InputFile)
     if OperationSettings.ExpectSqlite:
-        var InputPathSQL = SetFileExtensionSqlite(InputFile)
         if fileExists(InputPathSQL):
             PackSqliteIntoGFF(InputAsGFF, InputPathSQL)
             echo "Packing SQL into BIC " & InputPathSQL
@@ -74,7 +74,7 @@ proc JSONtoBIC*(InputFile: string, OperationSettings: SettingsPackage) =
     else:
         OutputPath = CreateOutputPathBIC(InputFile, OperationSettings.OutputBIC)
 
-    #Option to autobackup .bic before it is overwritten
+    #Option to autobackup BIC before it is overwritten
     if OperationSettings.AutoBackup:
         if fileExists(OutputPath):
             var OutputSplit = splitFile(Path OutputPath)
@@ -89,6 +89,15 @@ proc JSONtoBIC*(InputFile: string, OperationSettings: SettingsPackage) =
 
     InputStream.close
     OutputStream.close
+
+    #Option to automatically delete JSON and Sqlite after writing BIC
+    if OperationSettings.AutoCleanup:
+        removeFile(InputFile)
+        echo "Autocleanup deleting: " & $InputFile
+        if fileExists(InputPathSQL):
+            removeFile(InputPathSQL)
+            echo "Autocleanup deleting: " & $InputPathSQL
+
     echo "Translation to BIC complete: " & OutputPath
 
 #[

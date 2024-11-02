@@ -23,101 +23,101 @@ proc GetSubDirectories*(ParentDirectory: string): seq[string]
 proc TimestampString(): string
 
 const
-  BackupDirectoryPrefix = """BIC_Backup_"""
-  ExtensionJSON* = """.json"""
-  ExtensionBIC* = """.bic"""
-  ExtensionSQLite* = """.sqlite3"""
-  FilterExtensionJSON = """\*""" & ExtensionJSON
-  FilterExtensionBIC = """\*""" & ExtensionBIC
-  FilterExtensionSQlite = """\*""" & ExtensionSQLite
-  FilterSubDirectories = """\*"""
+    BackupDirectoryPrefix = """BIC_Backup_"""
+    ExtensionJSON* = """.json"""
+    ExtensionBIC* = """.bic"""
+    ExtensionSQLite* = """.sqlite3"""
+    FilterExtensionJSON = """\*""" & ExtensionJSON
+    FilterExtensionBIC = """\*""" & ExtensionBIC
+    FilterExtensionSQlite = """\*""" & ExtensionSQLite
+    FilterSubDirectories = """\*"""
 
 let
-  OperationTimestamp* = TimestampString()
-  BackupDirectoryFullName* = BackupDirectoryPrefix & OperationTimestamp
+    OperationTimestamp* = TimestampString()
+    BackupDirectoryFullName* = BackupDirectoryPrefix & OperationTimestamp
 
 proc GetFilesByPattern(DirectoryPath: string, ReadSubdirectories: bool, FileTypePattern: string): seq[string] =
-  var DirectoriesToSearch: seq[string]
-  var SearchPattern: string
-  var FileResults: seq[string]
+    var DirectoriesToSearch: seq[string]
+    var SearchPattern: string
+    var FileResults: seq[string]
 
-  if ReadSubdirectories:
-    DirectoriesToSearch = GetSubDirectories(DirectoryPath)
-  else:
-    DirectoriesToSearch.add(DirectoryPath)
+    if ReadSubdirectories:
+        DirectoriesToSearch = GetSubDirectories(DirectoryPath)
+    else:
+        DirectoriesToSearch.add(DirectoryPath)
 
-  for i in DirectoriesToSearch.low .. DirectoriesToSearch.high:
-    SearchPattern = DirectoriesToSearch[i] & FileTypePattern
-    echo "Searching for " & SearchPattern
-    FileResults = concat(FileResults, toSeq(walkPattern(SearchPattern)))
+    for i in DirectoriesToSearch.low .. DirectoriesToSearch.high:
+        SearchPattern = DirectoriesToSearch[i] & FileTypePattern
+        echo "Searching for " & SearchPattern
+        FileResults = concat(FileResults, toSeq(walkPattern(SearchPattern)))
 
-  return FileResults
+    return FileResults
 
 
 proc GetBICFiles*(OperationSettings: SettingsPackage): seq[string] =
-    GetFilesByPattern(OperationSettings.InputBIC, OperationSettings.ReadSubdirectories, FilterExtensionBIC)
+        GetFilesByPattern(OperationSettings.InputBIC, OperationSettings.ReadSubdirectories, FilterExtensionBIC)
 
 proc GetJSONFiles*(OperationSettings: SettingsPackage): seq[string] =
-    GetFilesByPattern(OperationSettings.InputJSON, OperationSettings.ReadSubdirectories, FilterExtensionJSON)
+        GetFilesByPattern(OperationSettings.InputJSON, OperationSettings.ReadSubdirectories, FilterExtensionJSON)
 #[
 proc GetBICFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq[string] =
-  GetFilesByPattern(DirectoryPath, FilterExtensionBIC, ReadSubdirectories)
+    GetFilesByPattern(DirectoryPath, FilterExtensionBIC, ReadSubdirectories)
 
 proc GetJSONFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq[string] =
-  GetFilesByPattern(DirectoryPath, FilterExtensionJSON, ReadSubdirectories)
+    GetFilesByPattern(DirectoryPath, FilterExtensionJSON, ReadSubdirectories)
 ]#
 
 proc CreateOutputPath(FileLocation: string, OutputDirectory: string, FileExtension: string): string =
-  var SplitPath = splitFile(Path FileLocation)
-  var OutputPath = Path(OutputDirectory)
-  if not(dirExists(OutputPath)):
-    EchoWarning("Path does not exist, attempting to create " & $OutputPath)
-    createDir(OutputPath)
-  OutputPath = OutputPath / SplitPath.name
-  OutputPath = addFileExt(OutputPath, FileExtension)
-  return $OutputPath
+    var SplitPath = splitFile(Path FileLocation)
+    var OutputPath = Path(OutputDirectory)
+    if not(dirExists(OutputPath)):
+        EchoWarning("Path does not exist, attempting to create " & $OutputPath)
+        createDir(OutputPath)
+    OutputPath = OutputPath / SplitPath.name
+    OutputPath = addFileExt(OutputPath, FileExtension)
+    return $OutputPath
 
 proc CreateOutputPathJSON*(FileLocation: string, OutputDirectory: string): string =
-  return CreateOutputPath(FileLocation, OutputDirectory, ExtensionJSON)
+    return CreateOutputPath(FileLocation, OutputDirectory, ExtensionJSON)
 
 proc CreateOutputPathBIC*(FileLocation: string, OutputDirectory: string): string =
-  return CreateOutputPath(FileLocation, OutputDirectory, ExtensionBIC)
+    return CreateOutputPath(FileLocation, OutputDirectory, ExtensionBIC)
 
 proc CreateOutputPathSqlite*(FileLocation: string, OutputDirectory: string): string =
-  return CreateOutputPath(FileLocation, OutputDirectory, ExtensionSQLite)
+    return CreateOutputPath(FileLocation, OutputDirectory, ExtensionSQLite)
 
 proc ReplaceFileExtension*(FileLocation: string, NewExtension: string): string =
-  var SplitPath = splitFile(Path FileLocation)
-  var NewPath = SplitPath.dir / SplitPath.name
-  NewPath = addFileExt(NewPath, NewExtension)
-  return $NewPath
+    var SplitPath = splitFile(Path FileLocation)
+    var NewPath = SplitPath.dir / SplitPath.name
+    NewPath = addFileExt(NewPath, NewExtension)
+    return $NewPath
 
 proc SetFileExtensionJSON*(FileLocation: string): string =
-  return ReplaceFileExtension(FileLocation, ExtensionJSON)
+    return ReplaceFileExtension(FileLocation, ExtensionJSON)
 
 proc SetFileExtensionBIC*(FileLocation: string): string =
-  return ReplaceFileExtension(FileLocation, ExtensionBIC)
+    return ReplaceFileExtension(FileLocation, ExtensionBIC)
 
 proc SetFileExtensionSqlite*(FileLocation: string): string =
-  return ReplaceFileExtension(FileLocation, ExtensionSqlite)
+    return ReplaceFileExtension(FileLocation, ExtensionSqlite)
 
 proc GetSubDirectories*(ParentDirectory: string): seq[string] =
-  var SubPattern = ParentDirectory & FilterSubDirectories
-  echo "Searching for subdirectories " & SubPattern
-  return toSeq(walkDirs(SubPattern))
+    var SubPattern = ParentDirectory & FilterSubDirectories
+    echo "Searching for subdirectories " & SubPattern
+    return toSeq(walkDirs(SubPattern))
 
 proc TimestampString(): string =
-  var NowString = $now()
-  NowString = replace(NowString, "-", "")
-  NowString = replace(NowString, ":", "")
-  NowString = replace(NowString, "T", "_")
-  delete(NowString, len(NowString)-4 .. len(NowString)-1)
-  return NowString
+    var NowString = $now()
+    NowString = replace(NowString, "-", "")
+    NowString = replace(NowString, ":", "")
+    NowString = replace(NowString, "T", "_")
+    delete(NowString, len(NowString)-4 .. len(NowString)-1)
+    return NowString
 
 #[
 var seqfiles: seq[string]
 #seqfiles = GetBICFiles("""C:\Users\jorda\Documents\Neverwinter Nights\servervault""", true)
 seqfiles = GetBICFiles("""C:\Users\jorda\Documents\Neverwinter Nights\servervault\QR6RKGPV""", false)
 for i in seqfiles.low .. seqfiles.high:
-  echo seqfiles[i]
+    echo seqfiles[i]
 ]#

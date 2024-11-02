@@ -38,41 +38,41 @@ var
     ConfigServerVault*: string
 
 proc GetSettingsFromConfigFile*() =
-  if fileExists(ConfigurationFileName):
-    ReadConfigurationFile()
-    CleanseConfigurationValues()
-    AssignConfigurationValues()
-    #EchoConfigurationValues()
-  else:
-    EchoNotice("No configuration file found. Creating " & getAppDir() & """\""" & ConfigurationFileName)
-    writeFile(ConfigurationFileName, ConfigurationFileStarterText)
+    if fileExists(ConfigurationFileName):
+        ReadConfigurationFile()
+        CleanseConfigurationValues()
+        AssignConfigurationValues()
+        #EchoConfigurationValues()
+    else:
+        EchoNotice("No configuration file found. Creating " & getAppDir() & """\""" & ConfigurationFileName)
+        writeFile(ConfigurationFileName, ConfigurationFileStarterText)
 
 proc GetSettingsPackageFromConfigFile*(): SettingsPackage =
-  if fileExists(ConfigurationFileName):
-    ReadConfigurationFile()
-    CleanseConfigurationValues()
-    return AssignConfigurationValuesToSettingsPackage()
-  else:
-    EchoNotice("No configuration file found. Creating " & getAppDir() & """\""" & ConfigurationFileName)
-    writeFile(ConfigurationFileName, ConfigurationFileStarterText)
-    return NewSettingsPackage()
+    if fileExists(ConfigurationFileName):
+        ReadConfigurationFile()
+        CleanseConfigurationValues()
+        return AssignConfigurationValuesToSettingsPackage()
+    else:
+        EchoNotice("No configuration file found. Creating " & getAppDir() & """\""" & ConfigurationFileName)
+        writeFile(ConfigurationFileName, ConfigurationFileStarterText)
+        return NewSettingsPackage()
 
 proc ReadConfigurationFile() =
-  for line in ConfigurationFileName.lines:
-    if line.isEmptyOrWhiteSpace() or line.startsWith("#"):
-      discard
-    else:
-      ConfigurationSettings.add(split(line,"=",1))
+    for line in ConfigurationFileName.lines:
+        if line.isEmptyOrWhiteSpace() or line.startsWith("#"):
+            discard
+        else:
+            ConfigurationSettings.add(split(line,"=",1))
 
 proc CleanseConfigurationValues() =
-  for i in ConfigurationSettings.low .. ConfigurationSettings.high:
-    ConfigurationSettings[i][1] = replace(ConfigurationSettings[i][1], "\"", "")
-    ConfigurationSettings[i][1] = replace(ConfigurationSettings[i][1], "'", "")
-    if endsWith(ConfigurationSettings[i][1], """\"""):
-      removeSuffix(ConfigurationSettings[i][1], """\""")
+    for i in ConfigurationSettings.low .. ConfigurationSettings.high:
+        ConfigurationSettings[i][1] = replace(ConfigurationSettings[i][1], "\"", "")
+        ConfigurationSettings[i][1] = replace(ConfigurationSettings[i][1], "'", "")
+        if endsWith(ConfigurationSettings[i][1], """\"""):
+            removeSuffix(ConfigurationSettings[i][1], """\""")
 
 proc AssignConfigurationValuesToSettingsPackage(): SettingsPackage =
-#    var ConfigFileSettings: SettingsPackage
+#   var ConfigFileSettings: SettingsPackage
     var ConfigFileSettings = NewSettingsPackage()
     for i in ConfigurationSettings.low .. ConfigurationSettings.high:
         case ConfigurationSettings[i][0]:
@@ -107,55 +107,55 @@ proc AssignConfigurationValuesToSettingsPackage(): SettingsPackage =
                 ConfigFileSettings.ServerVault = $ConfigurationSettings[i][1]
 
             else:
-              discard
+                discard
     return ConfigFileSettings
 
 proc AssignConfigurationValues() =
-  for i in ConfigurationSettings.low .. ConfigurationSettings.high:
-    case ConfigurationSettings[i][0]:
-      of KeyInputBIC:
-        ConfigInputBIC = $ConfigurationSettings[i][1]
+    for i in ConfigurationSettings.low .. ConfigurationSettings.high:
+        case ConfigurationSettings[i][0]:
+            of KeyInputBIC:
+                ConfigInputBIC = $ConfigurationSettings[i][1]
 
-      of KeyOutputJSON:
-        ConfigOutputJSON = $ConfigurationSettings[i][1]
+            of KeyOutputJSON:
+                ConfigOutputJSON = $ConfigurationSettings[i][1]
 
-      of KeyInputJSON:
-        ConfigInputJSON = $ConfigurationSettings[i][1]
+            of KeyInputJSON:
+                ConfigInputJSON = $ConfigurationSettings[i][1]
 
-      of KeyOutputBIC:
-        ConfigOutputBIC = $ConfigurationSettings[i][1]
+            of KeyOutputBIC:
+                ConfigOutputBIC = $ConfigurationSettings[i][1]
 
-      of KeyInput2DA:
-        ConfigInput2DA = $ConfigurationSettings[i][1]
+            of KeyInput2DA:
+                ConfigInput2DA = $ConfigurationSettings[i][1]
 
-      of KeySqlite:
-        ConfigSqlite = ($ConfigurationSettings[i][1]).parseBool
+            of KeySqlite:
+                ConfigSqlite = ($ConfigurationSettings[i][1]).parseBool
 
-      of KeyProduction:
-        ConfigProduction = ($ConfigurationSettings[i][1]).parseBool
+            of KeyProduction:
+                ConfigProduction = ($ConfigurationSettings[i][1]).parseBool
 
-      of KeyAutoCleanup:
-        ConfigAutoCleanup = ($ConfigurationSettings[i][1]).parseBool
+            of KeyAutoCleanup:
+                ConfigAutoCleanup = ($ConfigurationSettings[i][1]).parseBool
 
-      of KeyAutoBackup:
-        ConfigAutoBackup = ($ConfigurationSettings[i][1]).parseBool
+            of KeyAutoBackup:
+                ConfigAutoBackup = ($ConfigurationSettings[i][1]).parseBool
 
-      of KeyServerVault:
-        ConfigServerVault = $ConfigurationSettings[i][1]
+            of KeyServerVault:
+                ConfigServerVault = $ConfigurationSettings[i][1]
 
-      else:
-        discard
+            else:
+                discard
 
 proc EchoConfigurationValues() =
-  for i in ConfigurationSettings.low .. ConfigurationSettings.high:
-    echo ConfigurationSettings[i]
-  echo "inbic   " & $ConfigInputBIC
-  echo "outjson " & $ConfigOutputJSON
-  echo "injson  " & $ConfigInputJSON
-  echo "outbic  " & $ConfigOutputBIC
-  echo "in2da   " & $ConfigInput2DA
-  echo "sqlite  " & $ConfigSqlite
-  echo "cleanup " & $ConfigAutoCleanup
-  echo "backup  " & $ConfigAutoBackup
-  echo "prod    " & $ConfigProduction
-  echo "svault  " & $ConfigServerVault
+    for i in ConfigurationSettings.low .. ConfigurationSettings.high:
+        echo ConfigurationSettings[i]
+    echo "inbic     " & $ConfigInputBIC
+    echo "outjson " & $ConfigOutputJSON
+    echo "injson    " & $ConfigInputJSON
+    echo "outbic    " & $ConfigOutputBIC
+    echo "in2da     " & $ConfigInput2DA
+    echo "sqlite    " & $ConfigSqlite
+    echo "cleanup " & $ConfigAutoCleanup
+    echo "backup    " & $ConfigAutoBackup
+    echo "prod        " & $ConfigProduction
+    echo "svault    " & $ConfigServerVault

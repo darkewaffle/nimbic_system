@@ -15,34 +15,34 @@ var ConfigReadSubdirectories*: bool
 var ConfigWriteInPlace*: bool
 
 proc ReconcileCommandLineArgumentsAndConfigSettings*() =
-  EvaluateInputDirectory()
-  EvaluateOutputDirectory()
-  Evaluate2DADirectory()
-  EvaluateProduction()
+    EvaluateInputDirectory()
+    EvaluateOutputDirectory()
+    Evaluate2DADirectory()
+    EvaluateProduction()
 
 proc EvaluateInputDirectory() =
-  if ArgInputDirectory != DefaultInputDirectory:
-    ConfigInputBIC = ArgInputDirectory
-    ConfigInputJSON = ArgInputDirectory
+    if ArgInputDirectory != DefaultInputDirectory:
+        ConfigInputBIC = ArgInputDirectory
+        ConfigInputJSON = ArgInputDirectory
 
 proc EvaluateOutputDirectory() =
-  if ArgOutputDirectory != DefaultOutputDirectory:
-    ConfigOutputBIC = ArgOutputDirectory
-    ConfigOutputJSON = ArgOutputDirectory
+    if ArgOutputDirectory != DefaultOutputDirectory:
+        ConfigOutputBIC = ArgOutputDirectory
+        ConfigOutputJSON = ArgOutputDirectory
 
 proc Evaluate2DADirectory() =
-  if ArgInput2DA != DefaultInput2DA:
-    ConfigInput2DA = ArgInput2DA
+    if ArgInput2DA != DefaultInput2DA:
+        ConfigInput2DA = ArgInput2DA
 
 proc EvaluateProduction() =
-  ConfigProductionState = ArgInputProduction and ConfigProduction
-  if ConfigProductionState:
-    ConfigInputBIC = ConfigServerVault
-    ConfigInputJSON = ConfigServerVault
-    ConfigOutputBIC = ConfigServerVault
-    ConfigOutputJSON = ConfigServerVault
-    ConfigReadSubdirectories = true
-    ConfigWriteInPlace = true
+    ConfigProductionState = ArgInputProduction and ConfigProduction
+    if ConfigProductionState:
+        ConfigInputBIC = ConfigServerVault
+        ConfigInputJSON = ConfigServerVault
+        ConfigOutputBIC = ConfigServerVault
+        ConfigOutputJSON = ConfigServerVault
+        ConfigReadSubdirectories = true
+        ConfigWriteInPlace = true
 
 proc GetOperationSettings*(): SettingsPackage =
     var CommandLineSettings = GetSettingsFromCommandLine()

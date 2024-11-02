@@ -115,58 +115,58 @@ proc GetSettingsFromCommandLine*(): SettingsPackage =
 
 
 proc AssignArgumentsToVariables*(CommandLineArguments: var OptParser) =
-  for kind, key, val in CommandLineArguments.getopt():
-    case kind
-      of cmdArgument:
-        #Not supported. These are arguments not preceded by - or -- and are usually handled by the order in which they are input.
-        discard
+    for kind, key, val in CommandLineArguments.getopt():
+        case kind
+            of cmdArgument:
+                #Not supported. These are arguments not preceded by - or -- and are usually handled by the order in which they are input.
+                discard
 
-      #LongOption are prefixed with --, short option prefixed with -
-      of cmdLongOption, cmdShortOption:
-        case key
+            #LongOption are prefixed with --, short option prefixed with -
+            of cmdLongOption, cmdShortOption:
+                case key
 
-        #Operational parameters
-          of "mode", "m":
-            Mode = val
+                #Operational parameters
+                    of "mode", "m":
+                        Mode = val
 
-          of "featid", "feat", "f":
-            FeatID = parseInt(val)
+                    of "featid", "feat", "f":
+                        FeatID = parseInt(val)
 
-          of "str", "dex", "con", "int", "wis", "cha":
-            AbilityInput[AbilityIndex(key)] = parseInt(val)
+                    of "str", "dex", "con", "int", "wis", "cha":
+                        AbilityInput[AbilityIndex(key)] = parseInt(val)
 
-          of "hp":
-            HPInput = parseint(val)
-
-
-        #Character requirements / filters
-          of "race", "r":
-            RequiredRace = parseInt(val)
-
-          of "subrace", "sub", "sr":
-            RequiredSubrace = val
-
-          of "class", "c":
-            RequiredClass = parseInt(val)
-
-          of "level", "lvl", "l":
-            RequiredLevel = parseInt(val)
+                    of "hp":
+                        HPInput = parseint(val)
 
 
-        #Input/output parameters
-          of "input", "id":
-            ArgInputDirectory = val
+                #Character requirements / filters
+                    of "race", "r":
+                        RequiredRace = parseInt(val)
 
-          of "output", "od":
-            ArgOutputDirectory = val
+                    of "subrace", "sub", "sr":
+                        RequiredSubrace = val
 
-          of "input2da", "i2da":
-            ArgInput2DA = val
+                    of "class", "c":
+                        RequiredClass = parseInt(val)
 
-          of "production", "prod":
-            ArgInputProduction = true
+                    of "level", "lvl", "l":
+                        RequiredLevel = parseInt(val)
 
-          else:
-            discard
-      else:
-        discard
+
+                #Input/output parameters
+                    of "input", "id":
+                        ArgInputDirectory = val
+
+                    of "output", "od":
+                        ArgOutputDirectory = val
+
+                    of "input2da", "i2da":
+                        ArgInput2DA = val
+
+                    of "production", "prod":
+                        ArgInputProduction = true
+
+                    else:
+                        discard
+            else:
+                discard

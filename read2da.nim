@@ -135,80 +135,80 @@ proc SafeParseInt2DA(Input: string): int =
 
 
 proc GetClassSkillPointsPerLevel*(ClassID: int): int =
-  for i in Class2DA.low .. Class2DA.high:
-    if SafeParseInt2DA(Class2DA[i][ClassColumnClassID]) == ClassID:
-      return SafeParseInt2DA(Class2DA[i][ClassColumnSkillPoints])
-  return 0
+    for i in Class2DA.low .. Class2DA.high:
+        if SafeParseInt2DA(Class2DA[i][ClassColumnClassID]) == ClassID:
+            return SafeParseInt2DA(Class2DA[i][ClassColumnSkillPoints])
+    return 0
 
 
 proc GetClassHPPerLevel*(ClassID: int): int =
-  for i in Class2DA.low .. Class2DA.high:
-    if SafeParseInt2DA(Class2DA[i][ClassColumnClassID]) == ClassID:
-      return SafeParseInt2DA(Class2DA[i][ClassColumnHP])
-  return 0
+    for i in Class2DA.low .. Class2DA.high:
+        if SafeParseInt2DA(Class2DA[i][ClassColumnClassID]) == ClassID:
+            return SafeParseInt2DA(Class2DA[i][ClassColumnHP])
+    return 0
 
 
 proc GetClassFeatFile*(ClassID: int): string =
-  for i in Class2DA.low .. Class2DA.high:
-    if SafeParseInt2DA(Class2DA[i][ClassColumnClassID]) == ClassID:
-      return Class2DA[i][ClassColumnFeatFile] & Extension2DA
-  return ""
+    for i in Class2DA.low .. Class2DA.high:
+        if SafeParseInt2DA(Class2DA[i][ClassColumnClassID]) == ClassID:
+            return Class2DA[i][ClassColumnFeatFile] & Extension2DA
+    return ""
 
 
 proc ReadClassFeats(ClassFeatFileName: string) =
-  if ClassFeatFileName == ClassFeatLoaded:
-    discard
-  else:
-    ClassFeat2DA = Read2DA(Directory2DA, ClassFeatFileName, ClassFeatIgnoreLines, ClassFeatIgnoreColumns, ClassFeatReadColumns)
-    ClassFeatLoaded = ClassFeatFileName
+    if ClassFeatFileName == ClassFeatLoaded:
+        discard
+    else:
+        ClassFeat2DA = Read2DA(Directory2DA, ClassFeatFileName, ClassFeatIgnoreLines, ClassFeatIgnoreColumns, ClassFeatReadColumns)
+        ClassFeatLoaded = ClassFeatFileName
 
 
 proc GetClassFeatLevel*(ClassID: int, FeatID: int): int =
-  ReadClassFeats(GetClassFeatFile(ClassID))
-  for i in ClassFeat2DA.low .. ClassFeat2DA.high:
-    if SafeParseInt2DA(ClassFeat2DA[i][ClassFeatIDColumn]) == FeatID:
-      return SafeParseInt2DA(ClassFeat2DA[i][ClassFeatLevelGrantedColumn])
-  return 0
+    ReadClassFeats(GetClassFeatFile(ClassID))
+    for i in ClassFeat2DA.low .. ClassFeat2DA.high:
+        if SafeParseInt2DA(ClassFeat2DA[i][ClassFeatIDColumn]) == FeatID:
+            return SafeParseInt2DA(ClassFeat2DA[i][ClassFeatLevelGrantedColumn])
+    return 0
 
 
 proc GetRaceIntModification*(RaceID: int): int =
-  for i in Race2DA.low .. Race2DA.high:
-    if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
-      return SafeParseInt2DA(Race2DA[i][RaceColumnIntMod])
-  return 0
+    for i in Race2DA.low .. Race2DA.high:
+        if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
+            return SafeParseInt2DA(Race2DA[i][RaceColumnIntMod])
+    return 0
 
 
 proc GetRaceExtraSkillPointsPerLevel*(RaceID: int): int =
-  for i in Race2DA.low .. Race2DA.high:
-    if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
-      return SafeParseInt2DA(Race2DA[i][RaceColumnExtraSkillsPerLevel])
-  return 0
+    for i in Race2DA.low .. Race2DA.high:
+        if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
+            return SafeParseInt2DA(Race2DA[i][RaceColumnExtraSkillsPerLevel])
+    return 0
 
 
 proc GetRaceFirstLevelSkillMultiplier*(RaceID: int): int =
-  for i in Race2DA.low .. Race2DA.high:
-    if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
-      return SafeParseInt2DA(Race2DA[i][RaceColumnFirstLevelSkillMultiplier])
-  return 0
+    for i in Race2DA.low .. Race2DA.high:
+        if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
+            return SafeParseInt2DA(Race2DA[i][RaceColumnFirstLevelSkillMultiplier])
+    return 0
 
 
 proc GetRaceSkillPointModifierAbility*(RaceID: int): string =
-  for i in Race2DA.low .. Race2DA.high:
-    if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
-      return Race2DA[i][RaceColumnAbilitySkillPointModifier]
-  return ""
+    for i in Race2DA.low .. Race2DA.high:
+        if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
+            return Race2DA[i][RaceColumnAbilitySkillPointModifier]
+    return ""
 
 proc GetRulesetValue*(RulesetLabel: string): float =
-  var RulesetValue: string
-  for i in Ruleset2DA.low .. Ruleset2DA.high:
-    if Ruleset2DA[i][RulesetLabelColumn] == RulesetLabel:
-      RulesetValue = Ruleset2DA[i][RulesetValueColumn]
+    var RulesetValue: string
+    for i in Ruleset2DA.low .. Ruleset2DA.high:
+        if Ruleset2DA[i][RulesetLabelColumn] == RulesetLabel:
+            RulesetValue = Ruleset2DA[i][RulesetValueColumn]
 
-  if RulesetValue == "":
-    return 0.float
-  elif RulesetValue == "****":
-    return 0.float
-  elif count(RulesetValue, "f")>0:
-    return parseFloat(replace(RulesetValue, "f", ""))
-  else:
-    return parseFloat(RulesetValue)
+    if RulesetValue == "":
+        return 0.float
+    elif RulesetValue == "****":
+        return 0.float
+    elif count(RulesetValue, "f")>0:
+        return parseFloat(replace(RulesetValue, "f", ""))
+    else:
+        return parseFloat(RulesetValue)

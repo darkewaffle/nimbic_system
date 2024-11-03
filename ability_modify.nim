@@ -9,7 +9,8 @@ proc AbilityIndex*(Input: string): int
 proc EchoModifications(AbilityModifications: array[0..5, int])
 
 #Ability order verified that 0..5 correspond to LvlStatList > LvlStatAbility values
-const AbilityOrder = ["Str", "Dex", "Con", "Int", "Wis", "Cha"]
+const AbilityOrder* = ["Str", "Dex", "Con", "Int", "Wis", "Cha"]
+const AbilityOrderLong* = ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"]
 const GreatIntFeats = [794 .. 803]
 
 

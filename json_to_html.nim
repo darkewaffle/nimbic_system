@@ -8,67 +8,111 @@ import html_formatting
 import echo_feedback
 from ability_modify import AbilityOrder
 
+type
+    LevelTableRow = array[5, string]
+    BasicTableRow = array[3, string]
+
+const
+    BasicTableColumns1: BasicTableRow = ["Name", "Race", "Subrace"]
+    BasicTableColumns2: BasicTableRow = ["Deity", "Good / Evil", "Lawful / Chaotic"]
+    BasicTableClass = "basics"
+    BasicTableStyle = "." & BasicTableClass & " {width: 50%;}"
+    BasicTableTHClass = "basicsTH"
+    BasicTableTHStyle = "." & BasicTableTHClass & " {width: 33%;}"
+
+    ClassTableClass = "classes"
+    ClassTableTHClass = "classesTH"
+ 
+
+    LevelTableColumns: LevelTableRow = ["Level", "Class", "Ability", "Feats", "Skills"]
+    LevelTableClass = "levels"
+    LevelTableStyle = "." & LevelTableClass & " {width: 60%;}"
+    LevelTableTHClass = "levelsTH"
+    #Dynamically assigned in call to BuildLevelTable > LevelHTML > CreateTableHeader by passing true as third parameter
+    LevelTableTHStyle = ".levelsTH1, .levelsTH3 {width: 8%;} .levelsTH2, .levelsTH5 {width: 12%;} .levelsTH4 {width: 60%;}"
+
+    LevelInnerTableClass = "levelinnertable"
+    LevelInnerTableStyle = "." & LevelInnerTableClass & " {width: 80%; margin-top: 5px; margin-bottom: 5px;}"
+    LevelInnerTableCell = "levelinnercell"
+    LevelInnerCellStyle = "." & LevelInnerTableCell & " {width: 50%;}"
+    LevelInnerSharedStyle = "." & LevelInnerTableClass & ", ." & LevelInnerTableCell & " {border: 0px solid #ffffff;}"
+
+
+    HTMLStyleCore = """
+    table, th, td {border: 1px solid #535b64; border-collapse: collapse; color: #b9b9b9; margin-top: 30px;}
+    th, td {padding: 5px; text-align: center;}
+    body {background-color: #000C18;}
+    table {margin-left: auto; margin-right: auto;}
+    """
+    HTMLStyleFull = HTMLStyleCore & BasicTableStyle & BasicTableTHStyle & LevelTableStyle & LevelTableTHStyle & LevelInnerTableStyle & LevelInnerCellStyle & LevelInnerSharedStyle
+
+
 proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage)
-#proc JSONtoHTML*(InputFile: string)
-proc BuildBasicsTable(CharacterJSON: JsonNode): string
-proc BuildLevelTable(CharacterJSON: JsonNode): string
+proc BuildBasicTable(CharacterJSON: JsonNode, TableID: int, TableClass: string): string
+proc BuildClassTable(CharacterJSON: JsonNode, TableClass: string): string
+proc BuildLevelTable(CharacterJSON: JsonNode, TableClass: string): string
 
 
 proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage) =
-#proc JSONtoHTML*(InputFile: string) =
     echo "JSON to HTML beginning" & $InputFile
 
-    var CharacterJSON: JsonNode
-    CharacterJSON = parseFile(InputFile)
+    var 
+        CharacterJSON = parseFile(InputFile)
 
-    var BasicsTable = BuildBasicsTable(CharacterJSON)
-    var LevelTable = BuildLevelTable(CharacterJSON)
+        BasicTable1 = BuildBasicTable(CharacterJSON, 1, BasicTableClass)
+        BasicTable2 = BuildBasicTable(CharacterJSON, 2, BasicTableClass)
+        ClassTable = BuildClassTable(CharacterJSON, ClassTableClass)
+        LevelTable = BuildLevelTable(CharacterJSON, LevelTableClass)
 
-    var FinalHTML = WrapHTML(StyleHeader & WrapBody(BasicsTable & LevelTable))
+        CharacterNumberOfClasses = GetCharacterClasses(CharacterJSON).high + 1
+        DynamicClassWidthStyle = WidthStyle(ClassTableClass, ClassTableTHClass, CharacterNumberOfClasses)
+
+        StyleHeader = WrapHead(WrapStyle(HTMLStyleFull & DynamicClassWidthStyle))
+        FinalHTML = WrapHTML(StyleHeader & WrapBody(BasicTable1 & BasicTable2 & ClassTable & LevelTable))
+
     writeFile("""C:\Users\jorda\Desktop\test.html""", FinalHTML)
     echo "JSON to HTML complete"
 
 
-proc BuildBasicsTable(CharacterJSON: JsonNode): string =
-    var BasicsTable: seq[array[3, string]]
+proc BuildBasicTable(CharacterJSON: JsonNode, TableID: int, TableClass: string): string =
+    var BasicTable: seq[array[3, string]]
+    var BasicHTML: string
 
-    BasicsTable.add(BasicsTableColumns1)
-    BasicsTable.add([GetCharacterFullName(CharacterJSON), GetRaceLabel(GetCharacterRace(CharacterJSON), true), GetCharacterSubRace(CharacterJSON)])
-    BasicsTable.add(BasicsTableColumns2)
-    BasicsTable.add([GetCharacterDeity(CharacterJSON), GetCharacterGoodEvilDescription(CharacterJSON), GetCharacterLawfulChaoticDescription(CharacterJSON)])
+    case TableID:
+        of 1:
+            BasicHTML = CreateTableHeader(BasicTableColumns1, BasicTableTHClass)
+            BasicTable.add([GetCharacterFullName(CharacterJSON), GetRaceLabel(GetCharacterRace(CharacterJSON), true), GetCharacterSubRace(CharacterJSON)])
+        of 2:
+            BasicHTML = CreateTableHeader(BasicTableColumns2, BasicTableTHClass)
+            BasicTable.add([GetCharacterDeity(CharacterJSON), GetCharacterGoodEvilDescription(CharacterJSON), GetCharacterLawfulChaoticDescription(CharacterJSON)])
+        else:
+            discard
+
+    for i in BasicTable.low .. BasicTable.high:
+        BasicHTML = BasicHTML & CreateTableRow(BasicTable[i])
+
+    return WrapDiv(WrapTable(BasicHTML, TableClass))
 
 
-    var ClassesAndLevels = GetCharacterClasses(CharacterJSON)
-    var ClassRow1: array[3, string]
-    var ClassRow2: array[3, string]
-    var ClassRow3: array[3, string]
+proc BuildClassTable(CharacterJSON: JsonNode, TableClass: string): string =
+    var 
+        ClassesAndLevels = GetCharacterClasses(CharacterJSON)
+        ClassTable: seq[string]
+        ClassHTML: string
+
     for i in ClassesAndLevels.low .. ClassesAndLevels.high:
-        if i <= 2:
-            ClassRow1[i] = GetClassLabel(ClassesAndLevels[i][0], true) & " - " & $ClassesAndLevels[i][1]
-        elif i >= 3 and i <= 5:
-            ClassRow2[i] = GetClassLabel(ClassesAndLevels[i][0], true) & " - " & $ClassesAndLevels[i][1]
-        else:
-            ClassRow3[i] = GetClassLabel(ClassesAndLevels[i][0], true) & " - " & $ClassesAndLevels[i][1]
-    
-    BasicsTable.add(ClassRow1)
-    if ClassesAndLevels.high >= 3:
-        BasicsTable.add(ClassRow2)
-    if ClassesAndLevels.high >= 6:
-        BasicsTable.add(ClassRow3)
+        ClassTable.add(GetClassLabel(ClassesAndLevels[i][0], true) & " - " & $ClassesAndLevels[i][1])
 
-    var BasicsHTML: string
-    for i in BasicsTable.low .. BasicsTable.high:
-        if i == 0 or i == 2:
-            BasicsHTML = BasicsHTML & CreateTableHeader(BasicsTable[i])
-        else:
-            BasicsHTML = BasicsHTML & CreateTableRow(BasicsTable[i])
+    ClassHTML = ClassHTML & CreateTableRow(ClassTable, ClassTableTHClass)
 
-    return WrapDiv(WrapTable(BasicsHTML, "basics"))
+    return WrapDiv(WrapTable(ClassHTML, TableClass))
 
-proc BuildLevelTable(CharacterJSON: JsonNode): string =
+
+
+proc BuildLevelTable(CharacterJSON: JsonNode, TableClass: string): string =
     #Level Number, Class, Ability, Feats, Skills
 
-    var LevelHTML = LevelTableHeader
+    var LevelHTML = CreateTableHeader(LevelTableColumns, LevelTableTHClass, true)
     var FullLevelData: seq[LevelTableRow]
 
     for i in CharacterJSON["LvlStatList"]["value"].elems.low .. CharacterJSON["LvlStatList"]["value"].elems.high:
@@ -95,13 +139,7 @@ proc BuildLevelTable(CharacterJSON: JsonNode): string =
             LevelFeats = @[]
 
         sort(LevelFeats)
-
-        for j in LevelFeats.low .. LevelFeats.high:
-            if j != LevelFeats.high:
-                LevelData[3] = LevelData[3] & $LevelFeats[j] & """</br>"""
-            else:
-                LevelData[3] = LevelData[3] & $LevelFeats[j]
-
+        LevelData[3] = MakeTDTable(LevelFeats, LevelInnerTableClass, LevelInnerTableCell, 2)
 
         #Skills
         var LevelSkills: seq[array[2, string]]
@@ -111,23 +149,17 @@ proc BuildLevelTable(CharacterJSON: JsonNode): string =
             var SkillRanksObtained = CharacterJSON["LvlStatList"]["value"][i]["SkillList"]["value"][j]["Rank"]["value"].getInt
             if SkillRanksObtained > 0:
                 SkillTable[GetSkillLabel(j, true)] = SkillRanksObtained
-                #LevelSkills.add([GetSkillLabel(j), $SkillRanksObtained])
-
-        #sort(LevelSkills)
-
-        #[ for j in LevelSkills.low .. LevelSkills.high:
-            if j != LevelSkills.high:
-                LevelData[4] = LevelData[4] & $LevelSkills[j][0] & "  -  " & $LevelSkills[j][1] & """</br>"""
-            else:
-                LevelData[4] = LevelData[4] & $LevelSkills[j][0] & "  -  " & $LevelSkills[j][1] ]#
 
         SkillTable.sort(system.cmp)
 
+        var SkillSequence: seq[string]
         for key, value in  SkillTable.pairs:
-            LevelData[4] = LevelData[4] & key & " - " & $value & """</br>"""
-        removeSuffix(LevelData[4], """<\br>""")
+            SkillSequence.add(key)
+            SkillSequence.add("+" & $value)
 
+        LevelData[4] = MakeTDTable(SkillSequence, LevelInnerTableClass, LevelInnerTableCell, 2)
 
+        #Add LevelData 'row' to FullLevelData
         FullLevelData.add(LevelData)
 
     for i in FullLevelData.low .. FullLevelData.high:
@@ -137,4 +169,4 @@ proc BuildLevelTable(CharacterJSON: JsonNode): string =
         RowHTML = WrapTR(RowHTML)
         LevelHTML = LevelHTML & RowHTML
 
-    return WrapDiv(WrapTable(LevelHTML, "levels"))
+    return WrapDiv(WrapTable(LevelHTML, TableClass))

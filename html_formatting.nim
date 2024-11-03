@@ -1,3 +1,5 @@
+import std/math
+
 proc WrapTags(Input: string, Tag: string, Class: string = ""): string
 proc WrapHTML*(Input: string): string
 proc WrapHead*(Input: string): string
@@ -10,29 +12,9 @@ proc WrapTH*(Input: string, Class: string = ""): string
 proc WrapTR*(Input: string, Class: string = ""): string
 proc WrapTD*(Input: string, Class: string = ""): string
 
-proc CreateTableHeader*(InputValues: openArray[string]): string
-proc CreateTableRow*(InputValues: openArray[string]): string
-
-type
-    LevelTableRow* = array[5, string]
-    BasicsTableRow* = array[3, string]
-
-const
-    LevelTableColumns: LevelTableRow = ["Level", "Class", "Ability", "Feats", "Skills"]
-    BasicsTableColumns1*: BasicsTableRow = ["Name", "Race", "Subrace"]
-    BasicsTableColumns2*: BasicsTableRow = ["Deity", "Good / Evil", "Lawful / Chaotic"]
-    HTMLStyle = """
-    table, th, td {border: 1px solid #3A4550; border-collapse: collapse; color: #9BA1A6;}
-    th, td {padding: 10px; text-align: center;}
-    body {background-color: #000C18;}
-    table {margin-left: auto; margin-right: auto; margin-top: 25px;}
-    .basics {width: 50%;}
-    .levels {width: 80%;}
-    """
-
-let
-    LevelTableHeader* = CreateTableHeader(LevelTableColumns)
-    StyleHeader* = WrapHead(WrapStyle(HTMLStyle))
+proc CreateTableHeader*(InputValues: openArray[string], Class: string = "", ClassSuffix: bool = false): string
+proc CreateTableRow*(InputValues: openArray[string], Class: string = ""): string
+proc WidthStyle*(TableClass: string, THClass: string, NumberOfColumns: int): string
 
 
 proc WrapTags(Input: string, Tag: string, Class: string = ""): string =
@@ -63,23 +45,52 @@ proc WrapTH*(Input: string, Class: string = ""): string =
     return WrapTags(Input, "th", Class)
 
 proc WrapTR*(Input: string, Class: string = ""): string =
-    return WrapTags(Input, "tr", CLass)
+    return WrapTags(Input, "tr", Class)
 
 proc WrapTD*(Input: string, Class: string = ""): string =
     return WrapTags(Input, "td", Class)
 
-
-
-
-
-proc CreateTableHeader*(InputValues: openArray[string]): string =
+proc CreateTableHeader*(InputValues: openArray[string], Class: string = "", ClassSuffix: bool = false): string =
     var HeaderHTML: string
     for i in InputValues.low .. InputValues.high:
-        HeaderHTML = HeaderHTML & WrapTH(InputValues[i])
-    return WrapTR(HeaderHTML)
+        var AttachClass = Class
+        if ClassSuffix:
+            AttachClass = Class & $(i+1)
+        HeaderHTML = HeaderHTML & WrapTH(InputValues[i], AttachClass)
+    return WrapTR(HeaderHTML, Class)
 
-proc CreateTableRow*(InputValues: openArray[string]): string =
-    var HeaderHTML: string
+proc CreateTableRow*(InputValues: openArray[string], Class: string = ""): string =
+    var RowHTML: string
     for i in InputValues.low .. InputValues.high:
-        HeaderHTML = HeaderHTML & WrapTD(InputValues[i])
-    return WrapTR(HeaderHTML)
+        RowHTML = RowHTML & WrapTD(InputValues[i], Class)
+    return WrapTR(RowHTML, Class)
+
+proc WidthStyle*(TableClass: string, THClass: string, NumberOfColumns: int): string =
+    var TableWidth = NumberOfColumns * 10
+    if TableWidth < 50:
+        TableWidth = 50
+    
+    var ColumnWidth = floor(100 / NumberOfColumns).toInt
+    
+    var TableStyle= " ." & TableClass & " {width: " & $TableWidth & "%;} "
+    var THStyle = " ." & THClass & " {width: " & $ColumnWidth & "%;} "
+
+    return TableStyle & THStyle
+
+proc MakeTDTable*(TableData: openArray[string], TableClass: string, CellClass: string, TableWidth: int): string =
+    var
+        TableHTML: string
+        RowHTML: string
+
+    for i in TableData.low .. TableData.high:
+        RowHTML = RowHTML & WrapTD(TableData[i], CellClass)
+
+        if floorMod(i+1, TableWidth) != 0 and i == TableData.high:
+            RowHTML = RowHTML & WrapTD("", CellClass)
+
+        if floorMod(i+1, TableWidth) == 0 or i == TableData.high:
+            RowHTML = WrapTR(RowHTML)
+            TableHTML = TableHTML & RowHTML
+            RowHTML = ""
+
+    return WrapTable(TableHTML, TableClass)

@@ -1,6 +1,11 @@
 nimbic TODO / notes
 
 Translate JSON to HTML table, htmlout directory
+Remove class feats?
+Display starting stats / race mods / final stats
+Add spellbook table - lookup class.2da to determine spellbook selection type?
+
+
 nim_bic_editor - try to use solely for orchestration, put all procs/code into imports
 
 

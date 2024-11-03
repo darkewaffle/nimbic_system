@@ -6,6 +6,7 @@ import io_operations
 import character_getters_setters
 import html_formatting
 import echo_feedback
+from ability_modify import AbilityOrder
 
 proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage)
 #proc JSONtoHTML*(InputFile: string)
@@ -32,7 +33,7 @@ proc BuildBasicsTable(CharacterJSON: JsonNode): string =
     var BasicsTable: seq[array[3, string]]
 
     BasicsTable.add(BasicsTableColumns1)
-    BasicsTable.add([GetCharacterFullName(CharacterJSON), $GetCharacterRace(CharacterJSON), GetCharacterSubRace(CharacterJSON)])
+    BasicsTable.add([GetCharacterFullName(CharacterJSON), GetRaceLabel(GetCharacterRace(CharacterJSON), true), GetCharacterSubRace(CharacterJSON)])
     BasicsTable.add(BasicsTableColumns2)
     BasicsTable.add([GetCharacterDeity(CharacterJSON), GetCharacterGoodEvilDescription(CharacterJSON), GetCharacterLawfulChaoticDescription(CharacterJSON)])
 
@@ -43,11 +44,11 @@ proc BuildBasicsTable(CharacterJSON: JsonNode): string =
     var ClassRow3: array[3, string]
     for i in ClassesAndLevels.low .. ClassesAndLevels.high:
         if i <= 2:
-            ClassRow1[i] = $ClassesAndLevels[i][0] & " - " & $ClassesAndLevels[i][1]
+            ClassRow1[i] = GetClassLabel(ClassesAndLevels[i][0], true) & " - " & $ClassesAndLevels[i][1]
         elif i >= 3 and i <= 5:
-            ClassRow2[i] = $ClassesAndLevels[i][0] & " - " & $ClassesAndLevels[i][1]
+            ClassRow2[i] = GetClassLabel(ClassesAndLevels[i][0], true) & " - " & $ClassesAndLevels[i][1]
         else:
-            ClassRow3[i] = $ClassesAndLevels[i][0] & " - " & $ClassesAndLevels[i][1]
+            ClassRow3[i] = GetClassLabel(ClassesAndLevels[i][0], true) & " - " & $ClassesAndLevels[i][1]
     
     BasicsTable.add(ClassRow1)
     if ClassesAndLevels.high >= 3:
@@ -77,21 +78,23 @@ proc BuildLevelTable(CharacterJSON: JsonNode): string =
         LevelData[0] = $(i + 1)
 
         #Class
-        LevelData[1] = $CharacterJSON["LvlStatList"]["value"][i]["LvlStatClass"]["value"].getInt
+        LevelData[1] = GetClassLabel(CharacterJSON["LvlStatList"]["value"][i]["LvlStatClass"]["value"].getInt, true)
 
         #Ability
         try:
-            LevelData[2] = $CharacterJSON["LvlStatList"]["value"][i]["LvlStatAbility"]["value"].getInt
+            LevelData[2] = AbilityOrder[CharacterJSON["LvlStatList"]["value"][i]["LvlStatAbility"]["value"].getInt]
         except KeyError:
             LevelData[2] = ""
 
         #Feats
-        var LevelFeats: seq[int]
+        var LevelFeats: seq[string]
         try:
             for j in CharacterJSON["LvlStatList"]["value"][i]["FeatList"]["value"].elems.low .. CharacterJSON["LvlStatList"]["value"][i]["FeatList"]["value"].elems.high:
-                LevelFeats.add(CharacterJSON["LvlStatList"]["value"][i]["FeatList"]["value"][j]["Feat"]["value"].getInt)
+                LevelFeats.add(GetFeatLabel(CharacterJSON["LvlStatList"]["value"][i]["FeatList"]["value"][j]["Feat"]["value"].getInt, false))
         except KeyError:
             LevelFeats = @[]
+
+        sort(LevelFeats)
 
         for j in LevelFeats.low .. LevelFeats.high:
             if j != LevelFeats.high:
@@ -101,17 +104,29 @@ proc BuildLevelTable(CharacterJSON: JsonNode): string =
 
 
         #Skills
-        var LevelSkills: seq[array[2, int]]
+        var LevelSkills: seq[array[2, string]]
+        var SkillTable = initOrderedTable[string, int]()
+
         for j in CharacterJSON["LvlStatList"]["value"][i]["SkillList"]["value"].elems.low .. CharacterJSON["LvlStatList"]["value"][i]["SkillList"]["value"].elems.high:
             var SkillRanksObtained = CharacterJSON["LvlStatList"]["value"][i]["SkillList"]["value"][j]["Rank"]["value"].getInt
             if SkillRanksObtained > 0:
-                LevelSkills.add([j, SkillRanksObtained])
-        
-        for j in LevelSkills.low .. LevelSkills.high:
+                SkillTable[GetSkillLabel(j, true)] = SkillRanksObtained
+                #LevelSkills.add([GetSkillLabel(j), $SkillRanksObtained])
+
+        #sort(LevelSkills)
+
+        #[ for j in LevelSkills.low .. LevelSkills.high:
             if j != LevelSkills.high:
                 LevelData[4] = LevelData[4] & $LevelSkills[j][0] & "  -  " & $LevelSkills[j][1] & """</br>"""
             else:
-                LevelData[4] = LevelData[4] & $LevelSkills[j][0] & "  -  " & $LevelSkills[j][1]
+                LevelData[4] = LevelData[4] & $LevelSkills[j][0] & "  -  " & $LevelSkills[j][1] ]#
+
+        SkillTable.sort(system.cmp)
+
+        for key, value in  SkillTable.pairs:
+            LevelData[4] = LevelData[4] & key & " - " & $value & """</br>"""
+        removeSuffix(LevelData[4], """<\br>""")
+
 
         FullLevelData.add(LevelData)
 

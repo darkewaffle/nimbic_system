@@ -40,7 +40,7 @@ const
     ModeNoOperation = ["help"]
     ModeFileOperations = ["bictojson", "jsontobic", "jsontohtml", "purgebackups", "purgebackupsall", "restorebackup"]
     ModeCharacterModify = ["addclassfeat", "removeclassfeat", "alterclasshp", "maxhp", "addfeat", "removefeat", "modifyability"]
-    ModeRequires2DA = ["maxhp"]
+    ModeRequires2DA = ["maxhp", "jsontohtml"]
     ModeRequiresClassAndLevel = ["addclassfeat", "removeclassfeat"]
 
 
@@ -134,6 +134,9 @@ proc PerformModeOperationFromPackage() =
                 EchoBlank()
                 DisplayHelp()
                 quit(QuitSuccess)
+    
+    if OperationSettings.Mode in ModeRequires2DA:
+        GetCore2DAFiles(OperationSettings)
 
     if OperationSettings.Mode in ModeFileOperations:
         case OperationSettings.Mode:
@@ -159,8 +162,6 @@ proc PerformModeOperationFromPackage() =
                 RestoreBackup(OperationSettings)
 
     if OperationSettings.Mode in ModeCharacterModify:
-        if OperationSettings.Mode in ModeRequires2DA:
-            GetCore2DAFiles(OperationSettings)
 
         FilesToChange = GetJSONFiles(OperationSettings)
         for i in FilesToChange.low .. FilesToChange.high:

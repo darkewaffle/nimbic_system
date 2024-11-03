@@ -12,6 +12,7 @@ const
     ClassIgnoreColumns = 0
     ClassReadColumns = 14
     ClassColumnClassID = 0
+    ClassColumnClassLabel = 1
     ClassColumnHP = 7
     ClassColumnBABFile = 8
     ClassColumnFeatFile = 9
@@ -24,6 +25,7 @@ const
     RaceIgnoreColumns = 0
     RaceReadColumns = 34
     RaceColumnRaceID = 0
+    RaceColumnRaceLabel = 1
     RaceColumnIntMod = 12
     RaceColumnFeatFile = 18
     RaceColumnExtraSkillsPerLevel = 28
@@ -46,6 +48,22 @@ const
     RulesetLabelColumn = 0
     RulesetValueColumn = 1
 
+#feat.2da
+    FeatFileName = "feat.2da"
+    FeatIgnoreLines = 3
+    FeatIgnoreColumns = 0
+    FeatReadColumns = 2
+    FeatColumnFeatID = 0
+    FeatColumnFeatLabel = 1
+
+#skills.2da
+    SkillFileName = "skills.2da"
+    SkillIgnoreLines = 3
+    SkillIgnoreColumns = 0
+    SkillReadColumns = 2
+    SkillColumnSkillID = 0
+    SkillColumnSkillLabel = 1
+
 var
     Directory2DA: string
     Class2DA: seq[seq[string]]
@@ -53,6 +71,8 @@ var
     Ruleset2DA: seq[seq[string]]
     ClassFeat2DA: seq[seq[string]]
     ClassFeatLoaded: string
+    Feat2DA: seq[seq[string]]
+    Skill2DA: seq[seq[string]]
 
 proc Initialize2DAs*(OperationSettings: SettingsPackage)
 proc Read2DA(FileDirectory: string, FileName: string, IgnoreFirstLines: int = 0, IgnoreFirstColumns: int = 0, ColumnsToRead: int = 1): seq[seq[string]]
@@ -71,6 +91,13 @@ proc GetRaceSkillPointModifierAbility*(RaceID: int): string
 proc GetRulesetValue*(RulesetLabel: string): float
 proc GetClassFeatLevel*(ClassID: int, FeatID: int): int
 
+proc GetFeatLabel*(FeatID: int, Pretty: bool = false): string
+proc GetSkillLabel*(SkillID: int, Pretty: bool = false): string
+proc GetRaceLabel*(RaceID: int, Pretty: bool = false): string
+proc GetClassLabel*(ClassID: int, Pretty: bool = false): string
+
+proc PrettyString(Input: string): string
+
 
 proc Initialize2DAs*(OperationSettings: SettingsPackage) =
     echo "2DA Reads Initialized"
@@ -78,14 +105,22 @@ proc Initialize2DAs*(OperationSettings: SettingsPackage) =
     Class2DA = Read2DA(Directory2DA, ClassFileName, ClassIgnoreLines, ClassIgnoreColumns, ClassReadColumns)
     Race2DA = Read2DA(Directory2DA, RaceFileName, RaceIgnoreLines, RaceIgnoreColumns, RaceReadColumns)
     Ruleset2DA = Read2DA(Directory2DA, RulesetFileName, RulesetIgnoreLines, RulesetIgnoreColumns, RulesetReadColumns)
+    Feat2DA = Read2DA(Directory2DA, FeatFileName, FeatIgnoreLines, FeatIgnoreColumns, FeatReadColumns)
+    Skill2DA = Read2DA(Directory2DA, SkillFileName, SkillIgnoreLines, SkillIgnoreColumns, SkillReadColumns)
     echo "2DA Reads Complete"
+
+
 #[
-  for i in Class2DA.low .. Class2DA.high:
-    echo Class2DA[i]
-  for i in Race2DA.low .. Race2DA.high:
-    echo Race2DA[i]
-  for i in Ruleset2DA.low .. Ruleset2DA.high:
-    echo Ruleset2DA[i]
+    for i in Class2DA.low .. Class2DA.high:
+        echo Class2DA[i]
+    for i in Race2DA.low .. Race2DA.high:
+        echo Race2DA[i]
+    for i in Ruleset2DA.low .. Ruleset2DA.high:
+        echo Ruleset2DA[i]
+    for i in Feat2DA.low .. Feat2DA.high:
+        echo Feat2DA[i]
+    for i in Skill2DA.low .. Skill2DA.high:
+        echo Skill2DA[i]
 ]#
 
 proc Read2DA(FileDirectory: string, FileName: string, IgnoreFirstLines: int = 0, IgnoreFirstColumns: int = 0, ColumnsToRead: int = 1): seq[seq[string]] =
@@ -212,3 +247,61 @@ proc GetRulesetValue*(RulesetLabel: string): float =
         return parseFloat(replace(RulesetValue, "f", ""))
     else:
         return parseFloat(RulesetValue)
+
+proc GetFeatLabel*(FeatID: int, Pretty: bool = false): string =
+    for i in Feat2DA.low .. Feat2DA.high:
+        if SafeParseInt2DA(Feat2DA[i][FeatColumnFeatID]) == FeatID:
+            if not(Pretty):
+                return Feat2DA[i][FeatColumnFeatLabel]
+            else:
+                return PrettyString(Feat2DA[i][FeatColumnFeatLabel])
+    return ""
+
+proc GetSkillLabel*(SkillID: int, Pretty: bool = false): string =
+    for i in Skill2DA.low .. Skill2DA.high:
+        if SafeParseInt2DA(Skill2DA[i][SkillColumnSkillID]) == SkillID:
+            if not(Pretty):
+                return Skill2DA[i][SkillColumnSkillLabel]
+            else:
+                return PrettyString(Skill2DA[i][SkillColumnSkillLabel])
+    return ""
+
+proc GetRaceLabel*(RaceID: int, Pretty: bool = false): string =
+    for i in Race2DA.low .. Race2DA.high:
+        if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
+            if not(Pretty):
+                return Race2DA[i][RaceColumnRaceLabel]
+            else:
+                return PrettyString(Race2DA[i][RaceColumnRaceLabel])
+    return ""
+
+proc GetClassLabel*(ClassID: int, Pretty: bool = false): string =
+    for i in Class2DA.low .. Class2DA.high:
+        if SafeParseInt2DA(Class2DA[i][ClassColumnClassID]) == ClassID:
+            if not(Pretty):
+                return Class2DA[i][ClassColumnClassLabel]
+            else:
+                return PrettyString(Class2DA[i][ClassColumnClassLabel])
+    return ""
+
+proc PrettyString(Input: string): string =
+    var Preparation = toLowerAscii(replace(Input, "_", " "))
+    removePrefix(Preparation, " ")
+    removeSuffix(Preparation, " ")
+    var WordContainer: string
+    var Final: string
+
+    for i in Preparation.low .. Preparation.high:
+
+        if not(isSpaceAscii(Preparation[i])):
+            WordContainer = WordContainer & Preparation[i]
+        else:
+            WordContainer = capitalizeAscii(WordContainer)
+            Final = Final & WordContainer & " "
+            WordContainer = ""
+
+        if i == Preparation.high:
+            WordContainer = capitalizeAscii(WordContainer)
+            Final = Final & WordContainer
+
+    return Final

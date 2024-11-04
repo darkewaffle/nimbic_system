@@ -29,7 +29,7 @@ const
     LevelTableClass = "levels"
     LevelTableStyle = "." & LevelTableClass & " {width: 60%;}"
     LevelTableTHClass = "levelsTH"
-    #Dynamically assigned in call to BuildLevelTable > LevelHTML > CreateTableHeader by passing true as third parameter
+    #Unique levelsTH classes assigned in call to BuildLevelTable > LevelHTML > CreateTableHeader by passing true as third parameter
     LevelTableTHStyle = ".levelsTH1, .levelsTH3 {width: 8%;} .levelsTH2, .levelsTH5 {width: 12%;} .levelsTH4 {width: 60%;}"
     LevelTableStylesAll = LevelTableStyle & LevelTableTHStyle
 

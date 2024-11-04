@@ -40,6 +40,18 @@ const
     ClassFeatIDColumn = 1
     ClassFeatLevelGrantedColumn = 3
 
+#cls_stat_x.2da
+    ClassStatIgnoreLines = 3
+    ClassStatIgnoreColumns = 2
+    ClassStatReadColumns = 7
+    ClassStatColumnStr = 0
+    ClassStatColumnDex = 1
+    ClassStatColumnCon = 2
+    ClassStatColumnInt = 3
+    ClassStatColumnWis = 4
+    ClassStatColumnCha = 5
+    ClassStatColumnNaturalAC = 6
+
 #ruleset.2da
     RulesetFileName = "ruleset.2da"
     RulesetIgnoreLines = 10

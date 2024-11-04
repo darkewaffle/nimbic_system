@@ -19,6 +19,7 @@ const
     BasicTableStyle = "." & BasicTableClass & " {width: 50%;}"
     BasicTableTHClass = "basicsTH"
     BasicTableTHStyle = "." & BasicTableTHClass & " {width: 33%;}"
+    BasicTableStylesAll = BasicTableStyle & BasicTableTHStyle
 
     ClassTableClass = "classes"
     ClassTableTHClass = "classesTH"
@@ -30,12 +31,21 @@ const
     LevelTableTHClass = "levelsTH"
     #Dynamically assigned in call to BuildLevelTable > LevelHTML > CreateTableHeader by passing true as third parameter
     LevelTableTHStyle = ".levelsTH1, .levelsTH3 {width: 8%;} .levelsTH2, .levelsTH5 {width: 12%;} .levelsTH4 {width: 60%;}"
+    LevelTableStylesAll = LevelTableStyle & LevelTableTHStyle
 
-    LevelInnerTableClass = "levelinnertable"
-    LevelInnerTableStyle = "." & LevelInnerTableClass & " {width: 80%; margin-top: 5px; margin-bottom: 5px;}"
-    LevelInnerTableCell = "levelinnercell"
-    LevelInnerCellStyle = "." & LevelInnerTableCell & " {width: 50%;}"
-    LevelInnerSharedStyle = "." & LevelInnerTableClass & ", ." & LevelInnerTableCell & " {border: 0px solid #ffffff;}"
+    LevelFeatTableClass = "levelfeattable"
+    LevelFeatTableStyle = "." & LevelFeatTableClass & " {width: 80%; margin-top: 5px; margin-bottom: 5px;}"
+    LevelFeatTableCell = "levelfeatcell"
+    LevelFeatCellStyle = "." & LevelFeatTableCell & " {width: 50%;}"
+    LevelFeatSharedStyle = "." & LevelFeatTableClass & ", ." & LevelFeatTableCell & " {border: 0px solid #ffffff;}"
+    LevelFeatStylesAll = LevelFeatTableStyle & LevelFeatCellStyle & LevelFeatSharedStyle
+
+    LevelSkillTableClass = "levelskilltable"
+    LevelSkillTableStyle = "." & LevelSkillTableClass & " {width: 80%; margin-top: 5px; margin-bottom: 5px;}"
+    LevelSkillTableCell = "levelskillcell"
+    LevelSkillCellStyle = "." & LevelSkillTableCell & " {padding-top: 2px; padding-bottom: 2px; width: 50%;}"
+    LevelSkillSharedStyle = "." & LevelSkillTableClass & ", ." & LevelSkillTableCell & " {border: 0px solid #ffffff;}"
+    LevelSkillStylesAll = LevelSkillTableStyle & LevelSkillCellStyle & LevelSkillSharedStyle
 
 
     HTMLStyleCore = """
@@ -44,7 +54,7 @@ const
     body {background-color: #000C18;}
     table {margin-left: auto; margin-right: auto;}
     """
-    HTMLStyleFull = HTMLStyleCore & BasicTableStyle & BasicTableTHStyle & LevelTableStyle & LevelTableTHStyle & LevelInnerTableStyle & LevelInnerCellStyle & LevelInnerSharedStyle
+    HTMLStyleFull = HTMLStyleCore & BasicTableStylesAll & LevelTableStylesAll & LevelFeatStylesAll & LevelSkillStylesAll
 
 
 proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage)
@@ -56,7 +66,7 @@ proc BuildLevelTable(CharacterJSON: JsonNode, TableClass: string): string
 proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage) =
     echo "JSON to HTML beginning" & $InputFile
 
-    var 
+    var
         CharacterJSON = parseFile(InputFile)
 
         BasicTable1 = BuildBasicTable(CharacterJSON, 1, BasicTableClass)
@@ -72,6 +82,17 @@ proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage) =
 
     writeFile("""C:\Users\jorda\Desktop\test.html""", FinalHTML)
     echo "JSON to HTML complete"
+    var inclevels = GetCharacterAbilityIncreaseFromLevels(CharacterJSON)
+    var incfeats = GetCharacterAbilityIncreaseFromGreatFeats(CharacterJSON)
+    var abilcur = GetCharacterAbilityScoresCurrent(CharacterJSON)
+    var abilstart = GetCharacterAbilityScoresStart(CharacterJSON)
+    var raceabils = GetRaceAbilityModifiers(GetCharacterRace(CharacterJSON))
+
+    echo abilstart
+    echo raceabils
+    echo inclevels
+    echo incfeats
+    echo abilcur
 
 
 proc BuildBasicTable(CharacterJSON: JsonNode, TableID: int, TableClass: string): string =
@@ -139,7 +160,7 @@ proc BuildLevelTable(CharacterJSON: JsonNode, TableClass: string): string =
             LevelFeats = @[]
 
         sort(LevelFeats)
-        LevelData[3] = MakeTDTable(LevelFeats, LevelInnerTableClass, LevelInnerTableCell, 2)
+        LevelData[3] = MakeTDTable(LevelFeats, LevelFeatTableClass, LevelFeatTableCell, 2)
 
         #Skills
         var LevelSkills: seq[array[2, string]]
@@ -157,7 +178,7 @@ proc BuildLevelTable(CharacterJSON: JsonNode, TableClass: string): string =
             SkillSequence.add(key)
             SkillSequence.add("+" & $value)
 
-        LevelData[4] = MakeTDTable(SkillSequence, LevelInnerTableClass, LevelInnerTableCell, 2)
+        LevelData[4] = MakeTDTable(SkillSequence, LevelSkillTableClass, LevelSkillTableCell, 2)
 
         #Add LevelData 'row' to FullLevelData
         FullLevelData.add(LevelData)

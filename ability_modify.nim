@@ -11,7 +11,6 @@ proc EchoModifications(AbilityModifications: array[0..5, int])
 #Ability order verified that 0..5 correspond to LvlStatList > LvlStatAbility values
 const AbilityOrder* = ["Str", "Dex", "Con", "Int", "Wis", "Cha"]
 const AbilityOrderLong* = ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"]
-const GreatIntFeats = [794 .. 803]
 
 
 proc ModifyAbilities*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage) =
@@ -44,8 +43,9 @@ proc ValidateAbilityScore(Input: int): int =
 
 
 proc AbilityIndex*(Input: string): int =
+    var FormattedInput = capitalizeAscii(toLowerAscii(Input))
     for i in AbilityOrder.low .. AbilityOrder.high:
-        if AbilityOrder[i] == capitalizeAscii(toLowerAscii(Input)):
+        if AbilityOrder[i] == FormattedInput or AbilityOrderLong[i] == FormattedInput:
             return i
     return 0
 

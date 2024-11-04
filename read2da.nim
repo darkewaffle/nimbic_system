@@ -10,7 +10,7 @@ const
     ClassFileName = "classes.2da"
     ClassIgnoreLines = 3
     ClassIgnoreColumns = 0
-    ClassReadColumns = 14
+    ClassReadColumns = 57
     ClassColumnClassID = 0
     ClassColumnClassLabel = 1
     ClassColumnHP = 7
@@ -27,7 +27,12 @@ const
     RaceReadColumns = 34
     RaceColumnRaceID = 0
     RaceColumnRaceLabel = 1
+    RaceColumnStrMod = 10
+    RaceColumnDexMod = 11
     RaceColumnIntMod = 12
+    RaceColumnChaMod = 13
+    RaceColumnWisMod = 14
+    RaceColumnConMod = 15
     RaceColumnFeatFile = 18
     RaceColumnExtraSkillsPerLevel = 28
     RaceColumnFirstLevelSkillMultiplier = 29
@@ -96,7 +101,14 @@ proc GetClassHPPerLevel*(ClassID: int): int
 proc GetClassFeatFile*(ClassID: int): string
 proc ReadClassFeats(ClassFeatFileName: string)
 
+proc GetRaceStrModification*(RaceID: int): int
+proc GetRaceDexModification*(RaceID: int): int
+proc GetRaceConModification*(RaceID: int): int
 proc GetRaceIntModification*(RaceID: int): int
+proc GetRaceWisModification*(RaceID: int): int
+proc GetRaceChaModification*(RaceID: int): int
+proc GetRaceAbilityModifiers*(RaceID: int): array[6, int]
+
 proc GetRaceExtraSkillPointsPerLevel*(RaceID: int): int
 proc GetRaceFirstLevelSkillMultiplier*(RaceID: int): int
 proc GetRaceSkillPointModifierAbility*(RaceID: int): string
@@ -180,8 +192,6 @@ proc SafeParseInt2DA(Input: string): int =
         return parseInt(Input)
 
 
-
-
 proc GetClassSkillPointsPerLevel*(ClassID: int): int =
     for i in Class2DA.low .. Class2DA.high:
         if SafeParseInt2DA(Class2DA[i][ClassColumnClassID]) == ClassID:
@@ -219,12 +229,53 @@ proc GetClassFeatLevel*(ClassID: int, FeatID: int): int =
     return 0
 
 
+proc GetRaceStrModification*(RaceID: int): int =
+    for i in Race2DA.low .. Race2DA.high:
+        if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
+            return SafeParseInt2DA(Race2DA[i][RaceColumnStrMod])
+    return 0
+
+proc GetRaceDexModification*(RaceID: int): int =
+    for i in Race2DA.low .. Race2DA.high:
+        if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
+            return SafeParseInt2DA(Race2DA[i][RaceColumnDexMod])
+    return 0
+
+proc GetRaceConModification*(RaceID: int): int =
+    for i in Race2DA.low .. Race2DA.high:
+        if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
+            return SafeParseInt2DA(Race2DA[i][RaceColumnConMod])
+    return 0
+
 proc GetRaceIntModification*(RaceID: int): int =
     for i in Race2DA.low .. Race2DA.high:
         if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
             return SafeParseInt2DA(Race2DA[i][RaceColumnIntMod])
     return 0
 
+proc GetRaceWisModification*(RaceID: int): int =
+    for i in Race2DA.low .. Race2DA.high:
+        if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
+            return SafeParseInt2DA(Race2DA[i][RaceColumnWisMod])
+    return 0
+
+proc GetRaceChaModification*(RaceID: int): int =
+    for i in Race2DA.low .. Race2DA.high:
+        if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
+            return SafeParseInt2DA(Race2DA[i][RaceColumnChaMod])
+    return 0
+
+proc GetRaceAbilityModifiers*(RaceID: int): array[6, int] =
+    var AbilityModifiers = [0, 0, 0, 0, 0, 0]
+    for i in Race2DA.low .. Race2DA.high:
+        if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
+            AbilityModifiers[0] = SafeParseInt2DA(Race2DA[i][RaceColumnStrMod])
+            AbilityModifiers[1] = SafeParseInt2DA(Race2DA[i][RaceColumnDexMod])
+            AbilityModifiers[2] = SafeParseInt2DA(Race2DA[i][RaceColumnConMod])
+            AbilityModifiers[3] = SafeParseInt2DA(Race2DA[i][RaceColumnIntMod])
+            AbilityModifiers[4] = SafeParseInt2DA(Race2DA[i][RaceColumnWisMod])
+            AbilityModifiers[5] = SafeParseInt2DA(Race2DA[i][RaceColumnChaMod])
+    return AbilityModifiers
 
 proc GetRaceExtraSkillPointsPerLevel*(RaceID: int): int =
     for i in Race2DA.low .. Race2DA.high:

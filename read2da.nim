@@ -18,6 +18,7 @@ const
     ClassColumnFeatFile = 9
     ClassColumnSavesFile = 10
     ClassColumnSkillPoints = 13
+    ClassColumnStatFile = 56
 
 #racialtypes.2da
     RaceFileName = "racialtypes.2da"

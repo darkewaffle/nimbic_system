@@ -50,12 +50,12 @@ const
     ClassStatIgnoreLines = 3
     ClassStatIgnoreColumns = 2
     ClassStatReadColumns = 7
-    ClassStatColumnStr = 0
-    ClassStatColumnDex = 1
-    ClassStatColumnCon = 2
-    ClassStatColumnInt = 3
-    ClassStatColumnWis = 4
-    ClassStatColumnCha = 5
+    ClassStatColumnStrMod = 0
+    ClassStatColumnDexMod = 1
+    ClassStatColumnConMod = 2
+    ClassStatColumnWisMod = 3
+    ClassStatColumnIntMod = 4
+    ClassStatColumnChaMod = 5
     ClassStatColumnNaturalAC = 6
 
 #ruleset.2da
@@ -89,6 +89,8 @@ var
     Ruleset2DA: seq[seq[string]]
     ClassFeat2DA: seq[seq[string]]
     ClassFeatLoaded: string
+    ClassStat2DA: seq[seq[string]]
+    ClassStatLoaded: string
     Feat2DA: seq[seq[string]]
     Skill2DA: seq[seq[string]]
 
@@ -100,6 +102,9 @@ proc GetClassSkillPointsPerLevel*(ClassID: int): int
 proc GetClassHPPerLevel*(ClassID: int): int
 proc GetClassFeatFile*(ClassID: int): string
 proc ReadClassFeats(ClassFeatFileName: string)
+proc GetClassStatFile*(ClassID: int): string
+proc GetClassAbilityModifiers*(ClassID: int, ClassLevel: int): array[6, int]
+proc GetClassNaturalAC*(ClassID: int, ClassLevel: int): int
 
 proc GetRaceStrModification*(RaceID: int): int
 proc GetRaceDexModification*(RaceID: int): int
@@ -132,6 +137,9 @@ proc Initialize2DAs*(OperationSettings: SettingsPackage) =
     Ruleset2DA = Read2DA(Directory2DA, RulesetFileName, RulesetIgnoreLines, RulesetIgnoreColumns, RulesetReadColumns)
     Feat2DA = Read2DA(Directory2DA, FeatFileName, FeatIgnoreLines, FeatIgnoreColumns, FeatReadColumns)
     Skill2DA = Read2DA(Directory2DA, SkillFileName, SkillIgnoreLines, SkillIgnoreColumns, SkillReadColumns)
+    echo GetClassStatFile(34)
+    echo GetClassStatFile(37)
+    echo GetClassStatFIle(12)
     echo "2DA Reads Complete"
 
 
@@ -227,6 +235,56 @@ proc GetClassFeatLevel*(ClassID: int, FeatID: int): int =
         if SafeParseInt2DA(ClassFeat2DA[i][ClassFeatIDColumn]) == FeatID:
             return SafeParseInt2DA(ClassFeat2DA[i][ClassFeatLevelGrantedColumn])
     return 0
+
+proc GetClassStatFile*(ClassID: int): string =
+    for i in Class2DA.low .. Class2DA.high:
+        if SafeParseInt2DA(Class2DA[i][ClassColumnClassID]) == ClassID:
+            if Class2DA[i][ClassColumnStatFile] == "****":
+                return ""
+            else:
+                return Class2DA[i][ClassColumnStatFile] & Extension2DA
+    return ""
+
+proc ReadClassStats(ClassStatFileName: string) =
+    if ClassStatFileName == ClassStatLoaded:
+        discard
+    else:
+        ClassStat2DA = Read2DA(Directory2DA, ClassStatFileName, ClassStatIgnoreLines, ClassStatIgnoreColumns, ClassStatReadColumns)
+        ClassStatLoaded = ClassStatFileName
+
+proc GetClassAbilityModifiers*(ClassID: int, ClassLevel: int): array[6, int] =
+    var AbilityModifiers = [0, 0, 0, 0, 0, 0]
+    var StatFile = GetClassStatFile(ClassID)
+    if StatFile != "":
+        ReadClassStats(StatFile)
+    else:
+        return AbilityModifiers
+
+    for i in ClassStat2DA.low .. ClassStat2DA.high:
+        if i + 1 > ClassLevel:
+            break
+        AbilityModifiers[0] = AbilityModifiers[0] + SafeParseInt2DA(ClassStat2DA[i][ClassStatColumnStrMod])
+        AbilityModifiers[1] = AbilityModifiers[1] + SafeParseInt2DA(ClassStat2DA[i][ClassStatColumnDexMod])
+        AbilityModifiers[2] = AbilityModifiers[2] + SafeParseInt2DA(ClassStat2DA[i][ClassStatColumnConMod])
+        AbilityModifiers[3] = AbilityModifiers[3] + SafeParseInt2DA(ClassStat2DA[i][ClassStatColumnIntMod])
+        AbilityModifiers[4] = AbilityModifiers[4] + SafeParseInt2DA(ClassStat2DA[i][ClassStatColumnWisMod])
+        AbilityModifiers[5] = AbilityModifiers[5] + SafeParseInt2DA(ClassStat2DA[i][ClassStatColumnChaMod])
+
+    return AbilityModifiers
+
+proc GetClassNaturalAC*(ClassID: int, ClassLevel: int): int =
+    var NaturalAC = 0
+    var StatFile = GetClassStatFile(ClassID)
+    if StatFile != "":
+        ReadClassStats(StatFile)
+    else:
+        return NaturalAC
+
+    for i in ClassStat2DA.low .. ClassStat2DA.high:
+        if i + 1 > ClassLevel:
+            break
+        NaturalAC = NaturalAC + SafeParseInt2DA(ClassStat2DA[i][ClassStatColumnNaturalAC])
+    return NaturalAC
 
 
 proc GetRaceStrModification*(RaceID: int): int =

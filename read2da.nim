@@ -137,9 +137,6 @@ proc Initialize2DAs*(OperationSettings: SettingsPackage) =
     Ruleset2DA = Read2DA(Directory2DA, RulesetFileName, RulesetIgnoreLines, RulesetIgnoreColumns, RulesetReadColumns)
     Feat2DA = Read2DA(Directory2DA, FeatFileName, FeatIgnoreLines, FeatIgnoreColumns, FeatReadColumns)
     Skill2DA = Read2DA(Directory2DA, SkillFileName, SkillIgnoreLines, SkillIgnoreColumns, SkillReadColumns)
-    echo GetClassStatFile(34)
-    echo GetClassStatFile(37)
-    echo GetClassStatFIle(12)
     echo "2DA Reads Complete"
 
 
@@ -407,23 +404,46 @@ proc GetClassLabel*(ClassID: int, Pretty: bool = false): string =
     return ""
 
 proc PrettyString(Input: string): string =
-    var Preparation = toLowerAscii(replace(Input, "_", " "))
+    var 
+        Preparation = Input
+        WordContainer: string
+        Final: string
+
     removePrefix(Preparation, " ")
+    removePrefix(Preparation, "FEAT_")
     removeSuffix(Preparation, " ")
-    var WordContainer: string
-    var Final: string
+    Preparation = Preparation.replace("_", " ")
 
-    for i in Preparation.low .. Preparation.high:
+    if contains(Preparation, " "):
+        Preparation = toLower(Preparation)
 
-        if not(isSpaceAscii(Preparation[i])):
-            WordContainer = WordContainer & Preparation[i]
-        else:
-            WordContainer = capitalizeAscii(WordContainer)
-            Final = Final & WordContainer & " "
-            WordContainer = ""
+        for i in Preparation.low .. Preparation.high:
 
-        if i == Preparation.high:
-            WordContainer = capitalizeAscii(WordContainer)
-            Final = Final & WordContainer
+            if not(isSpaceAscii(Preparation[i])):
+                WordContainer = WordContainer & Preparation[i]
+            else:
+                WordContainer = capitalizeAscii(WordContainer)
+                Final = Final & WordContainer & " "
+                WordContainer = ""
 
+            if i == Preparation.high:
+                WordContainer = capitalizeAscii(WordContainer)
+                Final = Final & WordContainer
+    else:
+        var SequentialDigits = 0
+        for i in Preparation.low .. Preparation.high:
+            if i == 0:
+                Final = capitalizeAscii($Preparation[i])
+            else:
+                if isUpperAscii(Preparation[i]) or isDigit(Preparation[i]):
+                    if isDigit(Preparation[i]):
+                        inc SequentialDigits
+                    else:
+                        SequentialDigits = 0
+                    if isDigit(Preparation[i]) and SequentialDigits > 1:
+                        Final = Final & Preparation[i]
+                    else:
+                        Final = Final & " " & Preparation[i]
+                else:
+                    Final = Final & Preparation[i]
     return Final

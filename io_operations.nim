@@ -1,4 +1,4 @@
-import std/[algorithm, dirs, os, paths, sequtils, strutils, times]
+import std/[algorithm, dirs, os, paths, random, sequtils, strutils, times]
 import echo_feedback
 import object_settingspackage
 
@@ -8,10 +8,11 @@ proc GetFilesByPattern(DirectoryPath: string, ReadSubdirectories: bool, FileType
 proc GetBICFiles*(OperationSettings: SettingsPackage): seq[string]
 proc GetJSONFiles*(OperationSettings: SettingsPackage): seq[string]
 
-proc CreateOutputPath(FileLocation: string, OutputDirectory: string, FileExtension: string): string
-proc CreateOutputPathJSON*(FileLocation: string, OutputDirectory: string): string
-proc CreateOutputPathBIC*(FileLocation: string, OutputDirectory: string): string
-proc CreateOutputPathSqlite*(FileLocation: string, OutputDirectory: string): string
+proc CreateOutputPath(FileLocation: string, OutputDirectory: string, FileExtension: string, Overwrite: bool = true): string
+proc CreateOutputPathJSON*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true): string
+proc CreateOutputPathBIC*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true): string
+proc CreateOutputPathSqlite*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true): string
+proc CreateOutputPathHTML*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true): string
 
 proc ReplaceFileExtension*(FileLocation: string, NewExtension: string): string
 proc SetFileExtensionJSON*(FileLocation: string): string
@@ -35,10 +36,12 @@ const
     ExtensionJSON* = """.json"""
     ExtensionBIC* = """.bic"""
     ExtensionSQLite* = """.sqlite3"""
+    ExtensionHTML* = """.html"""
 
     PatternExtensionJSON = """\*""" & ExtensionJSON
     PatternExtensionBIC = """\*""" & ExtensionBIC
     PatternExtensionSQlite = """\*""" & ExtensionSQLite
+    PatternExtensionHTML = """\*""" & ExtensionHTML
 
     BackupDirectoryPrefix = """BIC_Backup_"""
     PatternSubdirectoriesAll = """\*"""
@@ -82,7 +85,7 @@ proc GetJSONFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq
     GetFilesByPattern(DirectoryPath, PatternExtensionJSON, ReadSubdirectories)
 ]#
 
-proc CreateOutputPath(FileLocation: string, OutputDirectory: string, FileExtension: string): string =
+proc CreateOutputPath(FileLocation: string, OutputDirectory: string, FileExtension: string, Overwrite: bool = true): string =
     var SplitPath = splitFile(Path FileLocation)
     var OutputPath = Path(OutputDirectory)
     if not(dirExists(OutputPath)):
@@ -90,16 +93,25 @@ proc CreateOutputPath(FileLocation: string, OutputDirectory: string, FileExtensi
         createDir(OutputPath)
     OutputPath = OutputPath / SplitPath.name
     OutputPath = addFileExt(OutputPath, FileExtension)
+    if fileExists($OutputPath) and not(Overwrite):
+        SplitPath = splitFile(OutputPath)
+        randomize()
+        var RandomName = $SplitPath.name & "_" & $rand(99999)
+        OutputPath = SplitPath.dir / Path(RandomName)
+        OutputPath = addFileExt(OutputPath, FileExtension)
     return $OutputPath
 
-proc CreateOutputPathJSON*(FileLocation: string, OutputDirectory: string): string =
-    return CreateOutputPath(FileLocation, OutputDirectory, ExtensionJSON)
+proc CreateOutputPathJSON*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true): string =
+    return CreateOutputPath(FileLocation, OutputDirectory, ExtensionJSON, Overwrite)
 
-proc CreateOutputPathBIC*(FileLocation: string, OutputDirectory: string): string =
-    return CreateOutputPath(FileLocation, OutputDirectory, ExtensionBIC)
+proc CreateOutputPathBIC*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true): string =
+    return CreateOutputPath(FileLocation, OutputDirectory, ExtensionBIC, Overwrite)
 
-proc CreateOutputPathSqlite*(FileLocation: string, OutputDirectory: string): string =
-    return CreateOutputPath(FileLocation, OutputDirectory, ExtensionSQLite)
+proc CreateOutputPathSqlite*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true): string =
+    return CreateOutputPath(FileLocation, OutputDirectory, ExtensionSQLite, Overwrite)
+
+proc CreateOutputPathHTML*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true): string =
+    return CreateOutputPath(FileLocation, OutputDirectory, ExtensionHTML, Overwrite)
 
 proc ReplaceFileExtension*(FileLocation: string, NewExtension: string): string =
     var SplitPath = splitFile(Path FileLocation)

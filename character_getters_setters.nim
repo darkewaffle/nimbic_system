@@ -9,8 +9,13 @@ proc CharacterHasTotalLevel*(CharacterJSON: JsonNode, RequiredLevel: int): bool
 
 proc GetCharacterLevel*(CharacterJSON: JsonNode): int
 proc GetCharacterEpicLevels*(CharacterJSON: JsonNode): int
+
+proc GetCharacterStrength*(CharacterJSON: JsonNode): int
+proc GetCharacterDexterity*(CharacterJSON: JsonNode): int
 proc GetCharacterConstitution*(CharacterJSON: JsonNode): int
 proc GetCharacterIntelligence*(CharacterJSON: JsonNode): int
+proc GetCharacterWisdom*(CharacterJSON: JsonNode): int
+proc GetCharacterCharisma*(CharacterJSON: JsonNode): int
 
 const
     MaximumPreEpicLevel = 20

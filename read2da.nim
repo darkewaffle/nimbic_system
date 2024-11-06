@@ -10,7 +10,7 @@ const
     ClassFileName = "classes.2da"
     ClassIgnoreLines = 3
     ClassIgnoreColumns = 0
-    ClassReadColumns = 57
+    ClassReadColumns = 59
     ClassColumnClassID = 0
     ClassColumnClassLabel = 1
     ClassColumnHP = 7
@@ -19,6 +19,7 @@ const
     ClassColumnSavesFile = 10
     ClassColumnSkillPoints = 13
     ClassColumnStatFile = 56
+    ClassColumnSpellbookRestricted = 58
 
 #racialtypes.2da
     RaceFileName = "racialtypes.2da"
@@ -45,6 +46,13 @@ const
     ClassFeatLabelColumn = 0
     ClassFeatIDColumn = 1
     ClassFeatLevelGrantedColumn = 3
+
+#cls_feat_x.2da
+    RaceFeatIgnoreLines = 3
+    RaceFeatIgnoreColumns = 1
+    RaceFeatReadColumns = 2
+    RaceFeatLabelColumn = 0
+    RaceFeatIDColumn = 1
 
 #cls_stat_x.2da
     ClassStatIgnoreLines = 3
@@ -82,6 +90,14 @@ const
     SkillColumnSkillID = 0
     SkillColumnSkillLabel = 1
 
+#spells.2da
+    SpellFileName = "spells.2da"
+    SpellIgnoreLines = 3
+    SpellIgnoreColumns = 0
+    SpellReadColumns = 2
+    SpellColumnSpellID = 0
+    SpellColumnSpellLabel = 1
+
 var
     Directory2DA: string
     Class2DA: seq[seq[string]]
@@ -93,6 +109,9 @@ var
     ClassStatLoaded: string
     Feat2DA: seq[seq[string]]
     Skill2DA: seq[seq[string]]
+    Spell2DA: seq[seq[string]]
+    RaceFeat2DA: seq[seq[string]]
+    RaceFeatLoaded: string
 
 proc Initialize2DAs*(OperationSettings: SettingsPackage)
 proc Read2DA(FileDirectory: string, FileName: string, IgnoreFirstLines: int = 0, IgnoreFirstColumns: int = 0, ColumnsToRead: int = 1): seq[seq[string]]
@@ -113,6 +132,9 @@ proc GetRaceIntModification*(RaceID: int): int
 proc GetRaceWisModification*(RaceID: int): int
 proc GetRaceChaModification*(RaceID: int): int
 proc GetRaceAbilityModifiers*(RaceID: int): array[6, int]
+proc GetRaceFeatFile*(RaceID: int): string
+proc ReadRaceFeats(RaceFeatFileName: string)
+proc GetRaceFeats*(RaceID: int): seq[int]
 
 proc GetRaceExtraSkillPointsPerLevel*(RaceID: int): int
 proc GetRaceFirstLevelSkillMultiplier*(RaceID: int): int
@@ -120,11 +142,13 @@ proc GetRaceSkillPointModifierAbility*(RaceID: int): string
 
 proc GetRulesetValue*(RulesetLabel: string): float
 proc GetClassFeatLevel*(ClassID: int, FeatID: int): int
+proc GetClassFeatsAtLevel*(ClassID: int, Level: int): seq[int]
 
 proc GetFeatLabel*(FeatID: int, Pretty: bool = false): string
 proc GetSkillLabel*(SkillID: int, Pretty: bool = false): string
 proc GetRaceLabel*(RaceID: int, Pretty: bool = false): string
 proc GetClassLabel*(ClassID: int, Pretty: bool = false): string
+proc GetSpellLabel*(SpellID: int, Pretty: bool = false): string
 
 proc PrettyString(Input: string): string
 
@@ -137,6 +161,7 @@ proc Initialize2DAs*(OperationSettings: SettingsPackage) =
     Ruleset2DA = Read2DA(Directory2DA, RulesetFileName, RulesetIgnoreLines, RulesetIgnoreColumns, RulesetReadColumns)
     Feat2DA = Read2DA(Directory2DA, FeatFileName, FeatIgnoreLines, FeatIgnoreColumns, FeatReadColumns)
     Skill2DA = Read2DA(Directory2DA, SkillFileName, SkillIgnoreLines, SkillIgnoreColumns, SkillReadColumns)
+    Spell2DA = Read2DA(Directory2DA, SpellFileName, SpellIgnoreLines, SpellIgnoreColumns, SpellReadColumns)
     echo "2DA Reads Complete"
 
 
@@ -211,6 +236,13 @@ proc GetClassHPPerLevel*(ClassID: int): int =
     return 0
 
 
+proc GetClassSpellbookRestricted*(ClassID: int): bool =
+    for i in Class2DA.low .. Class2DA.high:
+        if SafeParseInt2DA(Class2DA[i][ClassColumnClassID]) == ClassID:
+            return SafeParseInt2DA(Class2DA[i][ClassColumnSpellbookRestricted]).bool
+    return false
+
+
 proc GetClassFeatFile*(ClassID: int): string =
     for i in Class2DA.low .. Class2DA.high:
         if SafeParseInt2DA(Class2DA[i][ClassColumnClassID]) == ClassID:
@@ -232,6 +264,16 @@ proc GetClassFeatLevel*(ClassID: int, FeatID: int): int =
         if SafeParseInt2DA(ClassFeat2DA[i][ClassFeatIDColumn]) == FeatID:
             return SafeParseInt2DA(ClassFeat2DA[i][ClassFeatLevelGrantedColumn])
     return 0
+
+proc GetClassFeatsAtLevel*(ClassID: int, Level: int): seq[int] =
+    ReadClassFeats(GetClassFeatFile(ClassID))
+    var FeatsForClassLevel: seq[int]
+
+    for i in ClassFeat2DA.low .. ClassFeat2DA.high:
+        if SafeParseInt2DA(ClassFeat2DA[i][ClassFeatLevelGrantedColumn]) == Level:
+            FeatsForClassLevel.add(SafeParseInt2DA(ClassFeat2DA[i][ClassFeatIDColumn]))
+
+    return FeatsForClassLevel
 
 proc GetClassStatFile*(ClassID: int): string =
     for i in Class2DA.low .. Class2DA.high:
@@ -332,6 +374,28 @@ proc GetRaceAbilityModifiers*(RaceID: int): array[6, int] =
             AbilityModifiers[5] = SafeParseInt2DA(Race2DA[i][RaceColumnChaMod])
     return AbilityModifiers
 
+proc GetRaceFeatFile*(RaceID: int): string =
+    for i in Race2DA.low .. Race2DA.high:
+        if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
+            return Race2DA[i][RaceColumnFeatFile] & Extension2DA
+    return ""
+
+proc ReadRaceFeats(RaceFeatFileName: string) =
+    if RaceFeatFileName == RaceFeatLoaded:
+        discard
+    else:
+        RaceFeat2DA = Read2DA(Directory2DA, RaceFeatFileName, RaceFeatIgnoreLines, RaceFeatIgnoreColumns, RaceFeatReadColumns)
+        RaceFeatLoaded = RaceFeatFileName
+
+proc GetRaceFeats*(RaceID: int): seq[int] =
+    ReadRaceFeats(GetRaceFeatFile(RaceID))
+    var FeatsForRace: seq[int]
+
+    for i in RaceFeat2DA.low .. RaceFeat2DA.high:
+        FeatsForRace.add(SafeParseInt2DA(RaceFeat2DA[i][RaceFeatIDColumn]))
+
+    return FeatsForRace
+
 proc GetRaceExtraSkillPointsPerLevel*(RaceID: int): int =
     for i in Race2DA.low .. Race2DA.high:
         if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
@@ -383,6 +447,15 @@ proc GetSkillLabel*(SkillID: int, Pretty: bool = false): string =
                 return Skill2DA[i][SkillColumnSkillLabel]
             else:
                 return PrettyString(Skill2DA[i][SkillColumnSkillLabel])
+    return ""
+
+proc GetSpellLabel*(SpellID: int, Pretty: bool = false): string =
+    for i in Spell2DA.low .. Spell2DA.high:
+        if SafeParseInt2DA(Spell2DA[i][SpellColumnSpellID]) == SpellID:
+            if not(Pretty):
+                return Spell2DA[i][SpellColumnSpellLabel]
+            else:
+                return PrettyString(Spell2DA[i][SpellColumnSpellLabel])
     return ""
 
 proc GetRaceLabel*(RaceID: int, Pretty: bool = false): string =

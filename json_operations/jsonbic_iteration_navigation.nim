@@ -1,4 +1,4 @@
-import std/json
+import std/[json]
 
 
 proc FindLvlStatListIndexOfClassLevel*(CharacterJSON: JsonNode, ClassID: int, LevelRequired: int): int =

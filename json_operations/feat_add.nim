@@ -1,7 +1,11 @@
-import std/json
-import echo_feedback
-import jsonbic_iteration_navigation
-import object_settingspackage
+import std/[json]
+
+import ../nimbic/settings/[object_settingspackage]
+import ../nimbic/[echo_feedback]
+import /[jsonbic_iteration_navigation]
+
+
+
 
 #proc AddClassFeat*(CharacterJSON: JsonNode, AddToClass: int, AddToLevel: int, FeatID: int, FirstOrLastPosition: string = "Last")
 #proc AddLevelFeat*(CharacterJSON: JsonNode, AddToLevel: int, FeatID: int, FirstOrLastPosition: string = "Last")

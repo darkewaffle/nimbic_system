@@ -1,6 +1,4 @@
-import nimbic_arguments
-import nimbic_config
-import object_settingspackage
+import /[nimbic_arguments, nimbic_config, object_settingspackage]
 
 proc ReconcileCommandLineArgumentsAndConfigSettings*()
 proc EvaluateInputDirectory()

@@ -1,7 +1,9 @@
 import std/[os, strutils]
-import nimbic_config_template
-import echo_feedback
-import object_settingspackage
+
+import /[nimbic_config_template, object_settingspackage]
+import ../[echo_feedback]
+
+
 
 proc GetSettingsFromConfigFile*()
 proc GetSettingsPackageFromConfigFile*(): SettingsPackage

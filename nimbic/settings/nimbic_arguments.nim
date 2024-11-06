@@ -1,6 +1,7 @@
 import std/[os, parseopt, strutils]
-import object_settingspackage
-from ability_modify import AbilityIndex
+
+import /[object_settingspackage]
+from ../../json_operations/ability_modify import AbilityIndex
 
 proc AssignArgumentsToVariables*(CommandLineArguments: var OptParser)
 proc GetSettingsFromCommandLine*(): SettingsPackage

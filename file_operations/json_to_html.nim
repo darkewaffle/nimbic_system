@@ -1,12 +1,10 @@
-import std/[strutils, algorithm, streams, json, tables, os, paths, dirs, sequtils]
-import std/private/osfiles
-import object_settingspackage
-import read2da
-import io_operations
-import character_getters_setters
-import html_formatting
-import echo_feedback
-from ability_modify import AbilityOrder
+import std/[algorithm, dirs, json, os, paths, sequtils, streams, strutils, tables]
+
+import /[html_formatting, io_operations, read2da]
+import ../nimbic/[echo_feedback]
+import ../nimbic/settings/[object_settingspackage]
+import ../json_operations/[character_getters_setters]
+from ../json_operations/ability_modify import AbilityOrder
 
 type
     LevelTableRow = array[5, string]

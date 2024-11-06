@@ -1,6 +1,7 @@
 import std/[algorithm, dirs, os, paths, random, sequtils, strutils, times]
-import echo_feedback
-import object_settingspackage
+
+import ../nimbic/[echo_feedback]
+import ../nimbic/settings/[object_settingspackage]
 
 proc GetFilesByPattern(DirectoryPath: string, ReadSubdirectories: bool, FileTypePattern: string): seq[string]
 #proc GetBICFiles*(DirectoryPath: string, ReadSubdirectories: bool = false): seq[string]

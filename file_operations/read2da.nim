@@ -1,6 +1,7 @@
 import std/[files, paths, strutils]
-import echo_feedback
-import object_settingspackage
+
+import ../nimbic/[echo_feedback]
+import ../nimbic/settings/[object_settingspackage]
 
 const
 #General purpose

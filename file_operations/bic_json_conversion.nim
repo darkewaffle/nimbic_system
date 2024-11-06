@@ -1,9 +1,10 @@
-import std/[strutils, algorithm, streams, json, tables, os, paths, dirs]
-import std/private/osfiles
-import neverwinterdotnim/neverwinter/[gff, gffjson]
-import io_operations
-import nwn_gff_excerpts
-import object_settingspackage
+import std/[algorithm, dirs, json, os, paths, streams, strutils, tables]
+
+import /[io_operations, nwn_gff_excerpts]
+import ../nimbic/settings/[object_settingspackage]
+
+import ../neverwinterdotnim/neverwinter/[gff, gffjson]
+
 
 
 #proc BICtoJSON*(InputFile: string, OutputDirectory: string, ExpectSqlite: bool = false, ConfigWriteInPlace: bool = false)

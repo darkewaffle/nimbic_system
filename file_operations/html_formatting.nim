@@ -1,4 +1,4 @@
-import std/math
+import std/[math]
 
 proc WrapTags(Input: string, Tag: string, Class: string = ""): string
 proc WrapHTML*(Input: string): string

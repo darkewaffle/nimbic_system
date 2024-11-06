@@ -1,5 +1,6 @@
-import std/[strutils, algorithm, streams, json, tables]
-import neverwinterdotnim/neverwinter/[compressedbuf, gff, gffjson]
+import std/[algorithm, json, streams, strutils, tables]
+
+import ../neverwinterdotnim/neverwinter/[compressedbuf, gff, gffjson]
 
 #These are procedures or code-converted-to-procedures taken directly from nwn_gff.nim
 proc postProcessJson*(j: JsonNode)

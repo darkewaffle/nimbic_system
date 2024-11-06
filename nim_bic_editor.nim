@@ -1,20 +1,10 @@
 import std/[dirs, json, os, parseopt, paths]
-import nim_bic_editor_help
-import nimbic_config
-import nimbic_arguments
-import nimbic_evaluate_settings
-import bic_json_conversion
-import character_getters_setters
-import feat_add
-import feat_remove
-import ability_modify
-import io_operations
-import echo_feedback
-import utility_procs
-import hp_modify
-import object_settingspackage
-import json_to_html
-from read2da import Initialize2DAs
+
+import nimbic/[echo_feedback, nim_bic_editor_help]
+import nimbic/settings/[nimbic_evaluate_settings,object_settingspackage]
+
+import file_operations/[bic_json_conversion, io_operations, json_to_html, nwn_gff_excerpts, read2da]
+import json_operations/[ability_modify, character_getters_setters, feat_add, feat_remove, hp_modify, jsonbic_iteration_navigation]
 
 
 #proc PerformModeOperation()

@@ -1,7 +1,9 @@
-import std/json
-import echo_feedback
-import jsonbic_iteration_navigation
-import object_settingspackage
+import std/[json]
+
+import ../nimbic/settings/[object_settingspackage]
+import ../nimbic/[echo_feedback]
+import /[jsonbic_iteration_navigation]
+
 
 #proc RemoveClassFeat*(CharacterJSON: JsonNode, RemoveFromClass: int, RemoveFromLevel: int, FeatID: int): bool
 #proc RemoveLevelFeat*(CharacterJSON: JsonNode, RemoveFromLevel: int, FeatID: int): bool

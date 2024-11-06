@@ -1,6 +1,8 @@
-import std/json
-import read2da
-import object_settingspackage
+import std/[json]
+
+import ../nimbic/settings/[object_settingspackage]
+import ../file_operations/[read2da]
+
 
 #proc AlterClassHP*(CharacterJSON: JsonNode, ClassID: int, HPChange: int): bool
 proc AlterClassHP*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage): bool

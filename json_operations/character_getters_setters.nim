@@ -1,6 +1,6 @@
 import std/[algorithm, json, strutils]
 
-from ../file_operations/read2da import GetSpellLabel
+from ../file_operations/interface_2da import GetSpellLabel
 
 proc CharacterHasClassLevel*(CharacterJSON: JsonNode, RequiredClass: int, RequiredLevel: int): bool
 proc CharacterHasClass*(CharacterJSON: JsonNode, RequiredClass: int): bool

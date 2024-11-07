@@ -1,6 +1,6 @@
 import std/[algorithm, dirs, json, os, paths, sequtils, streams, strutils, tables]
 
-import /[html_formatting, io_operations, read2da]
+import /[html_formatting, io_operations, interface_2da]
 import ../nimbic/[echo_feedback]
 import ../nimbic/settings/[object_settingspackage]
 import ../json_operations/[character_getters_setters]

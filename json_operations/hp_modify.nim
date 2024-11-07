@@ -1,7 +1,7 @@
 import std/[json]
 
 import ../nimbic/settings/[object_settingspackage]
-import ../file_operations/[read2da]
+import ../file_operations/[interface_2da]
 
 
 #proc AlterClassHP*(CharacterJSON: JsonNode, ClassID: int, HPChange: int): bool
@@ -128,13 +128,13 @@ proc FillRDDHPLookup*() =
     #Creates level 0 entry using 2DA Class PerLevelHP as a safeguard.
     RDDHP[RDDHP.high][0] = 0
     RDDHP[RDDHP.high][1] = GetClassHPPerLevel(RDDClass)
-#[
+
     for i in RDDHP.low .. RDDHP.high:
         if i < RDDHP.high:
             echo $RDDHPFeats[i] & "     " & RDDHPRules[i] & "     " & $RDDHP[i][0] & "     " & $RDDHP[i][1]
         else:
             echo "Level 0 placeholders     " & $RDDHP[i][0] & "     " & $RDDHP[i][1]
-]#
+
 
 proc GetRDDHP(RDDLevel: int): int =
     for i in RDDHP.low .. RDDHP.high:

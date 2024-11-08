@@ -3,8 +3,8 @@ import std/[algorithm, dirs, json, os, paths, sequtils, streams, strutils, table
 import /[html_formatting, io_operations, interface_2da]
 import ../nimbic/[echo_feedback]
 import ../nimbic/settings/[object_settingspackage]
-import ../json_operations/[character_getters_setters]
-from ../json_operations/ability_modify import AbilityOrder
+import ../bic_as_json_operations/[interface_get]
+from ../bic_as_json_operations/ability_modify import AbilityOrder
 
 type
     LevelTableRow = array[5, string]
@@ -136,7 +136,7 @@ proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage) =
         StyleHeader = WrapHead(WrapStyle(FullCSS & DynamicClassWidthStyle))
         FinalHTML = WrapHTML(StyleHeader & WrapBody(PageContainer))
 
-    var WritePath = CreateOutputPathHTML(InputFile, OperationSettings.OutputHTML, true)
+    var WritePath = CreateOutputPathHTML(InputFile, OperationSettings.OutputHTML, false)
     writeFile(WritePath, FinalHTML)
     
     echo "JSON to HTML complete"

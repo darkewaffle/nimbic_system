@@ -5,8 +5,8 @@ import nimbic/settings/[nimbic_evaluate_settings,object_settingspackage]
 
 import file_operations/[bic_json_conversion, io_operations, json_to_html, nwn_gff_excerpts]
 import file_operations/[interface_2da]
-import json_operations/[ability_modify, character_getters_setters, feat_add, feat_remove, hp_modify, jsonbic_iteration_navigation]
-
+#import json_operations/[ability_modify, character_getters_setters, feat_add, feat_remove, hp_modify, jsonbic_iteration_navigation]
+import bic_as_json_operations/[interface_change, interface_get]
 
 #proc PerformModeOperation()
 proc PerformModeOperationFromPackage()
@@ -386,4 +386,4 @@ proc EvaluateCharacterRequirements(CharacterJSON: JsonNode, CharacterFileLocatio
 ]#
 proc GetCore2DAFiles(OperationSettings: SettingsPackage) =
     Initialize2DAs(OperationSettings)
-    FillRDDHPLookup()
+    InitializeRDDHPLookup()

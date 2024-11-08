@@ -8,6 +8,16 @@ remove metamagic - wipe spellbook slots?
 backupdir pre-determined in settings and put in package
 io module for directory validation with feedback
 check file name validity for 2da cls_feat/cls_stat/race_feat etc
+true/false html overwrite setting
+compose write locations as paths using \ operator for platform compatibility
+remove feat metamagic could be table
+jsoninterface - has should rely on get
+feat_remove refactor qb_remove into own module
+refactor hp into hp_alter and hp_max?
+where should abilityindex proc go? can we get rid of it?
+standardize singular/plural for json get/set/etc modules
+maximize hp bool return necessary?
+rddhp cleanup
 
 nim_bic_editor - try to use solely for orchestration, put all procs/code into imports
 

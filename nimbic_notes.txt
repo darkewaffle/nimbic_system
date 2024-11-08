@@ -20,6 +20,8 @@ maximize hp bool return necessary?
 rddhp cleanup
 how/where to initialize RDDHP lookup table
 how/where to initialize fead objects to insert into json
+universal import/export for objectsettings/echofeedback/ubiquitous items?
+jsontohtml <title> in header
 
 nim_bic_editor - try to use solely for orchestration, put all procs/code into imports
 

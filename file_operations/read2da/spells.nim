@@ -14,12 +14,12 @@ var
     Spell2DA: seq[seq[string]]
 
 proc Read2DA_Spell*()
-proc GetSpellLabel*(SpellID: int, Pretty: bool = false): string
+proc GetSpellLabel*(SpellID: int, Pretty: bool = true): string
 
 proc Read2DA_Spell*() =
     Spell2DA = Read2DA(SpellFileName, SpellIgnoreLines, SpellIgnoreColumns, SpellReadColumns)
 
-proc GetSpellLabel*(SpellID: int, Pretty: bool = false): string =
+proc GetSpellLabel*(SpellID: int, Pretty: bool = true): string =
     for i in Spell2DA.low .. Spell2DA.high:
         if SafeParseInt2DA(Spell2DA[i][SpellColumnSpellID]) == SpellID:
             if not(Pretty):

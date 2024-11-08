@@ -3,6 +3,7 @@ import std/[json]
 proc CharacterHasFeat*(CharacterJSON: JsonNode, RequiredFeat: int): bool
 proc GetFeatInFeatListPosition*(CharacterJSON: JsonNode, ListPosition: int): int
 proc GetFeatPositionInFeatList*(CharacterJSON: JsonNode, FeatID: int): int
+proc GetFeatInLvlStatListFeatList*(CharacterJSON: JsonNode, LvlStatListIndex: int, FeatListIndex: int): int 
 proc GetLastPositionInFeatsForLevel*(CharacterJSON: JsonNode, LvlStatListIndex: int): int
 proc GetPreviousFeatInLvlStatList*(CharacterJSON: JsonNode, FeatID: int): int
 
@@ -20,6 +21,9 @@ proc GetFeatPositionInFeatList*(CharacterJSON: JsonNode, FeatID: int): int =
         if CharacterJSON["FeatList"]["value"][i]["Feat"]["value"].getInt == FeatID:
             return i
     return -1
+
+proc GetFeatInLvlStatListFeatList*(CharacterJSON: JsonNode, LvlStatListIndex: int, FeatListIndex: int): int =
+    return CharacterJSON["LvlStatList"]["value"][LvlStatListIndex]["FeatList"]["value"][FeatListIndex]["Feat"]["value"].getInt
 
 proc GetLastPositionInFeatsForLevel*(CharacterJSON: JsonNode, LvlStatListIndex: int): int =
     return CharacterJSON["LvlStatList"]["value"][LvlStatListIndex]["FeatList"]["value"].elems.high

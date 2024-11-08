@@ -18,6 +18,8 @@ where should abilityindex proc go? can we get rid of it?
 standardize singular/plural for json get/set/etc modules
 maximize hp bool return necessary?
 rddhp cleanup
+how/where to initialize RDDHP lookup table
+how/where to initialize fead objects to insert into json
 
 nim_bic_editor - try to use solely for orchestration, put all procs/code into imports
 

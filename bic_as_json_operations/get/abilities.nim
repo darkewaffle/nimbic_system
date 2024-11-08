@@ -8,6 +8,7 @@ const
     GreatIntelligenceFeats = [794, 795, 796, 797, 798, 799, 800, 801, 802, 803]
     GreatWisdomFeats =       [804, 805, 806, 807, 808, 809, 810, 811, 812, 813]
     GreatStrengthFeats =     [814, 815, 816, 817, 818, 819, 820, 821, 822, 823]
+    AbilityOrder = ["Str", "Dex", "Con", "Int", "Wis", "Cha"]
 
 proc GetCharacterStrength*(CharacterJSON: JsonNode): int
 proc GetCharacterDexterity*(CharacterJSON: JsonNode): int
@@ -18,6 +19,7 @@ proc GetCharacterCharisma*(CharacterJSON: JsonNode): int
 
 proc GetCharacterAbilityScoresStart*(CharacterJSON: JsonNode): array[6, int]
 proc GetCharacterAbilityScoresCurrent*(CharacterJSON: JsonNode): array[6, int]
+proc GetCharacterAbilityIncreaseAtLvlStatListIndex*(CharacterJSON: JsonNode, LvlStatListIndex: int): string
 proc GetCharacterAbilityIncreaseFromLevels*(CharacterJSON: JsonNode): array[6, int]
 proc GetCharacterAbilityIncreaseFromGreatFeats*(CharacterJSON: JsonNode): array[6, int]
 
@@ -38,6 +40,12 @@ proc GetCharacterWisdom*(CharacterJSON: JsonNode): int =
 
 proc GetCharacterCharisma*(CharacterJSON: JsonNode): int =
     return CharacterJSON["Cha"]["value"].getInt
+
+proc GetCharacterAbilityIncreaseAtLvlStatListIndex*(CharacterJSON: JsonNode, LvlStatListIndex: int): string =
+    try:
+        return AbilityOrder[CharacterJSON["LvlStatList"]["value"][LvlStatListIndex]["LvlStatAbility"]["value"].getInt]
+    except KeyError:
+        return ""
 
 proc GetCharacterAbilityIncreaseFromLevels*(CharacterJSON: JsonNode): array[6, int] =
     var AbilityIncreases = AbilityContainer

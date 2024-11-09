@@ -14,6 +14,7 @@ const
     KeyInputJSON = "inputjson"
     KeyOutputBIC = "outputbic"
     KeyOutputHTML = "outputhtml"
+    KeyOverwriteHTML = "overwritehtml"
     KeyInput2DA = "2dadir"
     KeySqlite = "sqlite"
     KeyProduction = "production"
@@ -65,6 +66,9 @@ proc AssignConfigurationValuesToSettingsPackage(ConfigurationSettings: seq[seq[s
 
             of KeyOutputHTML:
                 ConfigFileSettings.OutputHTML = $ConfigurationSettings[i][1]
+
+            of KeyOverwriteHTML:
+                ConfigFileSettings.OverwriteHTML = ($ConfigurationSettings[i][1]).parseBool
 
             of KeyInput2DA:
                 ConfigFileSettings.Input2DA = $ConfigurationSettings[i][1]

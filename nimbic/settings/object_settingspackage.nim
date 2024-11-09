@@ -28,6 +28,7 @@ type SettingsPackage* = object
 
     #Config file only
     ExpectSqlite*: bool
+    OverwriteHTML*: bool
     AutoCleanup*: bool
     AutoBackup*: bool
     ServerVault*: string
@@ -67,6 +68,7 @@ proc NewSettingsPackage*(): SettingsPackage =
     NewSettings.RestoreFrom = ""
 
     NewSettings.ExpectSqlite = false
+    NewSettings.OverwriteHTML = false
     NewSettings.AutoCleanup = false
     NewSettings.AutoBackup = false
     NewSettings.ServerVault = ""
@@ -104,6 +106,7 @@ proc EchoSettings*(Input: SettingsPackage) =
 
     echo "Config file    "
     echo "ExpectSqlite   " & $Input.ExpectSqlite
+    echo "OverwriteHTML  " & $Input.OverwriteHTML
     echo "AutoCleanup    " & $Input.AutoCleanup
     echo "AutoBackup     " & $Input.AutoBackup
     echo "ServerVault    " & $Input.ServerVault

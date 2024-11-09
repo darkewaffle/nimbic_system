@@ -25,6 +25,7 @@ proc GetOperationSettings*(): SettingsPackage =
 
     #Set values that can only come from config.ini
     ResultSettings.ExpectSqlite = ConfigFileSettings.ExpectSqlite
+    ResultSettings.OverwriteHTML = ConfigFileSettings.OverwriteHTML
     ResultSettings.AutoCleanup = ConfigFileSettings.AutoCleanup
     ResultSettings.AutoBackup = ConfigFileSettings.AutoBackup
     ResultSettings.ServerVault = ConfigFileSettings.ServerVault

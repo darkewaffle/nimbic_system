@@ -66,10 +66,10 @@ proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage) =
         Header = WrapHead(PageTitle & WrapStyle(CompleteCSS))
         FinalHTML = WrapHTML(Header & WrapBody(PageContainer))
 
-    var WritePath = CreateOutputPathHTML(InputFile, OperationSettings.OutputHTML, false, BuildFileName(CharacterJSON))
+    var WritePath = CreateOutputPathHTML(InputFile, OperationSettings.OutputHTML, OperationSettings.OverwriteHTML, BuildFileName(CharacterJSON))
     writeFile(WritePath, FinalHTML)
 
-    echo "JSON to HTML complete"
+    echo "JSON to HTML complete " & WritePath
 
 
 proc BuildFileName(CharacterJSON: JsonNode): string =

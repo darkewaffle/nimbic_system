@@ -1,12 +1,9 @@
 nimbic TODO / notes
 
 remove metamagic - wipe spellbook slots?
-backupdir pre-determined in settings and put in package
 io module for directory validation with feedback
 check file name validity for 2da cls_feat/cls_stat/race_feat etc
-true/false html overwrite setting
 compose write locations as paths using \ operator for platform compatibility
-remove feat metamagic could be table
 jsoninterface - has should rely on get
 where should abilityindex proc go? can we get rid of it?
 standardize singular/plural for json get/set/etc modules
@@ -14,9 +11,7 @@ maximize hp bool return necessary?
 rddhp cleanup
 how/where to initialize RDDHP lookup table
 how/where to initialize fead objects to insert into json
-universal import/export for objectsettings/echofeedback/ubiquitous items?
-jsontohtml <title> in header
-jsontobic fullbackupdir
+
 
 nim_bic_editor - try to use solely for orchestration, put all procs/code into imports
 

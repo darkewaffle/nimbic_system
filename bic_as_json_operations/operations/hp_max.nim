@@ -1,7 +1,7 @@
 import std/[json]
 import ../../file_operations/[interface_2da]
 
-import ../get/[classes]
+import ../get/[classes, hp]
 import ../set/[hp]
 
 const
@@ -40,9 +40,14 @@ proc MaximizeHP*(CharacterJSON: JsonNode): bool =
         SetLvlStatListHP(CharacterJSON, i, HPForClassLevel)
         HPFromClassRolls = HPFromClassRolls + HPForClassLevel
 
-    SetHitPoints(CharacterJSON, HPFromClassRolls)
-    SetCurrentHitPoints(CharacterJSON, HPFromClassRolls)
-    return true
+    if GetHitPoints(CharacterJSON) != HPFromClassRolls:
+        SetHitPoints(CharacterJSON, HPFromClassRolls)
+        SetCurrentHitPoints(CharacterJSON, HPFromClassRolls)
+        echo "Maximum HP operation successful."
+        return true
+    else:
+        echo "Character already has maximum hit points."
+        return false
 
 proc InitializeRDDHPLookup*() =
     for i in RDDHPFeats.low .. RDDHPFeats.high:

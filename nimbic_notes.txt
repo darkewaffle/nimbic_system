@@ -4,9 +4,8 @@ remove metamagic - wipe spellbook slots?
 io module for directory validation with feedback
 check file name validity for 2da cls_feat/cls_stat/race_feat etc
 compose write locations as paths using \ operator for platform compatibility
-where should abilityindex proc go? can we get rid of it?
+
 standardize singular/plural for json get/set/etc modules
-maximize hp bool return necessary?
 rddhp cleanup
 how/where to initialize RDDHP lookup table
 how/where to initialize fead objects to insert into json

@@ -1,8 +1,9 @@
 import std/[ json]
 
-import ../[interface_io]
+import ../[interface_2da, interface_io]
 import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
+import ../../bic_as_json_operations/[interface_get]
 import html/[css_generators, header_title, html_generators, html_tag_wrappers, table_abilities, table_classes, table_deityalign, table_levels, table_namerace, table_spellbook]
 
 const
@@ -27,6 +28,7 @@ const
 
 
 proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage)
+proc BuildFileName(CharacterJSON: JsonNode): string
 
 proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage) =
     echo "JSON to HTML beginning " & $InputFile
@@ -70,3 +72,15 @@ proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage) =
     echo "JSON to HTML complete"
 
 
+proc BuildFileName(CharacterJSON: JsonNode): string =
+    var
+        FileName = GetCharacterFullName(CharacterJSON)
+        ClassesAndLevels = GetCharacterClasses(CharacterJSON)
+
+    FileName = replace(FileName, " ", "") & "_"
+
+    for i in ClassesAndLevels.low .. ClassesAndLevels.high:
+        FileName = FileName & GetClassLabel(ClassesAndLevels[i][0], Shortened = true) & $ClassesAndLevels[i][1]
+        if i != ClassesAndLevels.high:
+            FileName = FileName & "_"
+    return FileName

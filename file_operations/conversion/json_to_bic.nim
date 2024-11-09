@@ -37,7 +37,7 @@ proc JSONtoBIC*(InputFile: string, OperationSettings: SettingsPackage) =
     if OperationSettings.AutoBackup:
         if fileExists(OutputPath):
             var OutputSplit = splitFile(Path OutputPath)
-            #BackupDirectoryFullName is a pre-determined value in io_operations
+            #BackupDirectoryFullName is a pre-determined value in file_operations/io_operations/backups.nim
             var BackupPath = OutputSplit.dir / Path(BackupDirectoryFullName)
             if not(dirExists(BackupPath)):
                 createDir(BackupPath)

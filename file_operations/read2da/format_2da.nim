@@ -53,3 +53,14 @@ proc PrettyString*(Input: string): string =
                 else:
                     Final = Final & Preparation[i]
     return Final
+
+proc ShortenedString*(Input: string): string =
+    var
+        Shortened: string
+        Vowels: set[char] = {'A', 'E', 'I', 'O', 'U', 'a', 'e', 'i', 'o', 'u'}
+        ValidCharacters = Letters + Digits - Vowels
+
+    for i in Input.low .. Input.high:
+        if Input[i] in ValidCharacters:
+            Shortened = Shortened & $Input[i]
+    return Shortened

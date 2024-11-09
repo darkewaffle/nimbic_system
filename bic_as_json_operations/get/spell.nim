@@ -22,23 +22,10 @@ proc GetCharacterSpellsFromClassAsSpellIDs*(CharacterJSON: JsonNode, ClassID: in
     return SpellsByLevel
 
 proc GetCharacterSpellsFromClassAsNames*(CharacterJSON: JsonNode, ClassID: int): seq[seq[string]] =
-#[    
-    var SpellsByLevel: seq[seq[string]]
-    for i in CharacterJSON["ClassList"]["value"].elems.low .. CharacterJSON["ClassList"]["value"].elems.high:
-        if CharacterJSON["ClassList"]["value"][i]["Class"]["value"].getInt != ClassID:
-            discard
-        else:
-            for j in 0 .. 9:
-                var SpellsInLevel: seq[string]
-                try:
-                    for k in CharacterJSON["ClassList"]["value"][i]["KnownList" & $j]["value"].elems.low .. CharacterJSON["ClassList"]["value"][i]["KnownList" & $j]["value"].elems.high:
-                        SpellsInLevel.add(GetSpellLabel(CharacterJSON["ClassList"]["value"][i]["KnownList" & $j]["value"][k]["Spell"]["value"].getInt,true))
-                except KeyError:
-                    break
-                SpellsInLevel.sort()
-                SpellsByLevel.add(SpellsInLevel)
-    return SpellsByLevel 
-]#
+    #Warning: This will return empty values if interface_2da > Initialize2DAs has not been run.
+    #Currently this proc is only used in file_operations\conversion\html\table_spellbook.nim to create
+    #the HTML spellbook populated with spell names.
+
     var
         SpellsByLevelAsID = GetCharacterSpellsFromClassAsSpellIDs(CharacterJSON, ClassID)
         SpellsByLevelAsName: seq[seq[string]]

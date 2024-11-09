@@ -1,7 +1,7 @@
 import std/[os, parseopt, strutils]
 
 import /[object_settingspackage]
-from ../../bic_as_json_operations/ability_modify import AbilityIndex
+from ../../bic_as_json_operations/operations/ability_modify import AbilityIndex
 
 proc AssignArgumentsToVariables*(CommandLineArguments: var OptParser)
 proc GetSettingsFromCommandLine*(): SettingsPackage

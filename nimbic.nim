@@ -4,7 +4,7 @@ import nimbic/[echo_feedback, nim_bic_editor_help]
 import nimbic/settings/[nimbic_evaluate_settings,object_settingspackage]
 
 import file_operations/[interface_2da, interface_conversion, interface_io]
-import bic_as_json_operations/[interface_change, interface_get]
+import bic_as_json_operations/[interface_get, interface_operations]
 
 #proc PerformModeOperation()
 proc PerformModeOperationFromPackage()

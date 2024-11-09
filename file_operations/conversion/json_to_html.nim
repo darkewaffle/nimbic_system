@@ -1,4 +1,4 @@
-import std/[ json]
+import std/[json, strutils]
 
 import ../[interface_2da, interface_io]
 import ../../nimbic/[echo_feedback]
@@ -66,9 +66,9 @@ proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage) =
         Header = WrapHead(PageTitle & WrapStyle(CompleteCSS))
         FinalHTML = WrapHTML(Header & WrapBody(PageContainer))
 
-    var WritePath = CreateOutputPathHTML(InputFile, OperationSettings.OutputHTML, false)
+    var WritePath = CreateOutputPathHTML(InputFile, OperationSettings.OutputHTML, false, BuildFileName(CharacterJSON))
     writeFile(WritePath, FinalHTML)
-    
+
     echo "JSON to HTML complete"
 
 

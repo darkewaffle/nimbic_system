@@ -12,7 +12,7 @@ proc Initialize2DAReader*(FileDirectory: string) =
     removeSuffix(Directory2DA, char(92))
 
     if not(dirExists(Path(Directory2DA))):
-        EchoError("2DA directory location is undefined or invalid: " & Directory2DA)
+        EchoError("2DA access is required for this operation and the 2DA directory location is undefined or invalid: " & Directory2DA)
         quit(QuitSuccess)
 
 proc Read2DA*(FileName: string, IgnoreFirstLines: int = 0, IgnoreFirstColumns: int = 0, ColumnsToRead: int = 1): seq[seq[string]] =

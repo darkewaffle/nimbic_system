@@ -1,9 +1,5 @@
 nimbic TODO / notes
 
-Translate JSON to HTML table, htmlout directory
-Remove class feats?
-Display starting stats / race mods / final stats
-Add spellbook table - lookup class.2da to determine spellbook selection type?
 remove metamagic - wipe spellbook slots?
 backupdir pre-determined in settings and put in package
 io module for directory validation with feedback
@@ -12,8 +8,6 @@ true/false html overwrite setting
 compose write locations as paths using \ operator for platform compatibility
 remove feat metamagic could be table
 jsoninterface - has should rely on get
-feat_remove refactor qb_remove into own module
-refactor hp into hp_alter and hp_max?
 where should abilityindex proc go? can we get rid of it?
 standardize singular/plural for json get/set/etc modules
 maximize hp bool return necessary?
@@ -22,6 +16,7 @@ how/where to initialize RDDHP lookup table
 how/where to initialize fead objects to insert into json
 universal import/export for objectsettings/echofeedback/ubiquitous items?
 jsontohtml <title> in header
+jsontobic fullbackupdir
 
 nim_bic_editor - try to use solely for orchestration, put all procs/code into imports
 

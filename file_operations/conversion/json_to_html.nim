@@ -3,8 +3,7 @@ import std/[ json]
 import ../[interface_io]
 import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
-
-import html/[html_formatting, table_abilities, table_classes, table_deityalign, table_levels, table_namerace, table_spellbook]
+import html/[css_generators, html_generators, html_tag_wrappers, table_abilities, table_classes, table_deityalign, table_levels, table_namerace, table_spellbook]
 
 const
     FullPageContainer = "pagecontainer"

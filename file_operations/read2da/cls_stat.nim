@@ -1,4 +1,4 @@
-import /[constants_2da, reader, format_2da]
+import /[reader, format_2da]
 import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
 from classes import GetClassStatFile

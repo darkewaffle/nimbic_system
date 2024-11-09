@@ -1,4 +1,3 @@
-import std/[files, paths, strutils]
 import ../nimbic/[echo_feedback]
 import ../nimbic/settings/[object_settingspackage]
 import read2da/[classes, cls_feat, cls_stat, feat, race_feat, racialtypes, ruleset, skills, spells]

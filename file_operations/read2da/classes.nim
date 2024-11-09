@@ -20,7 +20,7 @@ var
     Class2DA: seq[seq[string]]
 
 proc Read2DA_Class*()
-proc GetClassLabel*(ClassID: int, Pretty: bool = false): string
+proc GetClassLabel*(ClassID: int, Pretty: bool = false, Shortened: bool = false): string
 proc GetClassHPPerLevel*(ClassID: int): int
 proc GetClassFeatFile*(ClassID: int): string
 proc GetClassSkillPointsPerLevel*(ClassID: int): int
@@ -30,13 +30,16 @@ proc GetClassSpellbookRestricted*(ClassID: int): bool
 proc Read2DA_Class*() =
     Class2DA = Read2DA(ClassFileName, ClassIgnoreLines, ClassIgnoreColumns, ClassReadColumns)
 
-proc GetClassLabel*(ClassID: int, Pretty: bool = false): string =
+proc GetClassLabel*(ClassID: int, Pretty: bool = false, Shortened: bool = false): string =
+    var Label: string
     for i in Class2DA.low .. Class2DA.high:
         if SafeParseInt2DA(Class2DA[i][ClassColumnClassID]) == ClassID:
-            if not(Pretty):
-                return Class2DA[i][ClassColumnClassLabel]
-            else:
+            if Pretty:
                 return PrettyString(Class2DA[i][ClassColumnClassLabel])
+            elif Shortened:
+                return ShortenedString(Class2DA[i][ClassColumnClassLabel])
+            else:
+                return Class2DA[i][ClassColumnClassLabel]
     return ""
 
 proc GetClassHPPerLevel*(ClassID: int): int =

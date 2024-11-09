@@ -1,6 +1,5 @@
 import std/[os, parseopt, strutils]
 import /[object_settingspackage]
-from ../../bic_as_json_operations/operations/ability_modify import AbilityIndex
 
 proc GetSettingsFromCommandLine*(): SettingsPackage
 
@@ -27,9 +26,18 @@ proc GetSettingsFromCommandLine*(): SettingsPackage =
                         CommandLineSettings.Feat = parseInt(val)
                         CommandLineSettings.FeatActive = true
 
-                    #AbilityIndex returns a 0-5 value for each ability abbreviation.
-                    of "str", "dex", "con", "int", "wis", "cha":
-                        CommandLineSettings.AbilityInput[AbilityIndex(key)] = parseInt(val)
+                    of "str":
+                        CommandLineSettings.AbilityInput[0] = parseInt(val)
+                    of "dex":
+                        CommandLineSettings.AbilityInput[1] = parseInt(val)
+                    of "con":
+                        CommandLineSettings.AbilityInput[2] = parseInt(val)
+                    of "int":
+                        CommandLineSettings.AbilityInput[3] = parseInt(val)
+                    of "wis":
+                        CommandLineSettings.AbilityInput[4] = parseInt(val)
+                    of "cha":
+                        CommandLineSettings.AbilityInput[5] = parseInt(val)
 
                     of "hp":
                         CommandLineSettings.HPInput = parseInt(val)

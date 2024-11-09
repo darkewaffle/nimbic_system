@@ -8,10 +8,7 @@ proc GetCharacterLevel*(CharacterJSON: JsonNode): int
 proc GetCharacterEpicLevels*(CharacterJSON: JsonNode): int
 
 proc CharacterHasTotalLevel*(CharacterJSON: JsonNode, RequiredLevel: int): bool =
-    var CharacterLevel = 0
-    for i in CharacterJSON["ClassList"]["value"].elems.low .. CharacterJSON["ClassList"]["value"].elems.high:
-        CharacterLevel = CharacterLevel + CharacterJSON["ClassList"]["value"][i]["ClassLevel"]["value"].getInt
-    if CharacterLevel >= RequiredLevel:
+    if GetCharacterLevel(CharacterJSON) >= RequiredLevel:
         return true
     else:
         return false

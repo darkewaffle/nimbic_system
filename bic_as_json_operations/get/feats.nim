@@ -9,7 +9,7 @@ proc GetPreviousFeatInLvlStatList*(CharacterJSON: JsonNode, FeatID: int): int
 
 proc CharacterHasFeat*(CharacterJSON: JsonNode, RequiredFeat: int): bool =
     for i in CharacterJSON["FeatList"]["value"].elems.low .. CharacterJSON["FeatList"]["value"].elems.high:
-        if CharacterJSON["FeatList"]["value"][i]["Feat"]["value"].getInt == RequiredFeat:
+        if GetFeatInFeatListPosition(CharacterJSON, i) == RequiredFeat:
             return true
     return false
 

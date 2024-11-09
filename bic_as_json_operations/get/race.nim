@@ -6,13 +6,13 @@ proc GetCharacterRace*(CharacterJSON: JsonNode): int
 proc GetCharacterSubrace*(CharacterJSON: JsonNode): string
 
 proc CharacterHasRace*(CharacterJSON: JsonNode, RequiredRace: int): bool =
-    if CharacterJSON["Race"]["value"].getInt == RequiredRace:
+    if GetCharacterRace(CharacterJSON) == RequiredRace:
         return true
     else:
         return false
 
 proc CharacterHasSubrace*(CharacterJSON: JsonNode, RequiredSubrace: string): bool =
-    if CharacterJSON["Subrace"]["value"].getStr == RequiredSubrace:
+    if GetCharacterSubrace(CharacterJSON) == RequiredSubrace:
         return true
     else:
         return false

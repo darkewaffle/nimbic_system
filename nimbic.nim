@@ -3,12 +3,9 @@ import std/[dirs, json, os, parseopt, paths]
 import nimbic/[echo_feedback, nim_bic_editor_help]
 import nimbic/settings/[nimbic_evaluate_settings,object_settingspackage]
 
-#import file_operations/[bic_json_conversion, io_operations, json_to_html, nwn_gff_excerpts]
-import file_operations/[io_operations]
-import file_operations/conversion/[bic_to_json, json_to_bic, json_to_html]
-
 import file_operations/[interface_2da]
-#import json_operations/[ability_modify, character_getters_setters, feat_add, feat_remove, hp_modify, jsonbic_iteration_navigation]
+import file_operations/[interface_io]
+import file_operations/conversion/[bic_to_json, json_to_bic, json_to_html]
 import bic_as_json_operations/[interface_change, interface_get]
 
 #proc PerformModeOperation()

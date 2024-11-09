@@ -1,7 +1,7 @@
 import std/[json, paths, streams]
 
 import /[nwn_gff_excerpts]
-import ../[io_operations]
+import ../[interface_io]
 import ../../nimbic/settings/[object_settingspackage]
 import ../../neverwinterdotnim/neverwinter/[gff, gffjson]
 

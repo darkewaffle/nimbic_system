@@ -1,9 +1,9 @@
 import std/[json]
 
-import ../nimbic/[echo_feedback]
-import ../nimbic/settings/[object_settingspackage]
-import get/[classes, hp]
-import set/[hp]
+import ../../nimbic/[echo_feedback]
+import ../../nimbic/settings/[object_settingspackage]
+import ../get/[classes, hp]
+import ../set/[hp]
 
 
 proc AlterClassHP*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage): bool

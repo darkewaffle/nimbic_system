@@ -1,7 +1,7 @@
 import std/[json, strutils]
-import ../nimbic/[echo_feedback]
-import ../nimbic/settings/[object_settingspackage]
-import set/[abilities]
+import ../../nimbic/[echo_feedback]
+import ../../nimbic/settings/[object_settingspackage]
+import ../set/[abilities]
 
 
 proc ModifyAbilities*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage)

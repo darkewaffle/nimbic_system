@@ -1,8 +1,8 @@
 import std/[json]
-import ../file_operations/[interface_2da]
+import ../../file_operations/[interface_2da]
 
-import get/[classes]
-import set/[hp]
+import ../get/[classes]
+import ../set/[hp]
 
 const
     RDDClass = 37

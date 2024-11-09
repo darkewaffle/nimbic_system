@@ -1,2 +1,2 @@
-import get/[abilities, classes, feats, hp, levels, person, race, skills, spells]
-export      abilities, classes, feats, hp, levels, person, race, skills, spells
+import get/[ability, class, feat, hp, level, person, race, skill, spell]
+export      ability, class, feat, hp, level, person, race, skill, spell

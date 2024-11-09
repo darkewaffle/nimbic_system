@@ -3,8 +3,8 @@ import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
 
 import ../add/[feat]
-import ../get/[feats]
-from ../get/classes import GetLvlStatListIndexOfClassLevel
+import ../get/[feat]
+from ../get/class import GetLvlStatListIndexOfClassLevel
 
 proc AddClassFeat*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage, FirstOrLastPosition: string = "Last")
 proc AddLevelFeat*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage, FirstOrLastPosition: string = "Last")

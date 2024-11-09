@@ -3,7 +3,7 @@ import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
 
 import ../remove/[feat, quickbar]
-from ../get/classes import GetLvlStatListIndexOfClassLevel
+from ../get/class import GetLvlStatListIndexOfClassLevel
 
 proc RemoveClassFeat*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage): bool
 proc RemoveLevelFeat*(CharacterJSON: JsonNode, OperationSettings: SettingsPackage): bool

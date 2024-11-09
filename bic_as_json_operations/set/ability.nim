@@ -1,5 +1,5 @@
 import std/[json]
-import ../get/[abilities]
+import ../get/[ability]
 
 
 proc SetCharacterStrength*(CharacterJSON: JsonNode, NewValue: int)

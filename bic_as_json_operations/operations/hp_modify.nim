@@ -2,7 +2,7 @@ import std/[json]
 
 import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
-import ../get/[classes, hp]
+import ../get/[class, hp]
 import ../set/[hp]
 
 

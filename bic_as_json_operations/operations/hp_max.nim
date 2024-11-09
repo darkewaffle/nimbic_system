@@ -1,7 +1,7 @@
 import std/[json]
 import ../../file_operations/[interface_2da]
 
-import ../get/[classes, hp]
+import ../get/[class, hp]
 import ../set/[hp]
 
 const

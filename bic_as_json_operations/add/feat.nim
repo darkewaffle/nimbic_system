@@ -1,5 +1,5 @@
 import std/[json]
-import ../get/[feats]
+import ../get/[feat]
 
 let
     FeatJSON_LvlStatList = %*{"__struct_id": 0,"Feat": {"type": "word", "value": nil}}

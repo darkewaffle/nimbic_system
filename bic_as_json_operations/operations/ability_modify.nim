@@ -1,7 +1,7 @@
 import std/[json, strutils]
 import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
-import ../set/[abilities]
+import ../set/[ability]
 
 #Ability order verified that 0..5 correspond to LvlStatList > LvlStatAbility values
 const AbilityOrder* = ["Str", "Dex", "Con", "Int", "Wis", "Cha"]

@@ -1,17 +1,11 @@
 import std/[os, strutils]
-
 import /[nimbic_config_template, object_settingspackage]
 import ../[echo_feedback]
 
-
-
-proc GetSettingsFromConfigFile*()
-proc GetSettingsPackageFromConfigFile*(): SettingsPackage
-proc ReadConfigurationFile()
-proc CleanseConfigurationValues()
-proc AssignConfigurationValues()
-proc AssignConfigurationValuesToSettingsPackage(): SettingsPackage
-proc EchoConfigurationValues()
+proc GetSettingsFromConfigFile*(): SettingsPackage
+proc ReadConfigurationFile(FileName: string): seq[seq[string]]
+proc CleanConfigurationValues(DirtyConfig: var seq[seq[string]])
+proc AssignConfigurationValuesToSettingsPackage(ConfigurationSettings: seq[seq[string]]): SettingsPackage
 
 const
     ConfigurationFileName = "nimbic.ini"
@@ -27,55 +21,33 @@ const
     KeyAutoBackup= "autobackup"
     KeyServerVault = "servervault"
 
-var
-    ConfigurationSettings: seq[seq[string]]
-    ConfigInputBIC*: string
-    ConfigOutputJSON*: string
-    ConfigInputJSON*: string
-    ConfigOutputBIC*: string
-    ConfigInput2DA*: string
-    ConfigSqlite*: bool
-    ConfigProduction*: bool
-    ConfigAutoCleanup*: bool
-    ConfigAutoBackup*: bool
-    ConfigServerVault*: string
-
-proc GetSettingsFromConfigFile*() =
+proc GetSettingsFromConfigFile*(): SettingsPackage =
     if fileExists(ConfigurationFileName):
-        ReadConfigurationFile()
-        CleanseConfigurationValues()
-        AssignConfigurationValues()
-        #EchoConfigurationValues()
-    else:
-        EchoNotice("No configuration file found. Creating " & getAppDir() & """\""" & ConfigurationFileName)
-        writeFile(ConfigurationFileName, ConfigurationFileStarterText)
-
-proc GetSettingsPackageFromConfigFile*(): SettingsPackage =
-    if fileExists(ConfigurationFileName):
-        ReadConfigurationFile()
-        CleanseConfigurationValues()
-        return AssignConfigurationValuesToSettingsPackage()
+        var TextFromConfig = ReadConfigurationFile(ConfigurationFileName)
+        CleanConfigurationValues(TextFromConfig)
+        return AssignConfigurationValuesToSettingsPackage(TextFromConfig)
     else:
         EchoNotice("No configuration file found. Creating " & getAppDir() & """\""" & ConfigurationFileName)
         writeFile(ConfigurationFileName, ConfigurationFileStarterText)
         return NewSettingsPackage()
 
-proc ReadConfigurationFile() =
-    for line in ConfigurationFileName.lines:
+proc ReadConfigurationFile(FileName: string): seq[seq[string]] =
+    var TextFromConfigFile: seq[seq[string]]
+    for line in FileName.lines:
         if line.isEmptyOrWhiteSpace() or line.startsWith("#"):
             discard
         else:
-            ConfigurationSettings.add(split(line,"=",1))
+            TextFromConfigFile.add(split(line,"=",1))
+    return TextFromConfigFile
 
-proc CleanseConfigurationValues() =
-    for i in ConfigurationSettings.low .. ConfigurationSettings.high:
-        ConfigurationSettings[i][1] = replace(ConfigurationSettings[i][1], "\"", "")
-        ConfigurationSettings[i][1] = replace(ConfigurationSettings[i][1], "'", "")
-        if endsWith(ConfigurationSettings[i][1], """\"""):
-            removeSuffix(ConfigurationSettings[i][1], """\""")
+proc CleanConfigurationValues(DirtyConfig: var seq[seq[string]]) =
+    for i in DirtyConfig.low .. DirtyConfig.high:
+        DirtyConfig[i][1] = replace(DirtyConfig[i][1], "\"", "")
+        DirtyConfig[i][1] = replace(DirtyConfig[i][1], "'", "")
+        if endsWith(DirtyConfig[i][1], """\"""):
+            removeSuffix(DirtyConfig[i][1], """\""")
 
-proc AssignConfigurationValuesToSettingsPackage(): SettingsPackage =
-#   var ConfigFileSettings: SettingsPackage
+proc AssignConfigurationValuesToSettingsPackage(ConfigurationSettings: seq[seq[string]]): SettingsPackage =
     var ConfigFileSettings = NewSettingsPackage()
     for i in ConfigurationSettings.low .. ConfigurationSettings.high:
         case ConfigurationSettings[i][0]:
@@ -115,53 +87,3 @@ proc AssignConfigurationValuesToSettingsPackage(): SettingsPackage =
             else:
                 discard
     return ConfigFileSettings
-
-proc AssignConfigurationValues() =
-    for i in ConfigurationSettings.low .. ConfigurationSettings.high:
-        case ConfigurationSettings[i][0]:
-            of KeyInputBIC:
-                ConfigInputBIC = $ConfigurationSettings[i][1]
-
-            of KeyOutputJSON:
-                ConfigOutputJSON = $ConfigurationSettings[i][1]
-
-            of KeyInputJSON:
-                ConfigInputJSON = $ConfigurationSettings[i][1]
-
-            of KeyOutputBIC:
-                ConfigOutputBIC = $ConfigurationSettings[i][1]
-
-            of KeyInput2DA:
-                ConfigInput2DA = $ConfigurationSettings[i][1]
-
-            of KeySqlite:
-                ConfigSqlite = ($ConfigurationSettings[i][1]).parseBool
-
-            of KeyProduction:
-                ConfigProduction = ($ConfigurationSettings[i][1]).parseBool
-
-            of KeyAutoCleanup:
-                ConfigAutoCleanup = ($ConfigurationSettings[i][1]).parseBool
-
-            of KeyAutoBackup:
-                ConfigAutoBackup = ($ConfigurationSettings[i][1]).parseBool
-
-            of KeyServerVault:
-                ConfigServerVault = $ConfigurationSettings[i][1]
-
-            else:
-                discard
-
-proc EchoConfigurationValues() =
-    for i in ConfigurationSettings.low .. ConfigurationSettings.high:
-        echo ConfigurationSettings[i]
-    echo "inbic     " & $ConfigInputBIC
-    echo "outjson " & $ConfigOutputJSON
-    echo "injson    " & $ConfigInputJSON
-    echo "outbic    " & $ConfigOutputBIC
-    echo "in2da     " & $ConfigInput2DA
-    echo "sqlite    " & $ConfigSqlite
-    echo "cleanup " & $ConfigAutoCleanup
-    echo "backup    " & $ConfigAutoBackup
-    echo "prod        " & $ConfigProduction
-    echo "svault    " & $ConfigServerVault

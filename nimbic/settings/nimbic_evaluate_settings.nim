@@ -1,50 +1,10 @@
-import /[nimbic_arguments, nimbic_config, object_settingspackage]
+import /[nimbic_commandline, nimbic_config, object_settingspackage]
 
-proc ReconcileCommandLineArgumentsAndConfigSettings*()
-proc EvaluateInputDirectory()
-proc EvaluateOutputDirectory()
-proc Evaluate2DADirectory()
-proc EvaluateProduction()
 proc GetOperationSettings*(): SettingsPackage
-
-
-var ConfigProductionState*: bool
-var ConfigReadSubdirectories*: bool
-var ConfigWriteInPlace*: bool
-
-proc ReconcileCommandLineArgumentsAndConfigSettings*() =
-    EvaluateInputDirectory()
-    EvaluateOutputDirectory()
-    Evaluate2DADirectory()
-    EvaluateProduction()
-
-proc EvaluateInputDirectory() =
-    if ArgInputDirectory != DefaultInputDirectory:
-        ConfigInputBIC = ArgInputDirectory
-        ConfigInputJSON = ArgInputDirectory
-
-proc EvaluateOutputDirectory() =
-    if ArgOutputDirectory != DefaultOutputDirectory:
-        ConfigOutputBIC = ArgOutputDirectory
-        ConfigOutputJSON = ArgOutputDirectory
-
-proc Evaluate2DADirectory() =
-    if ArgInput2DA != DefaultInput2DA:
-        ConfigInput2DA = ArgInput2DA
-
-proc EvaluateProduction() =
-    ConfigProductionState = ArgInputProduction and ConfigProduction
-    if ConfigProductionState:
-        ConfigInputBIC = ConfigServerVault
-        ConfigInputJSON = ConfigServerVault
-        ConfigOutputBIC = ConfigServerVault
-        ConfigOutputJSON = ConfigServerVault
-        ConfigReadSubdirectories = true
-        ConfigWriteInPlace = true
 
 proc GetOperationSettings*(): SettingsPackage =
     var CommandLineSettings = GetSettingsFromCommandLine()
-    var ConfigFileSettings = GetSettingsPackageFromConfigFile()
+    var ConfigFileSettings = GetSettingsFromConfigFile()
     var ResultSettings = NewSettingsPackage()
 
     #Set values that can only come from command line.

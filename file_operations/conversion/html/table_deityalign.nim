@@ -1,7 +1,6 @@
 import std/[json]
 
 import /[html_formatting]
-import ../../[interface_2da]
 import ../../../nimbic/[echo_feedback]
 import ../../../bic_as_json_operations/[interface_get]
 

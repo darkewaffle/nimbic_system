@@ -1,55 +1,43 @@
-import std/[algorithm, json, sequtils, strutils, tables]
+import std/[algorithm, json, sequtils, tables]
 
 import /[html_formatting]
-import ../../[io_operations, interface_2da]
+import ../../[interface_2da]
 import ../../../nimbic/[echo_feedback]
-import ../../../nimbic/settings/[object_settingspackage]
 import ../../../bic_as_json_operations/[interface_get]
-from ../../../bic_as_json_operations/ability_modify import AbilityOrder
-
-type
-    LevelTableRow = array[5, string]
 
 const
     #1001 = "Epic Character"
     FeatsToIgnore = toSeq([1001])
 
-    LevelTableColumns: LevelTableRow = ["Level", "Class", "Ability", "Feats", "Skills"]
-    LevelTableClass = "levels"
-    LevelTableStyle = "{width: 100%; margin: auto; flex: 1 0 auto;}"
-    LevelTableTHClass = "levelsTH"
-    #Unique levelsTH classes assigned in call to BuildLevelTable > LevelHTML > CreateTableHeader by passing true as third parameter to customize width
-    LevelTableTHStyle = ".levelsTH1{width: 9%;}  .levelsTH2{width: 12%;}  .levelsTH3{width: 9%;}  .levelsTH4{width: 40%;}  .levelsTH5{width: 30%;}"
+    TableColumns= ["Level", "Class", "Ability", "Feats", "Skills"]
+    TableClass = "levels"
+    TableStyle = "{width: 100%; margin: auto; flex: 1 0 auto;}"
+    THClass = "levelsTH"
+    #Unique levelsTH classes assigned in call to BuildTable > LevelHTML > CreateTableHeader by passing true as third parameter to customize width
+    THStyle = ".levelsTH1{width: 9%;}  .levelsTH2{width: 12%;}  .levelsTH3{width: 9%;}  .levelsTH4{width: 25%;}  .levelsTH5{width: 45%;}"
 
-    LevelFeatTableClass = "levelfeattable"
-    LevelFeatTableStyle = "{margin: auto; width: 80%; border: 0px;}"
-    LevelFeatTableCell = "levelfeatcell"
-    LevelFeatCellStyle = "{width: 50%; border: 0px;}"
+    FeatTableClass = "feattable"
+    FeatTableStyle = "{margin: auto; width: 90%; border: 0px;}"
+    FeatTableCell = "featcell"
+    FeatCellStyle = "{width: 50%; border: 0px;}"
 
-    LevelSkillTableClass = "levelskilltable"
-    LevelSkillTableStyle = "{margin: auto; width: 80%; border: 0px;}"
-    LevelSkillTableCell = "levelskillcell"
-    LevelSkillCellStyle = "{border: 0px; padding: 5px; width: 33%;}"
-    LevelSkillTableCustomization = ""
+    SkillTableClass = "skilltable"
+    SkillTableStyle = "{margin: auto; width: 90%; border: 0px;}"
+    SkillTableCell = "skillcell"
+    SkillCellStyle = "{border: 0px; padding: 5px; min-width: 20%;}"
 
-let
-    LevelTableCSS* = MakeStyleClass(LevelTableClass, LevelTableStyle) & LevelTableTHStyle
-    LevelFeatCSS* = MakeStyleClass(LevelFeatTableClass, LevelFeatTableStyle) & MakeStyleClass(LevelFeatTableCell, LevelFeatCellStyle)
-    LevelSkillCSS* = MakeStyleClass(LevelSkillTableClass, LevelSkillTableStyle) & MakeStyleClass(LevelSkillTableCell, LevelSkillCellStyle) & LevelSkillTableCustomization
+proc BuildLevelTable*(CharacterJSON: JsonNode, ShowAutomaticFeats: bool = false): string
+proc BuildLevelTableCSS*(): string
 
-
-proc BuildLevelTable*(CharacterJSON: JsonNode, TableClass: string, ShowAutomaticFeats: bool = false): string
-
-
-proc BuildLevelTable*(CharacterJSON: JsonNode, TableClass: string, ShowAutomaticFeats: bool = false): string =
+proc BuildLevelTable*(CharacterJSON: JsonNode, ShowAutomaticFeats: bool = false): string =
     #Level Number, Class, Ability, Feats, Skills
 
-    var LevelHTML = CreateTableHeader(LevelTableColumns, LevelTableTHClass, true)
-    var FullLevelData: seq[LevelTableRow]
+    var LevelHTML = CreateTableHeader(TableColumns, THClass, true)
+    var FullLevelData: seq[array[5, string]]
     var ClassLevelTracker = inittable[int, int]()
 
     for i in CharacterJSON["LvlStatList"]["value"].elems.low .. CharacterJSON["LvlStatList"]["value"].elems.high:
-        var LevelData: LevelTableRow
+        var LevelData: array[5, string]
 
         #Level number
         LevelData[0] = $(i + 1)
@@ -85,10 +73,9 @@ proc BuildLevelTable*(CharacterJSON: JsonNode, TableClass: string, ShowAutomatic
                     LevelFeats.add(GetFeatLabel(SelectedFeat, true))
 
         sort(LevelFeats)
-        LevelData[3] = MakeTDTable(LevelFeats, LevelFeatTableClass, LevelFeatTableCell, 2, false)
+        LevelData[3] = MakeTDTable(LevelFeats, FeatTableClass, FeatTableCell, 2, false)
 
         #Skills
-        var LevelSkills: seq[array[2, string]]
         var SkillTable = initOrderedTable[string, int]()
 
         for j in CharacterJSON["LvlStatList"]["value"][i]["SkillList"]["value"].elems.low .. CharacterJSON["LvlStatList"]["value"][i]["SkillList"]["value"].elems.high:
@@ -103,7 +90,7 @@ proc BuildLevelTable*(CharacterJSON: JsonNode, TableClass: string, ShowAutomatic
         for key, value in  SkillTable.pairs:
             SkillSequence.add(key & " +" & $value)
 
-        LevelData[4] = MakeTDTable(SkillSequence, LevelSkillTableClass, LevelSkillTableCell, 3, false)
+        LevelData[4] = MakeTDTable(SkillSequence, SkillTableClass, SkillTableCell, 4, false)
 
         #Add LevelData 'row' to FullLevelData
         FullLevelData.add(LevelData)
@@ -116,3 +103,11 @@ proc BuildLevelTable*(CharacterJSON: JsonNode, TableClass: string, ShowAutomatic
         LevelHTML = LevelHTML & RowHTML
 
     return WrapTable(LevelHTML, TableClass)
+
+proc BuildLevelTableCSS*(): string =
+    return MakeStyleClass(TableClass, TableStyle) & 
+           MakeStyleClass(THClass, THStyle) & 
+           MakeStyleClass(FeatTableClass, FeatTableStyle) &
+           MakeStyleClass(FeatTableCell, FeatCellStyle) &
+           MakeStyleClass(SkillTableClass, SkillTableStyle) &
+           MakeStyleClass(SkillTableCell, SkillCellStyle)

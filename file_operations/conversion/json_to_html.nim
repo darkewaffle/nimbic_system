@@ -3,7 +3,7 @@ import std/[ json]
 import ../[interface_io]
 import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
-import html/[css_generators, html_generators, html_tag_wrappers, table_abilities, table_classes, table_deityalign, table_levels, table_namerace, table_spellbook]
+import html/[css_generators, header_title, html_generators, html_tag_wrappers, table_abilities, table_classes, table_deityalign, table_levels, table_namerace, table_spellbook]
 
 const
     FullPageContainer = "pagecontainer"
@@ -34,6 +34,8 @@ proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage) =
     var
         CharacterJSON = parseFile(InputFile)
 
+        PageTitle = BuildTitle(CharacterJSON)
+
         NameRace = BuildTableNameRace(CharacterJSON)
         NameRaceCSS = BuildTableNameRaceCSS()
 
@@ -59,8 +61,8 @@ proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage) =
 
         CompleteCSS = CoreStructureCSS & CoreAppearanceCSS & TopLeftContainerCSS & NameRaceCSS & DeityAlignCSS & ClassesCSS & AbilitieCSS & LevelTableCSS & SpellbookCSS
 
-        StyleHeader = WrapHead(WrapStyle(CompleteCSS))
-        FinalHTML = WrapHTML(StyleHeader & WrapBody(PageContainer))
+        Header = WrapHead(PageTitle & WrapStyle(CompleteCSS))
+        FinalHTML = WrapHTML(Header & WrapBody(PageContainer))
 
     var WritePath = CreateOutputPathHTML(InputFile, OperationSettings.OutputHTML, false)
     writeFile(WritePath, FinalHTML)

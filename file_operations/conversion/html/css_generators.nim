@@ -6,7 +6,7 @@ proc MakeStyleID*(InputName: string, InputStyle: string): string
 proc WidthStyle*(TableClass: string, THClass: string, NumberOfColumns: int): string
 proc MakeStyleWidth*(ElementClass: string, NumberOfElements: int, MaximumElementsPerRow: int): string
 proc MakeStyleFlex*(ElementClass: string, NumberOfElements: int, MaximumElementsPerRow: int, FlexGrow: int, FlexShrink: int): string
-proc CalculateWidth*(NumberOfElements: int, MaximumElementsPerRow: int): int
+proc CalculateWidth*(NumberOfElements: int, MaximumElementsPerRow: int, MaximumWidth: int = 50, MinimumWidth: int = 10): int
 
 
 proc MakeStyle(InputPrefix: string, InputName: string, InputStyle: string): string =
@@ -33,8 +33,14 @@ proc MakeStyleFlex*(ElementClass: string, NumberOfElements: int, MaximumElements
     var FlexStyle = "{flex:" & $FlexGrow & " " & $FlexShrink & " " & $CalculateWidth(NumberOfElements, MaximumElementsPerRow) & "%;}"
     return MakeStyleClass(ElementClass, FlexStyle)
 
-proc CalculateWidth*(NumberOfElements: int, MaximumElementsPerRow: int): int =
+proc CalculateWidth*(NumberOfElements: int, MaximumElementsPerRow: int, MaximumWidth: int = 50, MinimumWidth: int = 10): int =
     var 
         AvailableWidth = (100 * (1 + floor((NumberOfElements - 1) / MaximumElementsPerRow))).toInt
         WidthPerElement = (floor(AvailableWidth / NumberOfElements)).toInt - 3
-    return WidthPerElement
+
+    if WidthPerElement > MaximumWidth:
+        return MaximumWidth
+    elif WidthPerElement < MinimumWidth:
+        return MinimumWidth
+    else:
+        return WidthPerElement

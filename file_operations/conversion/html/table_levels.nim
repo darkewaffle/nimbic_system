@@ -21,10 +21,16 @@ const
     FeatTableCell = "featcell"
     FeatCellStyle = "{width: 50%; border: 0px;}"
 
-    SkillTableClass = "skilltable"
+#[     SkillTableClass = "skilltable"
     SkillTableStyle = "{margin: auto; width: 90%; border: 0px;}"
     SkillTableCell = "skillcell"
-    SkillCellStyle = "{border: 0px; padding: 5px; min-width: 20%;}"
+    SkillCellStyle = "{border: 0px; padding: 5px; min-width: 20%;}" ]#
+
+    SkillGridClass = "skillgrid"
+    SkillGridStyle = "{display: grid; grid-template-columns: repeat(auto-fit, minmax(15%, 25%)); gap: 5px 0px; margin-top: 3px; margin-bottom: 3px;}"
+    SkillBlockClass = "skillblock"
+    SkillBlockStyle = "{width: 100%; margin: auto;}"
+
 
 proc BuildLevelTable*(CharacterJSON: JsonNode, ShowAutomaticFeats: bool = false): string
 proc BuildLevelTableCSS*(): string
@@ -90,7 +96,8 @@ proc BuildLevelTable*(CharacterJSON: JsonNode, ShowAutomaticFeats: bool = false)
         for key, value in  SkillTable.pairs:
             SkillSequence.add(key & " +" & $value)
 
-        LevelData[4] = MakeTDTable(SkillSequence, SkillTableClass, SkillTableCell, 4, false)
+        #LevelData[4] = MakeTDTable(SkillSequence, SkillTableClass, SkillTableCell, 4, false)
+        LevelData[4] = MakeGrid(SkillSequence, SkillGridClass, SkillBlockClass)
 
         #Add LevelData 'row' to FullLevelData
         FullLevelData.add(LevelData)
@@ -109,5 +116,7 @@ proc BuildLevelTableCSS*(): string =
            MakeStyleClass(THClass, THStyle) & 
            MakeStyleClass(FeatTableClass, FeatTableStyle) &
            MakeStyleClass(FeatTableCell, FeatCellStyle) &
-           MakeStyleClass(SkillTableClass, SkillTableStyle) &
-           MakeStyleClass(SkillTableCell, SkillCellStyle)
+#[            MakeStyleClass(SkillTableClass, SkillTableStyle) &
+           MakeStyleClass(SkillTableCell, SkillCellStyle) ]#
+           MakeStyleClass(SkillGridClass, SkilLGridStyle) &
+           MakeStyleClass(SkillBlockClass, SkillBlockStyle)

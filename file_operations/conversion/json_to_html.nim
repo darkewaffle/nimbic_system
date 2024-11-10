@@ -18,7 +18,7 @@ const
         """
     CoreAppearanceCSS = """
         /*  Visual Style  */
-        span, table {font-family: Helvetica, Verdana, Tahoma, sans-serif; font-size: 1em; text-align: center; color: #B4ADB4;}
+        div, span, table {font-family: Helvetica, Verdana, Tahoma, sans-serif; font-size: 1em; text-align: center; color: #B4ADB4;}
         table, th, td {border: 2px dotted #696267; border-collapse: collapse;}
         td, th {padding: 3px;}
         """

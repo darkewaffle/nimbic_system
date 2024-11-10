@@ -1,4 +1,5 @@
 import std/[json]
+import /[string_formatting]
 
 proc CharacterHasRace*(CharacterJSON: JsonNode, RequiredRace: int): bool
 proc CharacterHasSubrace*(CharacterJSON: JsonNode, RequiredSubrace: string): bool
@@ -21,4 +22,4 @@ proc GetCharacterRace*(CharacterJSON: JsonNode): int =
     return CharacterJSON["Race"]["value"].getInt
 
 proc GetCharacterSubrace*(CharacterJSON: JsonNode): string =
-    return CharacterJSON["Subrace"]["value"].getStr
+    return SafeString(CharacterJSON["Subrace"]["value"].getStr)

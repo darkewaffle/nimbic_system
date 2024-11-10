@@ -1,4 +1,5 @@
 import std/[json, strutils]
+import /[string_formatting]
 
 proc GetCharacterFirstName*(CharacterJSON: JsonNode): string
 proc GetCharacterLastName*(CharacterJSON: JsonNode): string
@@ -12,25 +13,16 @@ proc GetCharacterLawfulChaoticDescription*(CharacterJSON: JsonNode): string
 
 
 proc GetCharacterFirstName*(CharacterJSON: JsonNode): string =
-    var FirstName = CharacterJSON["FirstName"]["value"]["0"].getStr
-    removePrefix(FirstName, " ")
-    removeSuffix(FirstName, " ")
-    return FirstName
+    return SafeString(CharacterJSON["FirstName"]["value"]["0"].getStr)
 
 proc GetCharacterLastName*(CharacterJSON: JsonNode): string =
-    var LastName = CharacterJSON["LastName"]["value"]["0"].getStr
-    removePrefix(LastName, " ")
-    removeSuffix(LastName, " ")
-    return LastName
+    return SafeString(CharacterJSON["LastName"]["value"]["0"].getStr)
 
 proc GetCharacterFullName*(CharacterJSON: JsonNode): string =
-    var FullName = GetCharacterFirstName(CharacterJSON) & " " & GetCharacterLastName(CharacterJSON)
-    removePrefix(FullName, " ")
-    removeSuffix(FullName, " ")
-    return FullName
+    return GetCharacterFirstName(CharacterJSON) & " " & GetCharacterLastName(CharacterJSON)
 
 proc GetCharacterDeity*(CharacterJSON: JsonNode): string =
-    return CharacterJSON["Deity"]["value"].getStr
+    return SafeString(CharacterJSON["Deity"]["value"].getStr)
 
 proc GetCharacterGoodEvil*(CharacterJSON: JsonNode): int =
     return CharacterJSON["GoodEvil"]["value"].getInt

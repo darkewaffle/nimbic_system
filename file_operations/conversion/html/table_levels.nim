@@ -14,7 +14,7 @@ const
     TableStyle = "{width: 100%; margin: auto; flex: 1 0 auto;}"
     THClass = "levelsTH"
     #Unique levelsTH classes assigned in call to BuildTable > LevelHTML > CreateTableHeader by passing true as third parameter to customize width
-    THStyle = ".levelsTH1{width: 9%;}  .levelsTH2{width: 12%;}  .levelsTH3{width: 9%;}  .levelsTH4{width: 25%;}  .levelsTH5{width: 45%;}"
+    THStyle = ".levelsTH1{width: 5%;}  .levelsTH2{width: 9%;}  .levelsTH3{width: 6%;}  .levelsTH4{width: 35%;}  .levelsTH5{width: 45%;}"
 
     FeatTableClass = "feattable"
     FeatTableStyle = "{margin: auto; width: 90%; border: 0px;}"

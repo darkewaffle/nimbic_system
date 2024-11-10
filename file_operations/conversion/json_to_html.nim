@@ -14,7 +14,7 @@ const
         html, body, .pagecontainer {width: 100%; background-color: #00101F; margin: 0px; padding: 0px;}
         .pagecontainer {width: 75%;}
         body {padding: 50px;}
-        .pagecontainer{display: flex; flex-direction: row; flex-wrap: wrap; gap: 30px 40px; margin: auto;}
+        .pagecontainer{display: flex; flex-direction: row; flex-wrap: wrap; gap: 50px 40px; margin: auto;}
         """
     CoreAppearanceCSS = """
         /*  Visual Style  */

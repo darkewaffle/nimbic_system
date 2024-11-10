@@ -1,13 +1,11 @@
 nimbic TODO / notes
 
-io module for directory validation with feedback
-
-
+--help output
 doublecheck validity of bic output with sql
-standardize commandline input as --longoption only
-config and commandline dir inputs should both be cleaned
 
+getfeatconstant with pretty might be more readable
 html: feat column wider for wizardo testo, alignment/spacing of skill columns. less space at page edges? level table first three columns smaller?
+
 
 nim_bic_editor - try to use solely for orchestration, put all procs/code into imports
 

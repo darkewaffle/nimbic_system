@@ -1,4 +1,4 @@
-import std/[dirs, os, paths, random]
+import std/[dirs, files, os, paths, random]
 
 import /[io_constants]
 import ../../nimbic/[echo_feedback]
@@ -6,43 +6,47 @@ import ../../nimbic/settings/[object_settingspackage]
 
 
 
-proc CreateOutputPath(FileLocation: string, OutputDirectory: string, FileExtension: string, Overwrite: bool = true, OverrideFileName: string = ""): string
-proc CreateOutputPathJSON*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true): string
-proc CreateOutputPathBIC*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true): string
-proc CreateOutputPathSqlite*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true): string
-proc CreateOutputPathHTML*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true, OverrideFileName: string = ""): string
+proc CreateOutputPath(InputFile: Path, OutputDirectory: Path, FileExtension: string, Overwrite: bool = true, OverrideFileName: string = ""): Path
+proc CreateOutputPathJSON*(InputFile: Path, OutputDirectory: Path, Overwrite: bool = true): Path
+proc CreateOutputPathBIC*(InputFile: Path, OutputDirectory: Path, Overwrite: bool = true): Path
+proc CreateOutputPathSqlite*(InputFile: Path, OutputDirectory: Path, Overwrite: bool = true): Path
+proc CreateOutputPathHTML*(InputFile: Path, OutputDirectory: Path, Overwrite: bool = true, OverrideFileName: string = ""): Path
 
 
 
-proc CreateOutputPath(FileLocation: string, OutputDirectory: string, FileExtension: string, Overwrite: bool = true, OverrideFileName: string = ""): string =
-    var SplitPath = splitFile(Path FileLocation)
-    var OutputPath = Path(OutputDirectory)
+proc CreateOutputPath(InputFile: Path, OutputDirectory: Path, FileExtension: string, Overwrite: bool = true, OverrideFileName: string = ""): Path =
+    var 
+        InputFileSplit = splitFile(InputFile)
+        OutputPath = OutputDirectory
+
     if not(dirExists(OutputPath)):
-        EchoWarning("Path does not exist, attempting to create " & $OutputPath)
+        EchoWarning("Path does not exist, attempting to create " & OutputPath.string)
         createDir(OutputPath)
 
     if OverrideFileName != "":
         OutputPath = OutputPath / Path(OverrideFileName)
     else:
-        OutputPath = OutputPath / SplitPath.name
+        OutputPath = OutputPath / InputFileSplit.name
 
     OutputPath = addFileExt(OutputPath, FileExtension)
-    if fileExists($OutputPath) and not(Overwrite):
-        SplitPath = splitFile(OutputPath)
+
+    if fileExists(OutputPath) and not(Overwrite):
+        var OutputPathSplit = splitFile(OutputPath)
         randomize()
-        var RandomName = $SplitPath.name & "_" & $rand(99999)
-        OutputPath = SplitPath.dir / Path(RandomName)
+        var RandomName = $OutputPathSplit.name & "_" & $rand(99999)
+        OutputPath = OutputPathSplit.dir / Path(RandomName)
         OutputPath = addFileExt(OutputPath, FileExtension)
-    return $OutputPath
 
-proc CreateOutputPathJSON*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true): string =
-    return CreateOutputPath(FileLocation, OutputDirectory, ExtensionJSON, Overwrite)
+    return OutputPath
 
-proc CreateOutputPathBIC*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true): string =
-    return CreateOutputPath(FileLocation, OutputDirectory, ExtensionBIC, Overwrite)
+proc CreateOutputPathJSON*(InputFile: Path, OutputDirectory: Path, Overwrite: bool = true): Path =
+    return CreateOutputPath(InputFile, OutputDirectory, ExtensionJSON, Overwrite)
 
-proc CreateOutputPathSqlite*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true): string =
-    return CreateOutputPath(FileLocation, OutputDirectory, ExtensionSQLite, Overwrite)
+proc CreateOutputPathBIC*(InputFile: Path, OutputDirectory: Path, Overwrite: bool = true): Path =
+    return CreateOutputPath(InputFile, OutputDirectory, ExtensionBIC, Overwrite)
 
-proc CreateOutputPathHTML*(FileLocation: string, OutputDirectory: string, Overwrite: bool = true, OverrideFileName: string = ""): string =
-    return CreateOutputPath(FileLocation, OutputDirectory, ExtensionHTML, Overwrite, OverrideFileName)
+proc CreateOutputPathSqlite*(InputFile: Path, OutputDirectory: Path, Overwrite: bool = true): Path =
+    return CreateOutputPath(InputFile, OutputDirectory, ExtensionSQLite, Overwrite)
+
+proc CreateOutputPathHTML*(InputFile: Path, OutputDirectory: Path, Overwrite: bool = true, OverrideFileName: string = ""): Path =
+    return CreateOutputPath(InputFile, OutputDirectory, ExtensionHTML, Overwrite, OverrideFileName)

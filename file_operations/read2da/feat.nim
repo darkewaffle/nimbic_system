@@ -3,7 +3,7 @@ import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
 
 const
-    FeatFileName = "feat.2da"
+    FeatFileName = "feat"
     FeatIgnoreLines = 3
     FeatIgnoreColumns = 0
     FeatReadColumns = 2

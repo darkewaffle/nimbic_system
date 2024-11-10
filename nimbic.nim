@@ -19,7 +19,7 @@ proc GetCore2DAFiles(OperationSettings: SettingsPackage)
 var
 #    CommandLineArguments = initOptParser(quoteShellCommand(commandLineParams()))
     MeetsRequirements = false
-    FilesToChange: seq[string]
+    FilesToChange: seq[Path]
     CharacterJSON: JsonNode
     RemovalSuccessful: bool
     ModificationSuccessful: bool
@@ -55,35 +55,35 @@ proc ValidateModeArgumentsFromPackage() =
     if OperationSettings.Mode in ModeFileOperations:
         case OperationSettings.Mode:
             of "bictojson":
-                if not(dirExists(Path OperationSettings.InputBIC)):
+                if not(dirExists(OperationSettings.InputBIC)):
                     EchoError("Directory is not valid - " & $OperationSettings.InputBIC)
                     quit(QuitSuccess)
 
             of "jsontobic", "jsontohtml":
-                if not(dirExists(Path OperationSettings.InputJSON)):
+                if not(dirExists(OperationSettings.InputJSON)):
                     EchoError("Directory is not valid - " & $OperationSettings.InputJSON)
                     quit(QuitSuccess)
 
             of "purgebackups", "purgebackupsall":
-                if not(dirExists(Path OperationSettings.OutputBIC)):
+                if not(dirExists(OperationSettings.OutputBIC)):
                     EchoError("Directory is not valid - " & $OperationSettings.OutputBIC)
                     quit(QuitSuccess)
 
             of "restorebackup":
-                if not(dirExists(Path OperationSettings.OutputBIC)):
+                if not(dirExists(OperationSettings.OutputBIC)):
                     EchoError("Directory is not valid - " & $OperationSettings.OutputBIC)
                     quit(QuitSuccess)
-                elif OperationSettings.RestoreFrom == "":
+                elif OperationSettings.RestoreFrom == Path(""):
                     EchoError("You must specify a backup directory using the --restorefrom:name option.")
                     quit(QuitSuccess)
 
     if OperationSettings.Mode in ModeCharacterModify:
         if OperationSettings.Mode in ModeRequires2DA:
-            if not(dirExists(Path OperationSettings.Input2DA)):
+            if not(dirExists(OperationSettings.Input2DA)):
                 EchoError("Directory is not valid - " & $OperationSettings.Input2DA)
                 quit(QuitSuccess)
 
-        if not(dirExists(Path OperationSettings.InputJSON)):
+        if not(dirExists(OperationSettings.InputJSON)):
             EchoError("Directory is not valid - " & $OperationSettings.InputJSON)
             quit(QuitSuccess)
 
@@ -155,8 +155,8 @@ proc PerformModeOperationFromPackage() =
         FilesToChange = GetJSONFiles(OperationSettings)
         for i in FilesToChange.low .. FilesToChange.high:
             EchoBlank()
-            CharacterJSON = parseFile(FilesToChange[i])
-            MeetsRequirements = EvaluateCharacterRequirementsFromPackage(CharacterJSON, FilesToChange[i])
+            CharacterJSON = parseFile(FilesToChange[i].string)
+            MeetsRequirements = EvaluateCharacterRequirementsFromPackage(CharacterJSON, FilesToChange[i].string)
 
             if not(MeetsRequirements):
                 discard
@@ -188,8 +188,8 @@ proc PerformModeOperationFromPackage() =
                         ModifyAbilities(CharacterJSON, OperationSettings)
 
             if MeetsRequirements:
-                writeFile(FilesToChange[i], pretty(CharacterJSON, 4))
-                echo "Writing to " & FilesToChange[i]
+                writeFile(FilesToChange[i].string, pretty(CharacterJSON, 4))
+                echo "Writing to " & FilesToChange[i].string
 
 proc EvaluateCharacterRequirementsFromPackage(CharacterJSON: JsonNode, CharacterFileLocation: string): bool =
     var

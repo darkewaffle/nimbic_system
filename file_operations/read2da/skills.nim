@@ -3,7 +3,7 @@ import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
 
 const
-    SkillFileName = "skills.2da"
+    SkillFileName = "skills"
     SkillIgnoreLines = 3
     SkillIgnoreColumns = 0
     SkillReadColumns = 2

@@ -1,4 +1,4 @@
-import std/[os, parseopt, strutils]
+import std/[os, parseopt, paths, strutils]
 import /[object_settingspackage]
 
 proc GetSettingsFromCommandLine*(): SettingsPackage
@@ -65,24 +65,24 @@ proc GetSettingsFromCommandLine*(): SettingsPackage =
                     #Assign to both Input settings since it could be either depending on the chosen mode.
                     #Modes only use one Input directory per operation so this will not have any adverse effects.
                     of "input":
-                        CommandLineSettings.InputBIC = val
-                        CommandLineSettings.InputJSON = val
+                        CommandLineSettings.InputBIC = Path(val)
+                        CommandLineSettings.InputJSON = Path(val)
 
                     #Assign to all Output settings since it could be any of them depending on the chosen mode.
                     #Modes only use one Output directory per operation so this will not have any adverse effects.
                     of "output":
-                        CommandLineSettings.OutputBIC = val
-                        CommandLineSettings.OutputJSON = val
-                        CommandLineSettings.OutputHTML = val
+                        CommandLineSettings.OutputBIC = Path(val)
+                        CommandLineSettings.OutputJSON = Path(val)
+                        CommandLineSettings.OutputHTML = Path(val)
 
                     of "input2da", "2da":
-                        CommandLineSettings.Input2DA = val
+                        CommandLineSettings.Input2DA = Path(val)
 
                     of "production", "prod":
                         CommandLineSettings.ProductionState = true
 
                     of "restorefrom", "rf":
-                        CommandLineSettings.RestoreFrom = val
+                        CommandLineSettings.RestoreFrom = Path(val)
 
                     else:
                         discard

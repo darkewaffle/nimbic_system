@@ -1,4 +1,4 @@
-import std/[json, strutils]
+import std/[json, paths, strutils]
 
 import ../[interface_2da, interface_io]
 import ../../nimbic/[echo_feedback]
@@ -27,14 +27,14 @@ const
     TopLeftContainerStyle = "{flex: 1 0 60%; display: flex; flex-direction: column; row-gap: 40px;}"
 
 
-proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage)
+proc JSONtoHTML*(InputFile: Path, OperationSettings: SettingsPackage)
 proc BuildFileName(CharacterJSON: JsonNode): string
 
-proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage) =
+proc JSONtoHTML*(InputFile: Path, OperationSettings: SettingsPackage) =
     echo "JSON to HTML beginning " & $InputFile
 
     var
-        CharacterJSON = parseFile(InputFile)
+        CharacterJSON = parseFile(InputFile.string)
 
         PageTitle = BuildTitle(CharacterJSON)
 
@@ -67,9 +67,9 @@ proc JSONtoHTML*(InputFile: string, OperationSettings: SettingsPackage) =
         FinalHTML = WrapHTML(Header & WrapBody(PageContainer))
 
     var WritePath = CreateOutputPathHTML(InputFile, OperationSettings.OutputHTML, OperationSettings.OverwriteHTML, BuildFileName(CharacterJSON))
-    writeFile(WritePath, FinalHTML)
+    writeFile(WritePath.string, FinalHTML)
 
-    echo "JSON to HTML complete " & WritePath
+    echo "JSON to HTML complete " & WritePath.string
 
 
 proc BuildFileName(CharacterJSON: JsonNode): string =

@@ -1,3 +1,4 @@
+import std/[paths]
 import /[nimbic_commandline, nimbic_config, object_settingspackage]
 
 proc GetOperationSettings*(): SettingsPackage
@@ -6,6 +7,7 @@ proc GetOperationSettings*(): SettingsPackage =
     var CommandLineSettings = GetSettingsFromCommandLine()
     var ConfigFileSettings = GetSettingsFromConfigFile()
     var ResultSettings = NewSettingsPackage()
+    var EmptyPath = Path("")
 
     #Set values that can only come from command line.
     ResultSettings.Mode = CommandLineSettings.Mode
@@ -31,32 +33,32 @@ proc GetOperationSettings*(): SettingsPackage =
     ResultSettings.ServerVault = ConfigFileSettings.ServerVault
 
     #Resolve setting conflicts. If command line input has value then prioritize it. Otherwise use config.ini value.
-    if CommandLineSettings.Input2DA != "":
+    if CommandLineSettings.Input2DA != EmptyPath:
         ResultSettings.Input2DA = CommandLineSettings.Input2DA
     else:
         ResultSettings.Input2DA = ConfigFileSettings.Input2DA
 
-    if CommandLineSettings.InputBIC != "":
+    if CommandLineSettings.InputBIC != EmptyPath:
         ResultSettings.InputBIC = CommandLineSettings.InputBIC
     else:
         ResultSettings.InputBIC = ConfigFileSettings.InputBIC
 
-    if CommandLineSettings.OutputJSON != "":
+    if CommandLineSettings.OutputJSON != EmptyPath:
         ResultSettings.OutputJSON = CommandLineSettings.OutputJSON
     else:
         ResultSettings.OutputJSON = ConfigFileSettings.OutputJSON
 
-    if CommandLineSettings.InputJSON != "":
+    if CommandLineSettings.InputJSON != EmptyPath:
         ResultSettings.InputJSON = CommandLineSettings.InputJSON
     else:
         ResultSettings.InputJSON = ConfigFileSettings.InputJSON
 
-    if CommandLineSettings.OutputBIC != "":
+    if CommandLineSettings.OutputBIC != EmptyPath:
         ResultSettings.OutputBIC = CommandLineSettings.OutputBIC
     else:
         ResultSettings.OutputBIC = ConfigFileSettings.OutputBIC
 
-    if CommandLineSettings.OutputHTML != "":
+    if CommandLineSettings.OutputHTML != EmptyPath:
         ResultSettings.OutputHTML = CommandLineSettings.OutputHTML
     else:
         ResultSettings.OutputHTML = ConfigFileSettings.OutputHTML

@@ -3,8 +3,7 @@ import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
 
 const
-#spells.2da
-    SpellFileName = "spells.2da"
+    SpellFileName = "spells"
     SpellIgnoreLines = 3
     SpellIgnoreColumns = 0
     SpellReadColumns = 2

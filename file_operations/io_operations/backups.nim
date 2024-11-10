@@ -1,25 +1,19 @@
-import std/[algorithm, os, strutils, times]
-
-import /[get_files, io_constants]
+import std/[algorithm, dirs, os, paths, strutils, times]
+import /[conversions_stringpath, get_files, io_constants]
 import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
 
-
-
 proc PurgeBackupDirectories*(OperationSettings: SettingsPackage)
-proc DeleteDirectories(DirectoryList: var seq[string], KeepLast: int)
+proc DeleteDirectories(DirectoryList: seq[Path], KeepLast: int)
 proc RestoreBackup*(OperationSettings: SettingsPackage)
-proc ValidateBackupName(InputName: var string)
-proc CopyBackupBICs(BackupDirectory: string, ParentDirectory: string)
+proc ValidateBackupName(InputName: Path): Path
+proc ValidateBackupName(InputName: string): string
+proc CopyBackupBICs(BackupDirectory: Path, ParentDirectory: Path)
 proc TimestampString(): string
-
-
 
 let
     OperationTimestamp* = TimestampString()
     BackupDirectoryFullName* = BackupDirectoryPrefix & OperationTimestamp
-
-
 
 proc PurgeBackupDirectories*(OperationSettings: SettingsPackage) =
     var LatestBackupsToKeep: int
@@ -41,38 +35,50 @@ proc PurgeBackupDirectories*(OperationSettings: SettingsPackage) =
         var BackupDirectories = GetSubdirectoriesBackup(TargetDirectory)
         DeleteDirectories(BackupDirectories, LatestBackupsToKeep)
 
-proc DeleteDirectories(DirectoryList: var seq[string], KeepLast: int) =
-    sort(DirectoryList, Ascending)
-    for i in DirectoryList.low .. DirectoryList.high - KeepLast:
-        removeDir(DirectoryList[i])
-        EchoNotice("Deleting directory: " & $DirectoryList[i])
+proc DeleteDirectories(DirectoryList: seq[Path], KeepLast: int) =
+    var DirectoryListAsString = SeqPathToSeqString(DirectoryList)
+    sort(DirectoryListAsString, Ascending)
+    var DirectoryListAsSortedPaths = SeqStringToSeqPath(DirectoryListAsString)
+
+    for i in DirectoryListAsSortedPaths.low .. DirectoryListAsSortedPaths.high - KeepLast:
+        removeDir(DirectoryListAsSortedPaths[i])
+        EchoNotice("Deleting directory: " & DirectoryListAsSortedPaths[i].string)
+
+
 
 proc RestoreBackup*(OperationSettings: SettingsPackage) =
-    var TargetDirectory = OperationSettings.OutputBIC
-    var BackupToRestore = OperationSettings.RestoreFrom
-    ValidateBackupName(BackupToRestore)
+    var 
+        TargetDirectory = OperationSettings.OutputBIC
+        BackupToRestore = ValidateBackupName(OperationSettings.RestoreFrom)
 
     if OperationSettings.ReadSubdirectories:
         var SubdirectoriesInTarget = GetSubdirectoriesAll(TargetDirectory)
         for i in SubdirectoriesInTarget.low .. SubdirectoriesInTarget.high:
-            var BackupFullPath = SubdirectoriesInTarget[i] & """\""" & BackupToRestore
+            var BackupFullPath = SubdirectoriesInTarget[i] / BackupToRestore
             CopyBackupBICs(BackupFullPath, SubdirectoriesInTarget[i])
     else:
-        var BackupFullPath = TargetDirectory & """\""" & BackupToRestore
+        var BackupFullPath = TargetDirectory / BackupToRestore
         CopyBackupBICs(BackupFullPath, TargetDirectory)
 
-proc ValidateBackupName(InputName: var string) =
-    if InputName.startsWith("""20"""):
-        InputName = BackupDirectoryPrefix & InputName
+proc ValidateBackupName(InputName: Path): Path =
+    return Path(ValidateBackupName(InputName.string))
 
-proc CopyBackupBICs(BackupDirectory: string, ParentDirectory: string) =
+proc ValidateBackupName(InputName: string): string =
+    if InputName.startsWith("""20"""):
+        return BackupDirectoryPrefix & InputName
+    else:
+        return InputName
+
+proc CopyBackupBICs(BackupDirectory: Path, ParentDirectory: Path) =
     if dirExists(BackupDirectory):
         var BackupBICs = GetBICFiles(BackupDirectory)
         for i in BackupBICs.low .. BackupBICs.high:
-            copyFileToDir(BackupBICs[i], ParentDirectory)
-            EchoNotice("Copying file: " & BackupBICs[i] & " > " & ParentDirectory)
+            copyFileToDir(BackupBICs[i].string, ParentDirectory.string)
+            EchoNotice("Copying file: " & BackupBICs[i].string & " > " & ParentDirectory.string)
     else:
-        EchoError("Backup directory not found: " & BackupDirectory)
+        EchoError("Backup directory not found: " & BackupDirectory.string)
+
+
 
 proc TimestampString(): string =
     var NowString = $now()

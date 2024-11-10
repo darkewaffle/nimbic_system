@@ -4,7 +4,7 @@ import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
 
 const
-    RulesetFileName = "ruleset.2da"
+    RulesetFileName = "ruleset"
     RulesetIgnoreLines = 10
     RulesetIgnoreColumns = 1
     RulesetReadColumns = 2

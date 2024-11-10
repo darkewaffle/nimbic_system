@@ -1,3 +1,5 @@
+import std/[paths]
+
 #Contains each setting from both command line and config.ini relevant to how the program operates.
 #'Active' vars indicate if a value has been input from the command line. This is done since an uninitialized value
 #for an int would be 0 but 0 is also a valid identifier for some values (like race 0 = dwarf, class 0 = barbarian).
@@ -24,23 +26,23 @@ type SettingsPackage* = object
     FeatActive*: bool
     AbilityInput*: array[0..5, int]
     HPInput*: int
-    RestoreFrom*: string
+    RestoreFrom*: Path
 
     #Config file only
     ExpectSqlite*: bool
     OverwriteHTML*: bool
     AutoCleanup*: bool
     AutoBackup*: bool
-    ServerVault*: string
+    ServerVault*: Path
 
     #Directories can be input from command line or config.
     #Evaluated and assigned in nimbic_evaluate_settings
-    Input2DA*: string
-    InputBIC*: string
-    OutputJSON*: string
-    InputJSON*: string
-    OutputBIC*: string
-    OutputHTML*: string
+    Input2DA*: Path
+    InputBIC*: Path
+    OutputJSON*: Path
+    InputJSON*: Path
+    OutputBIC*: Path
+    OutputHTML*: Path
 
     #Production settings that only apply to Server Vault operations
     ProductionState*: bool
@@ -65,20 +67,20 @@ proc NewSettingsPackage*(): SettingsPackage =
     NewSettings.FeatActive = false
     NewSettings.AbilityInput = [0, 0, 0, 0, 0, 0]
     NewSettings.HPInput = 0
-    NewSettings.RestoreFrom = ""
+    NewSettings.RestoreFrom = Path("")
 
     NewSettings.ExpectSqlite = false
     NewSettings.OverwriteHTML = false
     NewSettings.AutoCleanup = false
     NewSettings.AutoBackup = false
-    NewSettings.ServerVault = ""
+    NewSettings.ServerVault = Path("")
 
-    NewSettings.Input2DA = ""
-    NewSettings.InputBIC = ""
-    NewSettings.OutputJSON = ""
-    NewSettings.InputJSON = ""
-    NewSettings.OutputBIC = ""
-    NewSettings.OutputHTML = ""
+    NewSettings.Input2DA = Path("")
+    NewSettings.InputBIC = Path("")
+    NewSettings.OutputJSON = Path("")
+    NewSettings.InputJSON = Path("")
+    NewSettings.OutputBIC = Path("")
+    NewSettings.OutputHTML = Path("")
 
     NewSettings.ProductionState = false
     NewSettings.ReadSubdirectories = false

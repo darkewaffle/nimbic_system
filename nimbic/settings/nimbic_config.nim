@@ -1,4 +1,4 @@
-import std/[os, strutils]
+import std/[os, paths, strutils]
 import /[nimbic_config_template, object_settingspackage]
 import ../[echo_feedback]
 
@@ -53,25 +53,25 @@ proc AssignConfigurationValuesToSettingsPackage(ConfigurationSettings: seq[seq[s
     for i in ConfigurationSettings.low .. ConfigurationSettings.high:
         case ConfigurationSettings[i][0]:
             of KeyInputBIC:
-                ConfigFileSettings.InputBIC = $ConfigurationSettings[i][1]
+                ConfigFileSettings.InputBIC =  Path(ConfigurationSettings[i][1])
 
             of KeyOutputJSON:
-                ConfigFileSettings.OutputJSON = $ConfigurationSettings[i][1]
+                ConfigFileSettings.OutputJSON =  Path(ConfigurationSettings[i][1])
 
             of KeyInputJSON:
-                ConfigFileSettings.InputJSON = $ConfigurationSettings[i][1]
+                ConfigFileSettings.InputJSON =  Path(ConfigurationSettings[i][1])
 
             of KeyOutputBIC:
-                ConfigFileSettings.OutputBIC = $ConfigurationSettings[i][1]
+                ConfigFileSettings.OutputBIC =  Path(ConfigurationSettings[i][1])
 
             of KeyOutputHTML:
-                ConfigFileSettings.OutputHTML = $ConfigurationSettings[i][1]
+                ConfigFileSettings.OutputHTML =  Path(ConfigurationSettings[i][1])
 
             of KeyOverwriteHTML:
                 ConfigFileSettings.OverwriteHTML = ($ConfigurationSettings[i][1]).parseBool
 
             of KeyInput2DA:
-                ConfigFileSettings.Input2DA = $ConfigurationSettings[i][1]
+                ConfigFileSettings.Input2DA = Path(ConfigurationSettings[i][1])
 
             of KeySqlite:
                 ConfigFileSettings.ExpectSqlite = ($ConfigurationSettings[i][1]).parseBool
@@ -86,7 +86,7 @@ proc AssignConfigurationValuesToSettingsPackage(ConfigurationSettings: seq[seq[s
                 ConfigFileSettings.AutoBackup = ($ConfigurationSettings[i][1]).parseBool
 
             of KeyServerVault:
-                ConfigFileSettings.ServerVault = $ConfigurationSettings[i][1]
+                ConfigFileSettings.ServerVault = Path(ConfigurationSettings[i][1])
 
             else:
                 discard

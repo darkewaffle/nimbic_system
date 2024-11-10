@@ -1,9 +1,9 @@
-import /[constants_2da, reader, format_2da]
+import /[reader, format_2da]
 import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
 
 const
-    RaceFileName = "racialtypes.2da"
+    RaceFileName = "racialtypes"
     RaceIgnoreLines = 3
     RaceIgnoreColumns = 0
     RaceReadColumns = 34
@@ -99,7 +99,7 @@ proc GetRaceAbilityModifiers*(RaceID: int): array[6, int] =
 proc GetRaceFeatFile*(RaceID: int): string =
     for i in Race2DA.low .. Race2DA.high:
         if SafeParseInt2DA(Race2DA[i][RaceColumnRaceID]) == RaceID:
-            return Race2DA[i][RaceColumnFeatFile] & Extension2DA
+            return Race2DA[i][RaceColumnFeatFile]
     return ""
 
 proc GetRaceExtraSkillPointsPerLevel*(RaceID: int): int =

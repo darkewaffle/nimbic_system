@@ -6,24 +6,25 @@ import ../../nimbic/settings/[object_settingspackage]
 
 
 
-proc ReplaceFileExtension*(FileLocation: string, NewExtension: string): string
-proc SetFileExtensionJSON*(FileLocation: string): string
-proc SetFileExtensionBIC*(FileLocation: string): string
-proc SetFileExtensionSqlite*(FileLocation: string): string
+proc ReplaceFileExtension*(FileLocation: Path, NewExtension: string): Path
+proc SetFileExtensionJSON*(FileLocation: Path): Path
+proc SetFileExtensionBIC*(FileLocation: Path): Path
+proc SetFileExtensionSqlite*(FileLocation: Path): Path
 
 
 
-proc ReplaceFileExtension*(FileLocation: string, NewExtension: string): string =
-    var SplitPath = splitFile(Path FileLocation)
-    var NewPath = SplitPath.dir / SplitPath.name
+proc ReplaceFileExtension*(FileLocation: Path, NewExtension: string): Path =
+    var 
+        SplitPath = splitFile(FileLocation)
+        NewPath = SplitPath.dir / SplitPath.name
     NewPath = addFileExt(NewPath, NewExtension)
-    return $NewPath
+    return NewPath
 
-proc SetFileExtensionJSON*(FileLocation: string): string =
+proc SetFileExtensionJSON*(FileLocation: Path): Path =
     return ReplaceFileExtension(FileLocation, ExtensionJSON)
 
-proc SetFileExtensionBIC*(FileLocation: string): string =
+proc SetFileExtensionBIC*(FileLocation: Path): Path =
     return ReplaceFileExtension(FileLocation, ExtensionBIC)
 
-proc SetFileExtensionSqlite*(FileLocation: string): string =
+proc SetFileExtensionSqlite*(FileLocation: Path): Path =
     return ReplaceFileExtension(FileLocation, ExtensionSqlite)

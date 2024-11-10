@@ -1,9 +1,9 @@
-import /[constants_2da, reader, format_2da]
+import /[reader, format_2da]
 import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
 
 const
-    ClassFileName = "classes.2da"
+    ClassFileName = "classes"
     ClassIgnoreLines = 3
     ClassIgnoreColumns = 0
     ClassReadColumns = 59
@@ -51,7 +51,7 @@ proc GetClassHPPerLevel*(ClassID: int): int =
 proc GetClassFeatFile*(ClassID: int): string =
     for i in Class2DA.low .. Class2DA.high:
         if SafeParseInt2DA(Class2DA[i][ClassColumnClassID]) == ClassID:
-            return Class2DA[i][ClassColumnFeatFile] & Extension2DA
+            return Class2DA[i][ClassColumnFeatFile]
     return ""
 
 proc GetClassSkillPointsPerLevel*(ClassID: int): int =
@@ -66,7 +66,7 @@ proc GetClassStatFile*(ClassID: int): string =
             if Class2DA[i][ClassColumnStatFile] == "****":
                 return ""
             else:
-                return Class2DA[i][ClassColumnStatFile] & Extension2DA
+                return Class2DA[i][ClassColumnStatFile]
     return ""
 
 proc GetClassSpellbookRestricted*(ClassID: int): bool =

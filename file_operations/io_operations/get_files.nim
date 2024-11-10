@@ -1,55 +1,58 @@
-import std/[os, sequtils]
-
-import /[io_constants]
+import std/[os, paths, sequtils]
+import /[conversions_stringpath, io_constants]
 import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
 
-proc GetFilesByPattern(DirectoryPath: string, ReadSubdirectories: bool, FileTypePattern: string): seq[string]
-proc GetBICFiles*(OperationSettings: SettingsPackage): seq[string]
-proc GetBICFiles*(DirectoryPath: string): seq[string]
-proc GetJSONFiles*(OperationSettings: SettingsPackage): seq[string]
+proc GetFilesByPattern(Directory: Path, ReadSubdirectories: bool, FileTypePattern: string): seq[Path]
+proc GetBICFiles*(OperationSettings: SettingsPackage): seq[Path]
+proc GetBICFiles*(Directory: Path): seq[Path]
+proc GetJSONFiles*(OperationSettings: SettingsPackage): seq[Path]
 
-proc GetSubdirectoriesByPattern(ParentDirectory: string, SearchPattern: string): seq[string]
-proc GetSubdirectoriesAll*(ParentDirectory: string): seq[string]
-proc GetSubdirectoriesBackup*(ParentDirectory: string): seq[string]
+proc GetSubdirectoriesByPattern(ParentDirectory: Path, SearchPattern: string): seq[Path]
+proc GetSubdirectoriesAll*(ParentDirectory: Path): seq[Path]
+proc GetSubdirectoriesBackup*(ParentDirectory: Path): seq[Path]
 
-
-
-proc GetFilesByPattern(DirectoryPath: string, ReadSubdirectories: bool, FileTypePattern: string): seq[string] =
-    var DirectoriesToSearch: seq[string]
-    var SearchPattern: string
-    var FileResults: seq[string]
+proc GetFilesByPattern(Directory: Path, ReadSubdirectories: bool, FileTypePattern: string): seq[Path] =
+    var
+        DirectoriesToSearch: seq[Path]
+        SearchPattern: Path
+        FilesAsString: seq[string]
+        FilesAsPath: seq[Path]
 
     if ReadSubdirectories:
-        DirectoriesToSearch = GetSubdirectoriesAll(DirectoryPath)
+        DirectoriesToSearch = GetSubdirectoriesAll(Directory)
     else:
-        DirectoriesToSearch.add(DirectoryPath)
+        DirectoriesToSearch.add(Directory)
 
     for i in DirectoriesToSearch.low .. DirectoriesToSearch.high:
-        SearchPattern = DirectoriesToSearch[i] & FileTypePattern
-        echo "Searching for " & SearchPattern
-        FileResults = concat(FileResults, toSeq(walkPattern(SearchPattern)))
+        SearchPattern = DirectoriesToSearch[i] / Path(FileTypePattern)
+        echo "Searching for " & SearchPattern.string
+        FilesAsString = concat(FilesAsString, toSeq(walkFiles(SearchPattern.string)))
 
-    return FileResults
+    FilesAsPath = SeqStringToSeqPath(FilesAsString)
+    return FilesAsPath
 
-proc GetBICFiles*(OperationSettings: SettingsPackage): seq[string] =
+proc GetBICFiles*(OperationSettings: SettingsPackage): seq[Path] =
     GetFilesByPattern(OperationSettings.InputBIC, OperationSettings.ReadSubdirectories, PatternExtensionBIC)
 
-proc GetBICFiles*(DirectoryPath: string): seq[string] =
-    GetFilesByPattern(DirectoryPath, false, PatternExtensionBIC)
+proc GetBICFiles*(Directory: Path): seq[Path] =
+    GetFilesByPattern(Directory, false, PatternExtensionBIC)
 
-proc GetJSONFiles*(OperationSettings: SettingsPackage): seq[string] =
+proc GetJSONFiles*(OperationSettings: SettingsPackage): seq[Path] =
     GetFilesByPattern(OperationSettings.InputJSON, OperationSettings.ReadSubdirectories, PatternExtensionJSON)
 
+proc GetSubdirectoriesByPattern(ParentDirectory: Path, SearchPattern: string): seq[Path] =
+    var
+        SubdirectoryPattern = ParentDirectory / Path(SearchPattern)
+        SubdirectoriesAsString: seq[string]
+        SubdirectoriesAsPath: seq[Path]
+    echo "Searching for subdirectories " & SubdirectoryPattern.string
+    SubdirectoriesAsString = toSeq(walkDirs(SubdirectoryPattern.string))
+    SubdirectoriesAsPath = SeqStringToSeqPath(SubdirectoriesAsString)
+    return SubdirectoriesAsPath
 
-
-proc GetSubdirectoriesByPattern(ParentDirectory: string, SearchPattern: string): seq[string] =
-    var SubPattern = ParentDirectory & SearchPattern
-    echo "Searching for subdirectories " & SubPattern
-    return toSeq(walkDirs(SubPattern))
-
-proc GetSubdirectoriesAll*(ParentDirectory: string): seq[string] =
+proc GetSubdirectoriesAll*(ParentDirectory: Path): seq[Path] =
     return GetSubdirectoriesByPattern(ParentDirectory, PatternSubdirectoriesAll)
 
-proc GetSubdirectoriesBackup*(ParentDirectory: string): seq[string] =
+proc GetSubdirectoriesBackup*(ParentDirectory: Path): seq[Path] =
     return GetSubdirectoriesByPattern(ParentDirectory, PatternSubdirectoriesBackup)

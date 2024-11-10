@@ -13,7 +13,7 @@ proc TimestampString(): string
 
 let
     OperationTimestamp* = TimestampString()
-    BackupDirectoryFullName* = BackupDirectoryPrefix & OperationTimestamp
+    BackupDirectoryFullName* = Path(BackupDirectoryPrefix & OperationTimestamp)
 
 proc PurgeBackupDirectories*(OperationSettings: SettingsPackage) =
     var LatestBackupsToKeep: int

@@ -37,7 +37,7 @@ proc JSONtoBIC*(InputFile: Path, OperationSettings: SettingsPackage) =
         if fileExists(OutputPath):
             var OutputSplit = splitFile(OutputPath)
             #BackupDirectoryFullName is a pre-determined value in file_operations/io_operations/backups.nim
-            var BackupPath = OutputSplit.dir / Path(BackupDirectoryFullName)
+            var BackupPath = OutputSplit.dir / BackupDirectoryFullName
             if not(dirExists(BackupPath)):
                 createDir(BackupPath)
             copyFileToDir(OutputPath.string, BackupPath.string)

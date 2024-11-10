@@ -10,19 +10,20 @@ proc GetSettingsFromCommandLine*(): SettingsPackage =
 
     for kind, key, val in CommandLineArguments.getopt():
         case kind
-            #Not supported. These are arguments not preceded by - or -- and are usually handled by the order in which they are input.
-            of cmdArgument:
+            #Not supported. cmdArgument are not preceded by - or -- and are usually handled by the order in which they are input.
+            #cmdShortOptions are single characters preceded by a -.
+            of cmdArgument, cmdShortOption:
                 discard
 
             #LongOption are prefixed with --, short option prefixed with -
-            of cmdLongOption, cmdShortOption:
+            of cmdLongOption:
 
                 case key
                     #Operational parameters
-                    of "mode", "m":
+                    of "mode":
                         CommandLineSettings.Mode = val
 
-                    of "feat", "f":
+                    of "feat":
                         CommandLineSettings.Feat = parseInt(val)
                         CommandLineSettings.FeatActive = true
 
@@ -44,7 +45,7 @@ proc GetSettingsFromCommandLine*(): SettingsPackage =
 
 
                     #Character requirements / filters
-                    of "race", "r":
+                    of "race":
                         CommandLineSettings.Race = parseInt(val)
                         CommandLineSettings.RaceActive = true
 
@@ -52,7 +53,7 @@ proc GetSettingsFromCommandLine*(): SettingsPackage =
                         CommandLineSettings.Subrace = val
                         CommandLineSettings.SubraceActive = true
 
-                    of "class", "c":
+                    of "class":
                         CommandLineSettings.Class = parseInt(val)
                         CommandLineSettings.ClassActive = true
 
@@ -81,7 +82,7 @@ proc GetSettingsFromCommandLine*(): SettingsPackage =
                     of "production", "prod":
                         CommandLineSettings.ProductionState = true
 
-                    of "restorefrom", "rf":
+                    of "restorefrom":
                         CommandLineSettings.RestoreFrom = Path(val)
 
                     else:

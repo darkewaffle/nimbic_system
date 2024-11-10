@@ -74,7 +74,7 @@ proc ValidateModeArgumentsFromPackage() =
                     EchoError("Directory is not valid - " & $OperationSettings.OutputBIC)
                     quit(QuitSuccess)
                 elif OperationSettings.RestoreFrom == Path(""):
-                    EchoError("You must specify a backup directory using the --restorefrom:name option.")
+                    EchoError("You must specify a backup directory when using the --restorefrom:name option.")
                     quit(QuitSuccess)
 
     if OperationSettings.Mode in ModeCharacterModify:

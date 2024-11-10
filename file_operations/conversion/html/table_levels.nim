@@ -88,7 +88,7 @@ proc BuildLevelTable*(CharacterJSON: JsonNode, ShowAutomaticFeats: bool = false)
             #var SkillRanksObtained = CharacterJSON["LvlStatList"]["value"][i]["SkillList"]["value"][j]["Rank"]["value"].getInt
             var SkilLRanksObtained = GetSkillRanksObtainedInLvlStatList(CharacterJSON, i, j)
             if SkillRanksObtained > 0:
-                SkillTable[GetSkillLabel(j, true)] = SkillRanksObtained
+                SkillTable[GetSkillConstant(j, true)] = SkillRanksObtained
 
         SkillTable.sort(system.cmp)
 

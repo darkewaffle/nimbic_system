@@ -15,10 +15,10 @@ proc PrettyString*(Input: string): string =
         WordContainer: string
         Final: string
 
-    removePrefix(Preparation, " ")
+    removePrefix(Preparation, ' ')
     removePrefix(Preparation, "FEAT_")
-    removeSuffix(Preparation, " ")
-    Preparation = Preparation.replace("_", " ")
+    removeSuffix(Preparation, ' ')
+    Preparation = Preparation.replace('_', ' ')
 
     if contains(Preparation, " "):
         Preparation = toLower(Preparation)
@@ -37,17 +37,27 @@ proc PrettyString*(Input: string): string =
                 Final = Final & WordContainer
     else:
         var SequentialDigits = 0
+        var SequentialUppercase = 0
         for i in Preparation.low .. Preparation.high:
             if i == 0:
                 Final = capitalizeAscii($Preparation[i])
+                inc SequentialUppercase
             else:
-                if isUpperAscii(Preparation[i]) or isDigit(Preparation[i]):
+                if isDigit(Preparation[i]) or isUpperAscii(Preparation[i]):
                     if isDigit(Preparation[i]):
                         inc SequentialDigits
+                        SequentialUppercase = 0
+                    elif isUpperAscii(Preparation[i]):
+                        SequentialDigits = 0
+                        inc SequentialUppercase
                     else:
                         SequentialDigits = 0
+                        SequentialUppercase = 0
+                    
                     if isDigit(Preparation[i]) and SequentialDigits > 1:
                         Final = Final & Preparation[i]
+                    elif isUpperAscii(Preparation[i]) and SequentialUppercase > 1:
+                        Final = Final & toLowerAscii(Preparation[i])
                     else:
                         Final = Final & " " & Preparation[i]
                 else:

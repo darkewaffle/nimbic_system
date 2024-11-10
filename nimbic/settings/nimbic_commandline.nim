@@ -1,5 +1,5 @@
 import std/[os, parseopt, paths, strutils]
-import /[object_settingspackage]
+import /[object_settingspackage, string_cleanup]
 
 proc GetSettingsFromCommandLine*(): SettingsPackage
 
@@ -66,24 +66,24 @@ proc GetSettingsFromCommandLine*(): SettingsPackage =
                     #Assign to both Input settings since it could be either depending on the chosen mode.
                     #Modes only use one Input directory per operation so this will not have any adverse effects.
                     of "input":
-                        CommandLineSettings.InputBIC = Path(val)
-                        CommandLineSettings.InputJSON = Path(val)
+                        CommandLineSettings.InputBIC = Path(CleanDirectoryName(val))
+                        CommandLineSettings.InputJSON = Path(CleanDirectoryName(val))
 
                     #Assign to all Output settings since it could be any of them depending on the chosen mode.
                     #Modes only use one Output directory per operation so this will not have any adverse effects.
                     of "output":
-                        CommandLineSettings.OutputBIC = Path(val)
-                        CommandLineSettings.OutputJSON = Path(val)
-                        CommandLineSettings.OutputHTML = Path(val)
+                        CommandLineSettings.OutputBIC = Path(CleanDirectoryName(val))
+                        CommandLineSettings.OutputJSON = Path(CleanDirectoryName(val))
+                        CommandLineSettings.OutputHTML = Path(CleanDirectoryName(val))
 
                     of "input2da", "2da":
-                        CommandLineSettings.Input2DA = Path(val)
+                        CommandLineSettings.Input2DA = Path(CleanDirectoryName(val))
 
                     of "production", "prod":
                         CommandLineSettings.ProductionState = true
 
                     of "restorefrom":
-                        CommandLineSettings.RestoreFrom = Path(val)
+                        CommandLineSettings.RestoreFrom = Path(CleanDirectoryName(val))
 
                     else:
                         discard

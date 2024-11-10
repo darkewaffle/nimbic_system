@@ -77,7 +77,7 @@ proc BuildFileName(CharacterJSON: JsonNode): string =
         FileName = GetCharacterFullName(CharacterJSON)
         ClassesAndLevels = GetCharacterClasses(CharacterJSON)
 
-    FileName = replace(FileName, " ", "") & "_"
+    FileName = replace(FileName, " ", "_") & "_"
 
     for i in ClassesAndLevels.low .. ClassesAndLevels.high:
         FileName = FileName & GetClassLabel(ClassesAndLevels[i][0], Shortened = true) & $ClassesAndLevels[i][1]

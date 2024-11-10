@@ -50,6 +50,40 @@ proc MakeTDTable*(TableData: openArray[int], TableClass: string, CellClass: stri
 
     return WrapTable(TableHTML, TableClass, WrapDiv)
 
+proc MakeTable*(TableData: openArray[int], TableClass: string, CellClass: string, TableWidth: int, WrapDiv: bool = false): string =
+    var
+        TableHTML: string
+        RowHTML: string
+
+    for i in TableData.low .. TableData.high:
+        if i == 0:
+            RowHTML = RowHTML & WrapTH($TableData[i], CellClass)
+        else:
+            RowHTML = RowHTML & WrapTD($TableData[i], CellClass)
+        if floorMod(i+1, TableWidth) == 0 or i == TableData.high:
+            RowHTML = WrapTR(RowHTML)
+            TableHTML = TableHTML & RowHTML
+            RowHTML = ""
+
+    return WrapTable(TableHTML, TableClass, WrapDiv)
+
+proc MakeTable*(TableData: openArray[string], TableClass: string, CellClass: string, TableWidth: int, WrapDiv: bool = false): string =
+    var
+        TableHTML: string
+        RowHTML: string
+
+    for i in TableData.low .. TableData.high:
+        if i == 0:
+            RowHTML = RowHTML & WrapTH(TableData[i], CellClass)
+        else:
+            RowHTML = RowHTML & WrapTD(TableData[i], CellClass)
+        if floorMod(i+1, TableWidth) == 0 or i == TableData.high:
+            RowHTML = WrapTR(RowHTML)
+            TableHTML = TableHTML & RowHTML
+            RowHTML = ""
+
+    return WrapTable(TableHTML, TableClass, WrapDiv)
+
 proc MakeGrid*(GridBlocks: openArray[string], GridClass: string, BlockClass: string): string =
     var
         GridHTML: string

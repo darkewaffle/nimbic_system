@@ -53,7 +53,8 @@ proc BuildSpellbookForClass(CharacterJSON: JsonNode, ClassID: int): string =
     for i in ClassSpells.low .. ClassSpells.high:
         var LevelSpells = ClassSpells[i]
         LevelSpells.insert(SpellLevelColumnName(i), 0)
-        ClassSpellBook = ClassSpellBook & MakeTDTable(LevelSpells, TableClass & " " & ClassLabel, TDClass, 1, false)
+        #ClassSpellBook = ClassSpellBook & MakeTDTable(LevelSpells, TableClass & " " & ClassLabel, TDClass, 1, false)
+        ClassSpellBook = ClassSpellBook & MakeTable(LevelSpells, TableClass & " " & ClassLabel, TDClass, 1, false)
 
     SpellbookFlexCSS = SpellbookFlexCSS & MakeStyleFlex(ClassLabel, ClassSpells.high + 1, 5, 1, 1)
     return ClassSpellBook

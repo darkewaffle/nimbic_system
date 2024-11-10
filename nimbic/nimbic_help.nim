@@ -36,7 +36,7 @@ These values are input to specify what an operation will do or identify which ch
     --race    = integer value representing the race index as found in racial_types.2da
                 behaves like a filter to identify characters subject to an operation
 
-    --subrace = text value representing the subrace value assigned to a character
+    --subrace = text value representing the subrace value assigned to a character, do not input symbols/punctuation
                 behaves like a filter to identify characters subject to an operation
 
     --feat    = integer value representing the feat index as found in feats.2da 
@@ -73,7 +73,7 @@ Convert .json files back into playable character .bic files...
 ** Note that the below examples omit the directories. These can be set in nimbic.ini for convenience **
 
 Remove Deflect Arrows from monks at level 2...
-    nimbic.exe --mode:removeclassfeat --class:5 --level:2 --feat:
+    nimbic.exe --mode:removeclassfeat --class:5 --level:2 --feat:8
 
 Grant Epic Skill Focus Discipline to all characters at level 21...
     nimbic.exe --mode:addfeat --level:21 --feat:592

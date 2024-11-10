@@ -1,10 +1,8 @@
 nimbic TODO / notes
 
---help output
-doublecheck validity of bic output with sql
-
-nim_bic_editor - try to use solely for orchestration, put all procs/code into imports
-
+nimbic - try to use solely for orchestration, put all procs/code into imports
+comment cleanup
+comment documentation
 
 Ugly down here
 Skills - refund

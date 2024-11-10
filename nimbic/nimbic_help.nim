@@ -1,64 +1,93 @@
-proc DisplayHelpGeneral() =
-    echo "nim_bic_editor is a tool to programmatically modify Neverwinter Nights .bic character files which have been exported to JSON."
-    echo "It is not really intended to be a tool to edit individual characters but rather to apply character edits to server vaults / batches all at one time to retroactively enforce changes made in 2DA files."
-    echo ""
-    echo "Call nim_bic_editor.exe with the following parameters:"
-    echo ""
+const GeneralHelp= """
+Nimbic is a tool to programmatically modify Neverwinter Nights .bic files by exporting them to .json files.
+It is primarily intended to apply character edits to server vaults / batches all at one time to retroactively enforce changes made in 2DA files.
 
-proc DisplayHelpMode() =
-    echo "--mode or -m"
-    echo "    Accepts the following values"
-    echo "      addclassfeat = grant a new feat to a class at a specific level"
-    echo "      removeclassfeat = remove a feat from a class at a specific level"
-    echo ""
+This will cover the basics of operation. See https://github.com/darkewaffle/nimbic_system/blob/main/README.md for full documentation.
+Please note that some of these values can also be specified in nimbic.ini to make executing commands more convenient.
+"""
 
-proc DisplayHelpClass() =
-    echo "--class or -c"
-    echo "    Accepts an integer value representing the class index as found in classes.2da"
-    echo "    Typically this specifies which class will be affected by the selected mode operation"
-    echo ""
+const ModeHelp = """
+--mode
+    File Operations
+        bictojson = convert files from .bic to .json
+        jsontobic = convert files from .json to .bic
+        jsontohtml = create a .html character sheet from .json (requires a valid 2da directory)
 
-proc DisplayHelpLevel() =
-    echo "--level, --lvl, or -l"
-    echo "    Accepts an integer value representing the level of the class to be modified"
-    echo "    Typically this specifies at what level a feat will be added/removed"
-    echo ""
+    Character Operations
+        addclassfeat    = grant a feat to a character at a specific class level (requires --feat, --class, --level)
+        removeclassfeat = remove a feat from a character at a specific class level (requires --feat, --class, --level)
+        addfeat         = grant a feat to a character (requires --feat, --level defaults to 1)
+        removefeat      = remove a feat from a character (requires --feat, --level defaults to 1)
+        alterclasshp    = increase or decrease HP granted by a class by the amount specified by --hp (requires --class, --hp defaults to 0)
+        maxhp           = maximize the HP a character rolled at each level (requires a valid 2da directory)
+        modifyability   = increase or decrease ability scores by the amount specified by --str, --dex, --con, --int, --wis, --cha
+"""
 
-proc DisplayHelpFeatID() =
-    echo "--featid, --fid, or -f"
-    echo "    Accepts an integer value representing the feat index as found in feat.2da"
-    echo "    This identifies the feat that will be added/removed by a feat mode operation"
-    echo ""
+const ArgumentHelp = """
+Command Line Arguments
+These values are input to specify what an operation will do or identify which chararacters it should affect.
 
-proc DisplayHelpDirectory() =
-    echo "--dir or -d"
-    echo "    Accepts a string representing the directory holding all of the JSON files to be modified."
-    echo ""
+    --class   = integer value representing the class index as found in classes.2da
+                required for class operations, otherwise behaves like a filter
 
-proc DisplayHelpFile() =
-    echo "--file"
-    echo "    Accepts a string representing a single JSON file to be modified"
-    echo ""
+    --level   = integer value representing the 'character level' except for class operations where it is 'class level'
+                specifies both the level an operation should be performed at as well as a requirement for it to be applied
 
-proc DisplayHelpParameters() =
-    DisplayHelpMode()
-    DisplayHelpClass()
-    DisplayHelpLevel()
-    DisplayHelpFeatID()
-    DisplayHelpDirectory()
-    DisplayHelpFile()
+    --race    = integer value representing the race index as found in racial_types.2da
+                behaves like a filter to identify characters subject to an operation
 
-proc DisplayHelpExamples() =
-    echo "Here are some simple examples."
-    echo ""
-    echo "If you wanted to grant Toughness to Wizards at Level 5..."
-    echo "    nim_bic_editor.exe --mode:addclassfeat --class:10 --level:5 --featid:40"
-    echo ""
-    echo "If you wanted to remove Deflect Arrows from Monks at Level 2..."
-    echo "    nim_bic_editor.exe --mode:removeclassfeat -c:5 -l:2 -f:8"
-    echo ""
-  
+    --subrace = text value representing the subrace value assigned to a character
+                behaves like a filter to identify characters subject to an operation
+
+    --feat    = integer value representing the feat index as found in feats.2da 
+
+    --hp, --str, --dex, --con, --int, --wis, --cha all accept integers representing the amount by which they should be changed
+"""
+
+const DirectoryHelp = """
+    --input    = represents the directory holding input files for an operation
+    --output   = represents the directory an operation will write files to
+    --input2da = directory where nimbic can read 2da files (only necessary for maxhp and jsontohtml modes)
+    ** Note that directories and other advanced settings can be set in nimbic.ini instead **
+"""
+
+const ExampleHelp = """
+Here are some simple examples.
+
+Convert characters from .bic to .json
+    nimbic.exe --mode:bictojson --input:"C:\Users\Name\Neverwinter Nights\localvault" --output:"C:\Users\Name\Documents\NWN\BICtoJSON"
+
+Grant Toughness to Wizards at Level 5...
+    nimbic.exe --mode:addclassfeat --input:"C:\Users\Name\Documents\NWN\BICtoJSON" --output:"C:\Users\Name\Documents\NWN\BICtoJSON" --class:10 --level:5 --feat:40
+
+Maximize HP at each level using a set of 2da files to find the appropriate amount for each class...
+    nimbic.exe --mode:maxhp --input:"C:\Users\Name\Documents\NWN\BICtoJSON" --output:"C:\Users\Name\Documents\NWN\BICtoJSON" --input2da:"C:\Users\Name\Documents\NWN\2da"
+
+Generate .html character sheets from .json files...
+    nimbic.exe --mode:jsontohtml --input:"C:\Users\Name\Documents\NWN\BICtoJSON" --output:"C:\Users\Name\Documents\NWN\BICtoHTML"
+
+Convert .json files back into playable character .bic files...
+    nimbic.exe --mode:jsontobic --input:"C:\Users\Name\Documents\NWN\BICtoJSON" --output:"C:\Users\Name\Documents\NWN\JSONtoBIC"
+
+
+** Note that the below examples omit the directories. These can be set in nimbic.ini for convenience **
+
+Remove Deflect Arrows from monks at level 2...
+    nimbic.exe --mode:removeclassfeat --class:5 --level:2 --feat:
+
+Grant Epic Skill Focus Discipline to all characters at level 21...
+    nimbic.exe --mode:addfeat --level:21 --feat:592
+
+Grant 4 additional HP per level to Barbarian Dwarves...
+    nimbic.exe --mode:alterclasshp --class:0 --race:0 --hp:4
+
+Grant 2 strength and -2 intelligence to all Fighters
+    nimbic.exe --mode:modifyability --class:4 --str:2 --int:-2
+"""
+
 proc DisplayHelp*() =
-    DisplayHelpGeneral()
-    DisplayHelpParameters()
-    DisplayHelpExamples()
+    echo GeneralHelp
+    echo ModeHelp
+    echo ArgumentHelp
+    echo DirectoryHelp
+    echo ExampleHelp

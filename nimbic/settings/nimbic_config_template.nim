@@ -1,24 +1,24 @@
 const ConfigurationFileStarterText* = """
 #NIMBIC Editor Configuration Settings
 
-#Default directory to find BIC files for conversion.
+#Default directory to find .bic files for conversion.
 #Ex: inputbic=C:\Users\Name\Neverwinter Nights\localvault
 inputbic=
 
-#Default directory to output .json files converted from BIC.
-#Ex: outputjson=C:\Users\Name\Documents\NWN\BICto.json
+#Default directory to output .json files converted from .bic.
+#Ex: outputjson=C:\Users\Name\Documents\NWN\BICtoJSON
 outputjson=
 
 #Default directory to find .json files for modification or conversion.
-#Ex: inputjson=C:\Users\Name\Documents\NWN\BICto.json
+#Ex: inputjson=C:\Users\Name\Documents\NWN\BICtoJSON
 inputjson=
 
-#Default directory to output BIC files.
-#Ex: outputbic=C:\Users\Name\Documents\NWN\.jsontoBIC
+#Default directory to output .bic files.
+#Ex: outputbic=C:\Users\Name\Documents\NWN\JSONtoBIC
 outputbic=
 
 #Default directory to output HTML files.
-#Ex: outputhtml=C:\Users\Name\Documents\NWN\.jsontoHTML
+#Ex: outputhtml=C:\Users\Name\Documents\NWN\JSONtoHTML
 outputhtml=
 
 #Determines if an HTML file should overwrite a file with the same name. If set to false

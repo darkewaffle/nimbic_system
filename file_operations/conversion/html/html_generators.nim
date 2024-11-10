@@ -5,7 +5,7 @@ proc CreateTableHeader*(InputValues: openArray[string], Class: string = "", Clas
 proc CreateTableRow*(InputValues: openArray[string], Class: string = ""): string
 proc MakeTDTable*(TableData: openArray[string], TableClass: string, CellClass: string, TableWidth: int, WrapDiv: bool = false): string
 proc MakeTDTable*(TableData: openArray[int], TableClass: string, CellClass: string, TableWidth: int, WrapDiv: bool = false): string
-
+proc MakeGrid*(GridBlocks: openArray[string], GridClass: string, BlockClass: string): string
 
 proc CreateTableHeader*(InputValues: openArray[string], Class: string = "", ClassSuffix: bool = false): string =
     var HeaderHTML: string
@@ -49,3 +49,12 @@ proc MakeTDTable*(TableData: openArray[int], TableClass: string, CellClass: stri
             RowHTML = ""
 
     return WrapTable(TableHTML, TableClass, WrapDiv)
+
+proc MakeGrid*(GridBlocks: openArray[string], GridClass: string, BlockClass: string): string =
+    var
+        GridHTML: string
+
+    for i in GridBlocks.low .. GridBlocks.high:
+        GridHTML = GridHTML & WrapDiv(GridBlocks[i], BlockClass)
+    GridHTML = WrapDiv(GridHTML, GridClass)
+    return GridHTML

@@ -17,6 +17,7 @@ proc PrettyString*(Input: string): string =
 
     removePrefix(Preparation, ' ')
     removePrefix(Preparation, "FEAT_")
+    removePrefix(Preparation, "SKILL_")
     removeSuffix(Preparation, ' ')
     Preparation = Preparation.replace('_', ' ')
 
@@ -62,6 +63,8 @@ proc PrettyString*(Input: string): string =
                         Final = Final & " " & Preparation[i]
                 else:
                     Final = Final & Preparation[i]
+                    SequentialDigits = 0
+                    SequentialUppercase = 0
     return Final
 
 proc ShortenedString*(Input: string): string =

@@ -62,7 +62,7 @@ proc BuildLevelTable*(CharacterJSON: JsonNode, ShowAutomaticFeats: bool = false)
         for j in CharacterJSON["LvlStatList"]["value"][i]["FeatList"]["value"].elems.low .. CharacterJSON["LvlStatList"]["value"][i]["FeatList"]["value"].elems.high:
             var SelectedFeat = GetFeatInLvlStatListFeatList(CharacterJSON, i, j)
             if ShowAutomaticFeats:
-                LevelFeats.add(GetFeatLabel(SelectedFeat, true))
+                LevelFeats.add(GetFeatConstant(SelectedFeat, true))
             else:
                 #If this is the first level then add feats granted by character race to the automatic list.
                 if i == 0:
@@ -70,7 +70,7 @@ proc BuildLevelTable*(CharacterJSON: JsonNode, ShowAutomaticFeats: bool = false)
                 if SelectedFeat in FeatsGrantedAutomatically:
                     discard
                 else:
-                    LevelFeats.add(GetFeatLabel(SelectedFeat, true))
+                    LevelFeats.add(GetFeatConstant(SelectedFeat, true))
 
         sort(LevelFeats)
         LevelData[3] = MakeTDTable(LevelFeats, FeatTableClass, FeatTableCell, 2, false)

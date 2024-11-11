@@ -1,6 +1,4 @@
 import /[reader, format_2da]
-import ../../nimbic/[echo_feedback]
-import ../../nimbic/settings/[object_settingspackage]
 
 const
     ClassFileName = "classes"
@@ -31,7 +29,6 @@ proc Read2DA_Class*() =
     Class2DA = Read2DA(ClassFileName, ClassIgnoreLines, ClassIgnoreColumns, ClassReadColumns)
 
 proc GetClassLabel*(ClassID: int, Pretty: bool = false, Shortened: bool = false): string =
-    var Label: string
     for i in Class2DA.low .. Class2DA.high:
         if SafeParseInt2DA(Class2DA[i][ClassColumnClassID]) == ClassID:
             if Pretty:

@@ -1,17 +1,10 @@
 import std/[paths]
-
 import /[io_constants]
-import ../../nimbic/[echo_feedback]
-import ../../nimbic/settings/[object_settingspackage]
-
-
 
 proc ReplaceFileExtension*(FileLocation: Path, NewExtension: string): Path
 proc SetFileExtensionJSON*(FileLocation: Path): Path
 proc SetFileExtensionBIC*(FileLocation: Path): Path
 proc SetFileExtensionSqlite*(FileLocation: Path): Path
-
-
 
 proc ReplaceFileExtension*(FileLocation: Path, NewExtension: string): Path =
     var 

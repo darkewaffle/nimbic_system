@@ -1,4 +1,4 @@
-import std/[json, strutils]
+import std/[json]
 import /[string_formatting]
 
 proc GetCharacterFirstName*(CharacterJSON: JsonNode): string

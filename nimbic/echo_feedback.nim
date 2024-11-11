@@ -1,14 +1,14 @@
 import std/[json, paths, terminal]
+from ../bic_as_json_operations/get/person import GetCharacterFullName
 
-proc EchoMessageNamePath*(Message: string, CharacterJSON: JsonNode, FileLocation: string) =
-    echo Message & " - " & CharacterJSON["FirstName"]["value"]["0"].getStr & " " & CharacterJSON["LastName"]["value"]["0"].getStr & " - " & FileLocation
+proc EchoMessageNamePath*(Message: string, CharacterJSON: JsonNode, FileLocation: Path) =
+    echo Message & " - " & GetCharacterFullName(CharacterJSON) & " - " & FileLocation.string
 
-proc EchoMessageNameFilename*(Message: string, CharacterJSON: JsonNode, FileLocation: string) =
-    var FileName = extractFileName(Path FileLocation)
-    echo Message & " - " & CharacterJSON["FirstName"]["value"]["0"].getStr & " " & CharacterJSON["LastName"]["value"]["0"].getStr & " - " & $FileName
+proc EchoMessageNameFilename*(Message: string, CharacterJSON: JsonNode, FileLocation: Path) =
+    echo Message & " - " & GetCharacterFullName(CharacterJSON) & " - " & extractFileName(FileLocation).string
 
 proc EchoMessageName*(Message: string, CharacterJSON: JsonNode) =
-        echo Message & " - " & CharacterJSON["FirstName"]["value"]["0"].getStr & " " & CharacterJSON["LastName"]["value"]["0"].getStr
+        echo Message & " - " & GetCharacterFullName(CharacterJSON)
 
 proc EchoBlank*() =
     echo " "

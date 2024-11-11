@@ -1,18 +1,12 @@
-import std/[dirs, files, os, paths, random]
-
+import std/[dirs, files, paths, random]
 import /[io_constants]
 import ../../nimbic/[echo_feedback]
-import ../../nimbic/settings/[object_settingspackage]
-
-
 
 proc CreateOutputPath(InputFile: Path, OutputDirectory: Path, FileExtension: string, Overwrite: bool = true, OverrideFileName: string = ""): Path
 proc CreateOutputPathJSON*(InputFile: Path, OutputDirectory: Path, Overwrite: bool = true): Path
 proc CreateOutputPathBIC*(InputFile: Path, OutputDirectory: Path, Overwrite: bool = true): Path
 proc CreateOutputPathSqlite*(InputFile: Path, OutputDirectory: Path, Overwrite: bool = true): Path
 proc CreateOutputPathHTML*(InputFile: Path, OutputDirectory: Path, Overwrite: bool = true, OverrideFileName: string = ""): Path
-
-
 
 proc CreateOutputPath(InputFile: Path, OutputDirectory: Path, FileExtension: string, Overwrite: bool = true, OverrideFileName: string = ""): Path =
     var 

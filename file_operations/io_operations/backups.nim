@@ -44,8 +44,6 @@ proc DeleteDirectories(DirectoryList: seq[Path], KeepLast: int) =
         removeDir(DirectoryListAsSortedPaths[i])
         EchoNotice("Deleting directory: " & DirectoryListAsSortedPaths[i].string)
 
-
-
 proc RestoreBackup*(OperationSettings: SettingsPackage) =
     var 
         TargetDirectory = OperationSettings.OutputBIC
@@ -77,8 +75,6 @@ proc CopyBackupBICs(BackupDirectory: Path, ParentDirectory: Path) =
             EchoNotice("Copying file: " & BackupBICs[i].string & " > " & ParentDirectory.string)
     else:
         EchoError("Backup directory not found: " & BackupDirectory.string)
-
-
 
 proc TimestampString(): string =
     var NowString = $now()

@@ -1,9 +1,9 @@
-import std/[dirs, json, os, parseopt, paths]
+import std/[json, paths]
 import nimbic/[echo_feedback, nimbic_help]
 import nimbic/modes/[mode_groups, mode_requirements]
 import nimbic/settings/[nimbic_evaluate_settings,object_settingspackage]
 import file_operations/[interface_2da, interface_conversion, interface_io]
-import bic_as_json_operations/[interface_get, interface_operations]
+import bic_as_json_operations/[interface_operations]
 
 proc PerformModeOperation(OperationSettings: SettingsPackage)
 proc GetCore2DAFiles(OperationSettings: SettingsPackage)

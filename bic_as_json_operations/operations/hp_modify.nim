@@ -1,5 +1,4 @@
 import std/[json]
-
 import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
 import ../get/[class, hp]

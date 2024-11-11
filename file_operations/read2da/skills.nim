@@ -1,6 +1,4 @@
 import /[reader, format_2da]
-import ../../nimbic/[echo_feedback]
-import ../../nimbic/settings/[object_settingspackage]
 
 const
     SkillFileName = "skills"

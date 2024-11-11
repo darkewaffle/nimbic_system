@@ -1,5 +1,4 @@
 import std/[dirs, files, json, os, paths, streams]
-
 import /[nwn_gff_excerpts]
 import ../[interface_io]
 import ../../nimbic/settings/[object_settingspackage]

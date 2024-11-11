@@ -1,7 +1,5 @@
 import std/[strutils]
-import /[reader, format_2da]
-import ../../nimbic/[echo_feedback]
-import ../../nimbic/settings/[object_settingspackage]
+import /[reader]
 
 const
     RulesetFileName = "ruleset"

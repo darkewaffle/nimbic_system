@@ -1,13 +1,12 @@
 import std/[json, paths, streams]
-
 import /[nwn_gff_excerpts]
 import ../[interface_io]
 import ../../nimbic/settings/[object_settingspackage]
 import ../../neverwinterdotnim/neverwinter/[gff, gffjson]
 
-proc BICtoJSON*(InputFIle: Path, OperationSettings: SettingsPackage)
+proc BICtoJSON*(InputFile: Path, OperationSettings: SettingsPackage)
 
-proc BICtoJSON*(InputFIle: Path, OperationSettings: SettingsPackage) =
+proc BICtoJSON*(InputFile: Path, OperationSettings: SettingsPackage) =
     echo "Attempting translation to JSON: " & InputFile.string
     #Streams data from InputFile as a string
     var InputStream = newStringStream(readFile(InputFile.string))

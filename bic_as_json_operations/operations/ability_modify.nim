@@ -1,4 +1,4 @@
-import std/[json, strutils]
+import std/[json]
 import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
 import ../set/[ability]

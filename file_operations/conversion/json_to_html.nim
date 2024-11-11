@@ -1,7 +1,5 @@
 import std/[json, paths, strutils]
-
 import ../[interface_2da, interface_io]
-import ../../nimbic/[echo_feedback]
 import ../../nimbic/settings/[object_settingspackage]
 import ../../bic_as_json_operations/[interface_get]
 import html/[css_generators, header_title, html_generators, html_tag_wrappers, table_abilities, table_classes, table_deityalign, table_levels, table_namerace, table_spellbook]

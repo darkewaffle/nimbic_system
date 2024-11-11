@@ -1,14 +1,4 @@
-import std/[json, paths, terminal]
-from ../bic_as_json_operations/get/person import GetCharacterFullName
-
-proc EchoMessageNamePath*(Message: string, CharacterJSON: JsonNode, FileLocation: Path) =
-    echo Message & " - " & GetCharacterFullName(CharacterJSON) & " - " & FileLocation.string
-
-proc EchoMessageNameFilename*(Message: string, CharacterJSON: JsonNode, FileLocation: Path) =
-    echo Message & " - " & GetCharacterFullName(CharacterJSON) & " - " & extractFileName(FileLocation).string
-
-proc EchoMessageName*(Message: string, CharacterJSON: JsonNode) =
-        echo Message & " - " & GetCharacterFullName(CharacterJSON)
+import std/[terminal]
 
 proc EchoBlank*() =
     echo " "
@@ -29,3 +19,6 @@ proc EchoError*(Message: string) =
 
 proc EchoNotice*(Message: string) =
     styledEcho fgGreen, "Notice: ", resetStyle, Message
+
+proc EchoSuccess*(Message: string) = 
+    styledEcho fgBlue, "Success: ", resetStyle, Message

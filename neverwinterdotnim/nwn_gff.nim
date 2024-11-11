@@ -1,7 +1,7 @@
 #This file is not necessary for operation. A copy of it was simply included for reference.
 #Some lines of this file have been copied or re-implemented in file_operations/conversion/nwn_gff_excerpts.
 
-#[
+#[REFERENCE
 import shared
 
 const SupportedFormatsSimple = ["gff", "json"]

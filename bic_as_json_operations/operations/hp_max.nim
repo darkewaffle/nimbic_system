@@ -12,16 +12,12 @@ const
                                 "FEAT_DRAGON_HD8",
                                 "FEAT_DRAGON_HD6"]
 var
-    #[ RDDHP = [[-1, -1],
-                     [-1, -1],
-                     [-1, -1],
-                     [-1, -1],
-                     [-1, -1]] ]#
     RDDHP: array[5, array[2, int]]
 
 proc MaximizeHP*(CharacterJSON: JsonNode): bool
 proc InitializeRDDHPLookup*()
 proc GetRDDHP(RDDLevel: int): int
+proc EchoRDDHPTable() 
 
 proc MaximizeHP*(CharacterJSON: JsonNode): bool =
     var
@@ -59,15 +55,15 @@ proc InitializeRDDHPLookup*() =
     #Creates level 0 entry using 2DA Class PerLevelHP as a safeguard.
     RDDHP[RDDHP.high][0] = 0
     RDDHP[RDDHP.high][1] = GetClassHPPerLevel(RDDClass)
-#[ 
-    for i in RDDHP.low .. RDDHP.high:
-        if i < RDDHP.high:
-            echo $RDDHPFeats[i] & "     " & RDDHPRules[i] & "     " & $RDDHP[i][0] & "     " & $RDDHP[i][1]
-        else:
-            echo "Level 0 placeholders     " & $RDDHP[i][0] & "     " & $RDDHP[i][1]
- ]#
 
 proc GetRDDHP(RDDLevel: int): int =
     for i in RDDHP.low .. RDDHP.high:
         if RDDLevel >= RDDHP[i][0]:
             return RDDHP[i][1]
+
+proc EchoRDDHPTable() =
+    for i in RDDHP.low .. RDDHP.high:
+        if i < RDDHP.high:
+            echo $RDDHPFeats[i] & "     " & RDDHPRules[i] & "     " & $RDDHP[i][0] & "     " & $RDDHP[i][1]
+        else:
+            echo "Level 0     " & $RDDHP[i][0] & "     " & $RDDHP[i][1]

@@ -19,11 +19,6 @@ const
     FeatTableCell = "featcell"
     FeatCellStyle = "{width: 50%; border: 0px;}"
 
-#[     SkillTableClass = "skilltable"
-    SkillTableStyle = "{margin: auto; width: 90%; border: 0px;}"
-    SkillTableCell = "skillcell"
-    SkillCellStyle = "{border: 0px; padding: 5px; min-width: 20%;}" ]#
-
     SkillGridClass = "skillgrid"
     SkillGridStyle = "{display: grid; grid-template-columns: repeat(auto-fit, minmax(15%, 25%)); gap: 5px 0px; margin-top: 3px; margin-bottom: 3px;}"
     SkillBlockClass = "skillblock"
@@ -59,8 +54,6 @@ proc BuildLevelTable*(CharacterJSON: JsonNode, ShowAutomaticFeats: bool = false)
 
 
         #Feats
-        #var SelectedFeat = CharacterJSON["LvlStatList"]["value"][i]["FeatList"]["value"][j]["Feat"]["value"].getInt
-
         var LevelFeats: seq[string]
         var FeatsGrantedAutomatically = concat(GetClassFeatsAtLevel(ClassForThisLevel, ClassLevelTracker[ClassForThisLevel]), FeatsToIgnore)
         for j in CharacterJSON["LvlStatList"]["value"][i]["FeatList"]["value"].elems.low .. CharacterJSON["LvlStatList"]["value"][i]["FeatList"]["value"].elems.high:
@@ -83,7 +76,6 @@ proc BuildLevelTable*(CharacterJSON: JsonNode, ShowAutomaticFeats: bool = false)
         var SkillTable = initOrderedTable[string, int]()
 
         for j in CharacterJSON["LvlStatList"]["value"][i]["SkillList"]["value"].elems.low .. CharacterJSON["LvlStatList"]["value"][i]["SkillList"]["value"].elems.high:
-            #var SkillRanksObtained = CharacterJSON["LvlStatList"]["value"][i]["SkillList"]["value"][j]["Rank"]["value"].getInt
             var SkilLRanksObtained = GetSkillRanksObtainedInLvlStatList(CharacterJSON, i, j)
             if SkillRanksObtained > 0:
                 SkillTable[GetSkillConstant(j, true)] = SkillRanksObtained
@@ -94,7 +86,6 @@ proc BuildLevelTable*(CharacterJSON: JsonNode, ShowAutomaticFeats: bool = false)
         for key, value in  SkillTable.pairs:
             SkillSequence.add(key & " +" & $value)
 
-        #LevelData[4] = MakeTDTable(SkillSequence, SkillTableClass, SkillTableCell, 4, false)
         LevelData[4] = MakeGrid(SkillSequence, SkillGridClass, SkillBlockClass)
 
         #Add LevelData 'row' to FullLevelData
@@ -114,7 +105,5 @@ proc BuildLevelTableCSS*(): string =
            MakeStyleClass(THClass, THStyle) & 
            MakeStyleClass(FeatTableClass, FeatTableStyle) &
            MakeStyleClass(FeatTableCell, FeatCellStyle) &
-#[            MakeStyleClass(SkillTableClass, SkillTableStyle) &
-           MakeStyleClass(SkillTableCell, SkillCellStyle) ]#
            MakeStyleClass(SkillGridClass, SkilLGridStyle) &
            MakeStyleClass(SkillBlockClass, SkillBlockStyle)

@@ -1,6 +1,13 @@
 ### Quick Start Guide
 
 1. Download the appropriate copy of Nimbic from releases.<br />
+
+
+
+
+
+
+
 2. Run the nimbic.exe program from commandline (no arguments necessary) or by double-clicking on it to generate the nimbic.ini configuration file.  <br>
 3. Open the nimbic.ini file in a text editor, fill out the following lines and save the file.  <br/>
     - inputbic = The directory location of the .bic files that Nimbic will convert to .json.

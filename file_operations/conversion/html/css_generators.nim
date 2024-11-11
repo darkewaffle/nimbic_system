@@ -36,7 +36,7 @@ proc MakeStyleFlex*(ElementClass: string, NumberOfElements: int, MaximumElements
 proc CalculateWidth*(NumberOfElements: int, MaximumElementsPerRow: int, MaximumWidth: int = 50, MinimumWidth: int = 10): int =
     var 
         AvailableWidth = (100 * (1 + floor((NumberOfElements - 1) / MaximumElementsPerRow))).toInt
-        WidthPerElement = (floor(AvailableWidth / NumberOfElements)).toInt - 3
+        WidthPerElement = (floor(AvailableWidth / NumberOfElements)).toInt - 5
 
     if WidthPerElement > MaximumWidth:
         return MaximumWidth

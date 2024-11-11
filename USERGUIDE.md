@@ -1,29 +1,118 @@
-## Full Documentation
 
+# User Guide
+
+  ## What does Nimbic do?
+Nimbic is intended to read Neverwinter Nights' .bic character files and then convert them into .json text files. Once they have been converted to .json then Nimbic (or any text editor, really) can modify them to adjust features of the character. Then when the adjustments are complete the .json file can be converted back into a playable .bic file that includes all of the changes in game.
+
+Nimbic tries to make sure the changes will be compliant with ELC ('Enforce Legal Characters') when possible - however please keep in mind that may require changes to the server 2DA files as well. And some kinds of changes simply are not ELC compliant at all - for instance modifying a character's ability scores to have an additional +10 Strength will not, to my knowledge, ever be valid with ELC.
+
+## 1. How does it work?
 Nimbic is command-line only. Every command should take the form of
 
 ```
-nimbic.exe --mode:modetype
+nimbic.exe --mode:modetype --argument:argumentvalue
 ```
+with each mode type contextually accepting (and sometimes requiring) additional arguments. 
 
-with each mode type contextually supporting (or sometimes requiring) additional arguments.
+  
 
-#### Command Line Arguments
+### 1a. Mode
+This is the most important argument to provide as Nimbic will not operate without it. The mode tells Nimbic what kind of files to look for and how they should be read or changed. It accepts the following values.
 
-- Mode - This is the most important argument to provide as Nimbic will not operate without it. The mode tells Nimbic what kind of files to look for and how they should be read or changed. It accepts the following values.
+| File&nbsp;Conversion | Description | Requirements |
+|-|-|-|
+| `bictojson` | Nimbic will look for .bic files, convert them to .json and then write them to disk. This does not affect the .bic file. | `--input` <br/> `--output` <br/> *or* <br/> `nimbic.ini > inputbic` <br/> `nimbic.ini > outputjson` |
+| `jsontobic` | Nimbic will look for .json files, convert them to .bic and then write them to disk. | `--input` <br/> `--output` <br/> *or* <br/> `nimbic.ini > inputjson` <br/> `nimbic.ini > outputbic` |
+| `jsontohtml` | Nimbic will look for .json files, create a .html character sheet for each one and write the .html files to disk. | `--input` <br/> `--output` <br/> *or* <br/> `nimbic.ini > inputjson` <br/> `nimbic.ini > outputhtml` <br/><br/> *and* <br/><br/> `--input2da` <br/> *or* <br/> `nimbic.ini > 2dadir`|
+  ---
+| Character Changes | Description | Requirements In Addition To <br/><br/> `--input` <br/> *or*<br/> `nimbic.ini > inputjson` |
+|-|-|-|
+| `addclassfeat` <br/> `removeclassfeat`| Nimbic will add the specified feat to each character that has the required class at the required level. The feat will be added to the character at that specific class level. | `--class` <br/> `--level` <br/> `--feat` |
+| `addfeat` <br/> `removefeat` | Nimbic will add the specified feat to each character. | `--feat` |
+| `alterclasshp` | Nimbic increase or decrease the hit points a class earns each level. Hit points per level have a minimum of 1 and no defined maximum. | `--class` <br/> `--hp` |
+| `maxhp` | Nimbic will maximize the hit points a character has earned at each level up. | `--input2da` <br/> *or* <br/> `nimbic.ini > 2dadir` |
+| `modifyability` | Nimbic increase or decrease the base ability scores for a character. Base ability scores have a minimum of 3 and a maximum of 100. | At least one of <br/> `--str` <br/> `--dex` <br/> `--con` <br/> `--int` <br/> `--wis` <br/> `--cha`
 
-##### File Conversions
+### 1b. Arguments
+Arguments are additional options you can provide Nimbic to specify exactly what a mode does. Some are optional, some are required on a per-mode basis. Optional arguments can usually be used to 'filter' which characters are affected. See **Filtering** section below for details.
+
+|File&nbsp;Conversion Arguments| Values&nbsp;Accepted | Usage |
+|-|-|-|
+| `--input` | Text | The directory location of the files to be input into the mode operation. Depending on the selected mode this directory will be scanned for .bic or .json files. |
+| `--output` | Text | The directory location of the files to be output by the mode operation. Depending on the selected mode this directory will have .bic, .json or .html files written to it. |
+| `--input2da` | Text | The directory location where Nimbic can read .2da files. These are used to lookup values such as the HP a class earns per level or to find descriptors for numeric IDs (like translating spell ID 107 into 'Magic Missile' for a character sheet).
+
+|Character&nbsp;Change Arguments| Values&nbsp;Accepted | Usage |
+|-|-|-|
+| `--level` | Integer 1 - 40 | Typically specifies the character level required for a character to be affected by a mode. However when used with a class mode it represents class level instead of character level. |
+| `--class` | Integer 0 - 254 | The class ID or index as found in classes.2da. For example barbarian = 0, Wizard = 10, Blackguard = 31, etc. |
+| `--race` | Integer 0 - 254 | The race ID or index as found in racial_types.2da. For example dwarf = 0, elf = 1, human = 6, etc. |
+ | `--subrace` | Text | Text value that would match the what a player input into the Subrace field during character creation. However when reading the subrace field all symbols are removed. So if a character has 'Sun-Touched' as a subrace then you would want to input `--subrace:suntouched` in order to match it. |
+ | `--feat` | Integer > 0 | The feat ID or index as found in feat.2da. For example Alertness = 0, Power Attack = 28, Great Constitution I = 774, etc. |
+ | `--str` <br/> `--dex` <br/> `--con` <br/> `--int` <br/> `--wis` <br/> `--cha` | Integer | Integer value representing how much an ability score should be increased or decreased. Regardless of the argument value the resulting score assigned to the character is limited to the range of 3 - 100. |
+ | `--hp` | Integer | Integer value representing how much a character's hit points gained per class level should be increased or decreased. Regardless of the argument value the hit points gained per level will always have a minimum of 1 with no defined maximum. |
+ 
+### 1c. Filtering
+
+Arguments that are not strictly required for a mode can still be used to provide 'filters' that determine which characters should be affected by the mode. Behind the scenes each character is evaluated by a 'Does this character meet all the requirements?' function which will first check if a character has or meets all of the requirements included in the command before any action is taken. 
+
+---
+
+*Note that these commands omit the directory arguments for brevity and convenience, find out how in the **Nimbic.ini Basic Settings** section below.*
+
+---
+
+Take for instance this command to increase HP per level for barbarian levels by 4.
+```
+nimbic.exe --mode:alterclasshp --class:0 --hp:4
+```
+This command will run successfully and will increase HP gained per barbarian level by 4 for all characters with barbarian levels.
+
+But what if you only wanted it to affect a specific subset of those characters? Perhaps some kind of world event blessed only Plainsborne Half-orc barbarians?
 
 ```
-        --mode:bictojson
-        Use this to make json
+nimbic.exe --mode:alterclasshp --class:0 --hp:4 --race:5 --subrace:plainsborne
 ```
+In this case the mode does the exact same thing *except* that there are additional requirements used to evaluate each character before the HP change takes place, thus making it so that only characters that have barbarian levels, are half-orc and have the Plainsborne subrace will be affected.
 
-```
-        --mode:jsontobic
-```
-- Use this to make .bic
-```
-    --mode:jsontohtml
-```
-    - Use this to make html
+## 2. Nimbic.ini Basic Settings
+The first (and, in fact, any) time you run Nimbic it will check for the existence of a *nimbic.ini* file in the same directory as *nimbic.exe*. If the file is not found then it will automatically create a copy. This file is used to pre-fill a number of settings that should make using Nimbic much more convenient and contains some 'advanced' settings as well.
+
+
+| Basic Settings | Value Accepted | Description  |
+|-|-|-|
+| `inputbic` | Directory&nbsp;location | Equivalent to the `--input` argument for modes that require .bic files as input. |
+| `outputjson` | Directory location | Equivalent to the `--output` argument for modes that produce .json files as output. |
+| `inputjson` | Directory location | Equivalent to the `--input` argument for modes that require .json files as input.
+| `outputbic` | Directory location | Equivalent to the `--output` argument for modes that produce .bic files as output.
+| `outputhtml` | Directory location | Equivalent to the `--output` argument for modes that produce .html files as output.
+| `overwritehtml` | `true` or `false` | Determines whether or not .html files should overwrite files with the same name. By default .html character sheet file names are generated as FirstName_LastName_ClassLevels.html but if you are producing files from a very large vault or know that some characters share the same names and classes then setting `overwritehtml=false` will keep the first/original file and then append a random number to the end of the filename for all files that would otherwise overwrite it.
+| `sqlite` | `true` or `false` | If using `bictojson` mode this tells Nimbic if it should try to extract embedded .sqlite3 databases from .bic files. Even if set to false the database will remain embedded in the .json as compressed text and should not be affected. <br/> If using `jsontobic` mode this tells Nimbic if it should look for a .sqlite3 file alongside the .json file and overwrite the the database data embedded in the .json file with the contents of the .sqlite3 file. <br/> Unless you want to inspect or make modifications directly to character databases it is probably best to leave this set to `false`.   
+ 
+ ## 3. Nimbic.ini Advanced Settings and Production Operations
+ **Warning, dragons ahead.**
+ 
+These settings are intended to make it possible to make changes directly to entire server vaults by iterating through each player folder and modifying files directly within it. Please be careful.
+
+| Advanced Settings | Value Accepted | Description | 
+|-|-|-|
+| `production` | `true` or `false` | This acts as a 'dual control' of sorts. Production operations can only be performed if this value is set to true and the `--prod` argument is also included in the command. |
+| `autocleanup` | `true` or `false` | This determines if `jsontobic` mode will automatically delete the .json and (if present) .sqlite3 files used to create the .bic file. |
+| `autobackup` | `true` or `false` | This determines whether or not `jsontobic` mode will automatically create a backup copy of .bic files prior to being overwritten. Backup files will be written to a subdirectory named `BIC_Backup_YYYYMMDD_HHMMSS` within the directory holding the .bic file. <br/> *Please keep in mind this could potentially significantly increase the amount of disk space your server vault consumes until the backups are purged. (See **Advanced Modes** below.)*  |
+| `servervault` | Directory&nbsp;Location | The server vault directory containing each player's individual character vault. When `--prod` is included in the command and `production=true` in nimbic.ini then the server vault and its subdirectories will act as both the input and output directories for the command (although `jsontohtml` will still write to the `outputhtml` directory.) |
+
+---
+
+| Advanced Modes | Description | Requirements |
+|-|-|-|
+| `purgebackups` | This mode will delete all but one `BIC_Backup_*` directories found in the input directory for the command. The most recent backup will not be deleted. | `--input` <br/><br/> *or* <br/><br/> `nimbic.ini > inputbic` <br/><br/> *or* <br/><br/> `nimbic.ini > servervault` <br/> *and* <br/> `nimbic.ini > production=true`<br/> *and* <br/> `--prod` |
+| `purgebackupsall` | This mode will delete all  `BIC_Backup_*` directories found in the input directory for the command. | `--input` <br/><br/> *or* <br/><br/> `nimbic.ini > inputbic` <br/><br/> *or* <br/><br/> `nimbic.ini > servervault` <br/> *and* <br/> `nimbic.ini > production=true`<br/> *and* <br/> `--prod`
+| `restorebackup` | This mode will attempt to copy .bic files found in the `--restorefrom` subdirectory back into the input directory. | `--restorefrom` <br/><br/> *and one of* <br/><br/> `--input` <br/><br/> *or* <br/><br/> `nimbic.ini > inputbic` <br/><br/> *or* <br/><br/> `nimbic.ini > servervault` <br/> *and* <br/> `nimbic.ini > production=true`<br/> *and* <br/> `--prod`
+
+---
+
+| Advanced Arguments| Values Accepted | Usage |
+|-|-|-|
+|`--restorefrom`| Directory name as <br/> `BIC_Backup_YYYYMMDD_HHMMSS` <br/> *or just* <br/> `YYYYMMDD_HHMMSS` | This specifies what backup directory name Nimbic should use to perform a backup restoration. |
+
+## 4. Use Case Examples

@@ -76,7 +76,6 @@ proc PerformJSONModification(OperationSettings: SettingsPackage) =
         WriteToJSON: bool
 
     for i in FilesToChange.low .. FilesToChange.high:
-        EchoBlank()
         CharacterJSON = parseFile(FilesToChange[i].string)
         CharacterMeetsRequirements = ValidateCharacterRequirements(OperationSettings, CharacterJSON)
 

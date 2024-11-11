@@ -1,5 +1,6 @@
 import std/[json]
 import ../get/[feat]
+import ../../nimbic/[echo_feedback]
 
 let
     FeatJSON_LvlStatList = %*{"__struct_id": 0,"Feat": {"type": "word", "value": nil}}
@@ -22,7 +23,7 @@ proc AddFeatToLvlStatList*(CharacterJSON: JsonNode, LvlStatListIndex: int, First
     elif FirstOrLastPosition == "Last":
         InsertIndex = GetLastPositionInFeatsForLevel(CharacterJSON, LvlStatListIndex) + 1
     else:
-        echo "Invalid index specified for AddFeatToLvlStatList"
+        EchoError("Invalid index specified for AddFeatToLvlStatList")
         return
     CharacterJSON["LvlStatList"]["value"][LvlStatListIndex]["FeatList"]["value"].elems.insert(FeatJSON_LvlStatList, InsertIndex)
 

@@ -39,10 +39,8 @@ proc MaximizeHP*(CharacterJSON: JsonNode): bool =
     if GetHitPoints(CharacterJSON) != HPFromClassRolls:
         SetHitPoints(CharacterJSON, HPFromClassRolls)
         SetCurrentHitPoints(CharacterJSON, HPFromClassRolls)
-        echo "Maximum HP operation successful."
         return true
     else:
-        echo "Character already has maximum hit points."
         return false
 
 proc InitializeRDDHPLookup*() =

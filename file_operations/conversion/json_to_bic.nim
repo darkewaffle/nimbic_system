@@ -2,6 +2,7 @@ import std/[dirs, files, json, os, paths, streams]
 import /[nwn_gff_excerpts]
 import ../[interface_io]
 import ../../nimbic/settings/[object_settingspackage]
+import ../../nimbic/[echo_feedback]
 import ../../neverwinterdotnim/neverwinter/[gff, gffjson]
 
 proc JSONtoBIC*(InputFile: Path, OperationSettings: SettingsPackage)
@@ -50,9 +51,9 @@ proc JSONtoBIC*(InputFile: Path, OperationSettings: SettingsPackage) =
     #Option to automatically delete JSON and Sqlite after writing BIC
     if OperationSettings.AutoCleanup:
         removeFile(InputFile)
-        echo "Autocleanup deleting: " & InputFile.string
+        EchoNotice("Autocleanup deleting: " & InputFile.string)
         if fileExists(InputPathSQL):
             removeFile(InputPathSQL)
-            echo "Autocleanup deleting: " & InputPathSQL.string
+            EchoNotice("Autocleanup deleting: " & InputPathSQL.string)
 
     echo "Translation to BIC complete: " & OutputPath.string

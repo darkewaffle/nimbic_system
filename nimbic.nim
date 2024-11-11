@@ -68,46 +68,55 @@ proc PerformFileOperation(OperationSettings: SettingsPackage) =
             RestoreBackup(OperationSettings)
 
 proc PerformJSONModification(OperationSettings: SettingsPackage) =
-    var 
-        FilesToChange = GetJSONFiles(OperationSettings)
-        CharacterJSON: JsonNode
-        CharacterMeetsRequirements: bool
-        FileChangeSuccessful: bool
-        WriteToJSON = true
+    var FilesToChange = GetJSONFiles(OperationSettings)
 
     for i in FilesToChange.low .. FilesToChange.high:
-        CharacterJSON = parseFile(FilesToChange[i].string)
-        CharacterMeetsRequirements = ValidateCharacterRequirements(OperationSettings, CharacterJSON)
+        var 
+            CharacterJSON = parseFile(FilesToChange[i].string)
+            CharacterMeetsRequirements = ValidateCharacterRequirements(OperationSettings, CharacterJSON)
+            WriteChangesToJSON: bool
+            FileChangeSuccessful: bool
 
         if not(CharacterMeetsRequirements):
-            discard
+            echo "Character ineligible: " & FilesToChange[i].string
+            continue
         else:
             case OperationSettings.Mode:
                 of "addclassfeat":
                     AddClassFeat(CharacterJSON, OperationSettings)
+                    #Requirements ensure character has appropriate class/level
+                    #Therefore operation has no fail condition and the changes should always be written
+                    WriteChangesToJSON = true
 
                 of "removeclassfeat":
                     FileChangeSuccessful = RemoveClassFeat(CharacterJSON, OperationSettings)
-                    WriteToJSON = CharacterMeetsRequirements and FileChangeSuccessful
+                    WriteChangesToJSON = FileChangeSuccessful
 
                 of "alterclasshp":
                     FileChangeSuccessful = AlterClassHP(CharacterJSON, OperationSettings)
-                    WriteToJSON = CharacterMeetsRequirements and FileChangeSuccessful
+                    WriteChangesToJSON = FileChangeSuccessful
 
                 of "maxhp":
                     FileChangeSuccessful = MaximizeHP(CharacterJSON)
-                    WriteToJSON = CharacterMeetsRequirements and FileChangeSuccessful
+                    WriteChangesToJSON = FileChangeSuccessful
 
                 of "addfeat":
                     AddLevelFeat(CharacterJSON, OperationSettings)
+                    #Requirements ensure character has appropriate class/level (or everyone is at least level 1 if no level is input)
+                    #Therefore operation has no fail condition and the changes should always be written
+                    WriteChangesToJSON = true
 
                 of "removefeat":
                     FileChangeSuccessful = RemoveLevelFeat(CharacterJSON, OperationSettings)
-                    WriteToJSON = CharacterMeetsRequirements and FileChangeSuccessful
+                    WriteChangesToJSON = FileChangeSuccessful
 
                 of "modifyability":
                     ModifyAbilities(CharacterJSON, OperationSettings)
+                    #There is no fail state for this operation.
+                    WriteChangesToJSON = true
 
-        if WriteToJSON:
+        if WriteChangesToJSON:
             writeFile(FilesToChange[i].string, pretty(CharacterJSON, 4))
-            EchoNotice("Operation successful. Writing to " & FilesToChange[i].string)
+            EchoSuccess("Operation complete. Writing update to " & FilesToChange[i].string)
+        else:
+            EchoNotice("Character eligible but no changes made. " & FilesToChange[i].string)

@@ -17,7 +17,7 @@ EchoSeparator()
 var OperationSettings = GetOperationSettings()
 if not(ValidateSettings(OperationSettings)):
     #OperationSettings.EchoSettings()
-    EchoError("One more more settings required for the operation have not been met. Please verify your settings and try again.")
+    EchoError("One more more settings required for the operation have not been input correctly. Please verify your settings and try again.")
     quit(QuitSuccess)
 PerformModeOperation(OperationSettings)
 

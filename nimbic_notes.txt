@@ -1,9 +1,5 @@
 nimbic TODO / notes
 
-nimbic - try to use solely for orchestration, put all procs/code into imports
-comment cleanup
-comment documentation
-
 Ugly down here
 Skills - refund
 Refund individual skill by returning spent points to SkillPoints object and LvlStatList > i > SkillPoints. 

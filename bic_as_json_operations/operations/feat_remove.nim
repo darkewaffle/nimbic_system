@@ -27,5 +27,5 @@ proc RemoveFeat(CharacterJSON: JsonNode, OperationSettings: SettingsPackage, Lvl
         RemoveFeatFromQB(CharacterJSON, OperationSettings.Feat)
         return true
     else:
-        EchoMessageName("Feat " & $OperationSettings.Feat & " not found in LvlStatList", CharacterJSON)
+        EchoWarning("Feat " & $OperationSettings.Feat & " not found")
         return false

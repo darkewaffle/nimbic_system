@@ -73,7 +73,7 @@ proc PerformJSONModification(OperationSettings: SettingsPackage) =
         CharacterJSON: JsonNode
         CharacterMeetsRequirements: bool
         FileChangeSuccessful: bool
-        WriteToJSON: bool
+        WriteToJSON = true
 
     for i in FilesToChange.low .. FilesToChange.high:
         CharacterJSON = parseFile(FilesToChange[i].string)

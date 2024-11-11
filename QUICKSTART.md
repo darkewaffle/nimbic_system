@@ -8,7 +8,7 @@
     - inputbic = The directory location of the .bic files that Nimbic will convert to .json.
     - outputjson = The directory location where Nimbic will write .json files after converting them from .bic.
     - inputjson = The directory location of the .json files that Nimbic will modify.
-        - Note: It is probably most convenient to use the same directory for both outputjson and inputjson.
+        - It is probably most convenient to use the same directory for both outputjson and inputjson.
     - outputbic = The directory location of the .bic files Nimbic will create when converting back into .bic from .json.
         - *This should not be the same as inputbic until you have tested the .bic output files to ensure they are compliant with your server, otherwise you risk them being overwritten.*
     - outputhtml = The directory location where Nimbic will write .html character sheets.
@@ -29,4 +29,4 @@
     - Finally convert your updated characters back to .bic to actually play them.
         - nimbic.exe --mode:jsontobic
 
-6. That's all there is to it. Remember that if your inputbic and outputbic directories are different (and they should be - at least initially) that you may have to copy files from your outputbic folder to your character vault folder to actually use them.
+6. That's all there is to it. Remember that if your inputbic and outputbic directories are different (and they should be - at least initially) then you may have to copy files from your outputbic folder to your character vault folder to actually use them.

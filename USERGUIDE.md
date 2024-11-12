@@ -132,7 +132,7 @@ These settings are intended to make it possible to make changes directly to enti
 
 ## Command Examples / Cheatsheet
 
-| Description| Command | |
+| Description | Command |
 |-|-|
 | Convert .bic to .json | `nimbic.exe --mode:bictojson` |
 | Convert .json to .bic | `nimbic.exe --mode:jsontobic` |

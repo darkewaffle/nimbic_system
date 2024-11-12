@@ -1,10 +1,19 @@
 
 # User Guide
 
-  ## What does Nimbic do?
+## What does Nimbic do?
 Nimbic is intended to read Neverwinter Nights' .bic character files and then convert them into .json text files. Once they have been converted to .json then Nimbic (or any text editor, really) can modify them to adjust features of the character. Then when the adjustments are complete the .json file can be converted back into a playable .bic file that includes all of the changes in game.
 
+If you just want to make changes to some personal character files Nimbic can do a lot of that but it may be easier to use other tools. However because it is directory driven and can apply changes at scale it could be useful for servers that wish to make changes to certain 2DA properties and then retrofit them onto all characters rather than forcing players to re-level them or introducing 'legacy' characters. I personally built it because I wanted to be able to, over time, continue to 'balance' characters against each other by granting automatic feats to classes or races, adjusting HP values, skill points and more.
+
 Nimbic tries to make sure the changes will be compliant with ELC ('Enforce Legal Characters') when possible - however please keep in mind that may require changes to the server 2DA files as well. And some kinds of changes simply are not ELC compliant at all - for instance modifying a character's ability scores to have an additional +10 Strength will not, to my knowledge, ever be valid with ELC.
+
+Last but not least Nimbic can also generate human readable .html character sheets from .json including all basic character info, a table of every level with feat selections and skill ranks and a full spellbook. 
+
+### Limitations
+Certain things you can change in 2DA just aren't really possible to apply to a character directly as they require input from the person that actually plays/builds the character. While Nimbic can, for example, grant a new automatic feat to a class it cannot address changing the levels at which a class earns epic bonus feats. Nimbic also does not support any skill point changes at this times.
+
+
 
 ## 1. How does it work?
 Nimbic is command-line only. Every command should take the form of
@@ -25,7 +34,7 @@ This is the most important argument to provide as Nimbic will not operate withou
 | `jsontobic` | Nimbic will look for .json files, convert them to .bic and then write them to disk. | `--input` <br/> `--output` <br/> *or* <br/> `nimbic.ini > inputjson` <br/> `nimbic.ini > outputbic` |
 | `jsontohtml` | Nimbic will look for .json files, create a .html character sheet for each one and write the .html files to disk. | `--input` <br/> `--output` <br/> *or* <br/> `nimbic.ini > inputjson` <br/> `nimbic.ini > outputhtml` <br/><br/> *and* <br/><br/> `--input2da` <br/> *or* <br/> `nimbic.ini > 2dadir`|
   ---
-| Character Changes | Description | Requirements In Addition To <br/><br/> `--input` <br/> *or*<br/> `nimbic.ini > inputjson` |
+| Character Changes | Description | Requirements In Addition To <br/><br/> `--input` <br/> *or* <br/> `nimbic.ini > inputjson` |
 |-|-|-|
 | `addclassfeat` <br/> `removeclassfeat`| Nimbic will add the specified feat to each character that has the required class at the required level. The feat will be added to the character at that specific class level. | `--class` <br/> `--level` <br/> `--feat` |
 | `addfeat` <br/> `removefeat` | Nimbic will add the specified feat to each character. | `--feat` |
@@ -40,7 +49,7 @@ Arguments are additional options you can provide Nimbic to specify exactly what 
 |-|-|-|
 | `--input` | Text | The directory location of the files to be input into the mode operation. Depending on the selected mode this directory will be scanned for .bic or .json files. |
 | `--output` | Text | The directory location of the files to be output by the mode operation. Depending on the selected mode this directory will have .bic, .json or .html files written to it. |
-| `--input2da` | Text | The directory location where Nimbic can read .2da files. These are used to lookup values such as the HP a class earns per level or to find descriptors for numeric IDs (like translating spell ID 107 into 'Magic Missile' for a character sheet).
+| `--2da` | Text | The directory location where Nimbic can read .2da files. These are used to lookup values such as the HP a class earns per level or to find descriptors for numeric IDs (like translating spell ID 107 into 'Magic Missile' for a character sheet).
 
 |Character&nbsp;Change Arguments| Values&nbsp;Accepted | Usage |
 |-|-|-|
@@ -87,9 +96,15 @@ The first (and, in fact, any) time you run Nimbic it will check for the existenc
 | `outputbic` | Directory location | Equivalent to the `--output` argument for modes that produce .bic files as output.
 | `outputhtml` | Directory location | Equivalent to the `--output` argument for modes that produce .html files as output.
 | `overwritehtml` | `true` or `false` | Determines whether or not .html files should overwrite files with the same name. By default .html character sheet file names are generated as FirstName_LastName_ClassLevels.html but if you are producing files from a very large vault or know that some characters share the same names and classes then setting `overwritehtml=false` will keep the first/original file and then append a random number to the end of the filename for all files that would otherwise overwrite it.
+| `input2da` | Directory location | Equivalent to the `--2da` argument for modes that require 2da lookup information.
 | `sqlite` | `true` or `false` | If using `bictojson` mode this tells Nimbic if it should try to extract embedded .sqlite3 databases from .bic files. Even if set to false the database will remain embedded in the .json as compressed text and should not be affected. <br/> If using `jsontobic` mode this tells Nimbic if it should look for a .sqlite3 file alongside the .json file and overwrite the the database data embedded in the .json file with the contents of the .sqlite3 file. <br/> Unless you want to inspect or make modifications directly to character databases it is probably best to leave this set to `false`.   
  
- ## 3. Nimbic.ini Advanced Settings and Production Operations
+## 3. Directory Priority
+You might have noticed that you can specify a directory as both a commandline argument and as a setting in the nimbic.ini file. If you run a command that includes the `--input` or `--output` argument when the input and output directories are already defined in nimbic.ini as well then the commandline argument 'wins' and takes precedence. This means that if you want to manually input from or output to a specific directory you can do so while nimbic.ini will provide the other directory settings. The `--2da` argument and the `input2da` setting behave in the same way.
+
+There is one other scenario however - if nimbic.ini has a `servervault` setting defined *and* the `production` setting is set to `true` *and* a command is run with the `--prod` argument then the `servervault` directory will take precedence and be used for all input and output operations. See the **Advanced Settings and Production Operations** section below for details.
+
+ ## 4. Advanced Settings and Production Operations
  **Warning, dragons ahead.**
  
 These settings are intended to make it possible to make changes directly to entire server vaults by iterating through each player folder and modifying files directly within it. Please be careful.
@@ -115,4 +130,36 @@ These settings are intended to make it possible to make changes directly to enti
 |-|-|-|
 |`--restorefrom`| Directory name as <br/> `BIC_Backup_YYYYMMDD_HHMMSS` <br/> *or just* <br/> `YYYYMMDD_HHMMSS` | This specifies what backup directory name Nimbic should use to perform a backup restoration. |
 
-## 4. Use Case Examples
+## Command Examples / Cheatsheet
+- Convert .bic to .json
+`nimbic.exe --mode:bictojson`
+
+- Convert .json to .bic
+`nimbic.exe --mode:jsontobic`
+
+- Convert .json to .html (requires 2da access)
+`nimbic.exe --mode:jsontohtml`
+
+- Give Toughness feat to Monks at level 10
+`nimbic.exe --mode:addclassfeat --class:5 --level:10 --feat:40`
+
+- Remove Deflect Arrows feat from Monks at level 2
+`nimbic.exe --mode:removeclassfeat --class:5 --level:2 --feat:8`
+
+- Increase Wizard HP per level by 6
+`nimbic.exe --mode:alterclasshp --class:10 --hp:6`
+
+- Maximize the HP earned per level for all characters and classes (requires 2da access)
+`nimbic.exe --mode:maxhp`
+
+- Give Silent Spell to Gnomes at level 1
+`nimbic.exe --mode:addfeat --feat:33 --race:2`
+
+- Give Half-orc Barbarians +2 Constitution and -2 Wisdom
+`nimbic.exe --mode:modifyability --con:2 --wis:-2 --class:0 --race:5`
+
+- Purge all backups found in the `servervault` except for the latest one
+`nimbic.exe --mode:purgebackups --prod`
+
+- Restore .bic backups in the `servervault` from directories dated 20241112_081500
+`nimbic.exe --mode:restorebackup --restorefrom:20241112_081500 --prod` 

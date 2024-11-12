@@ -1,6 +1,7 @@
 # nimbic_system
 
-### A command-line utility for modifying Neverwinter Nights' .bic character files. Since it is directory driven it is intended to modify entire character vaults or server vaults in a single operation - such as retrofitting server-level 2DA changes onto the server's characters without requiring them to be relevelled or invalidated.
+### A command-line utility for modifying Neverwinter Nights' .bic character files by converting them to .json, making changes and then converting them back into .bic files.
 
 ##### [Click Here For Quick Start Guide](https://github.com/darkewaffle/nimbic_system/blob/main/QUICKSTART.md)
 
+##### [Click Here For Full User Guide](https://github.com/darkewaffle/nimbic_system/blob/main/USERGUIDE.md)

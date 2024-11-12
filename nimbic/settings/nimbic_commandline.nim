@@ -76,7 +76,7 @@ proc GetSettingsFromCommandLine*(): SettingsPackage =
                         CommandLineSettings.OutputJSON = Path(CleanDirectoryName(val))
                         CommandLineSettings.OutputHTML = Path(CleanDirectoryName(val))
 
-                    of "input2da", "2da":
+                    of "2da":
                         CommandLineSettings.Input2DA = Path(CleanDirectoryName(val))
 
                     of "production", "prod":

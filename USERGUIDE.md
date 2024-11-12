@@ -131,39 +131,17 @@ These settings are intended to make it possible to make changes directly to enti
 |`--restorefrom`| Directory name as <br/> `BIC_Backup_YYYYMMDD_HHMMSS` <br/> *or just* <br/> `YYYYMMDD_HHMMSS` | This specifies what backup directory name Nimbic should use to perform a backup restoration. |
 
 ## Command Examples / Cheatsheet
-Convert .bic to .json
-```
-nimbic.exe --mode:bictojson
-```
 
-- Convert .json to .bic
-```
-nimbic.exe --mode:jsontobic
-```
-
-- Convert .json to .html (requires 2da access)
-`nimbic.exe --mode:jsontohtml`
-
-- Give Toughness feat to Monks at level 10
-`nimbic.exe --mode:addclassfeat --class:5 --level:10 --feat:40`
-
-- Remove Deflect Arrows feat from Monks at level 2
-`nimbic.exe --mode:removeclassfeat --class:5 --level:2 --feat:8`
-
-- Increase Wizard HP per level by 6
-`nimbic.exe --mode:alterclasshp --class:10 --hp:6`
-
-- Maximize the HP earned per level for all characters and classes (requires 2da access)
-`nimbic.exe --mode:maxhp`
-
-- Give Silent Spell to Gnomes at level 1
-`nimbic.exe --mode:addfeat --feat:33 --race:2`
-
-- Give Half-orc Barbarians +2 Constitution and -2 Wisdom
-`nimbic.exe --mode:modifyability --con:2 --wis:-2 --class:0 --race:5`
-
-- Purge all backups found in the `servervault` except for the latest one
-`nimbic.exe --mode:purgebackups --prod`
-
-- Restore .bic backups in the `servervault` from directories dated 20241112_081500
-`nimbic.exe --mode:restorebackup --restorefrom:20241112_081500 --prod` 
+| Description| Command | |
+|-|-|
+| Convert .bic to .json | `nimbic.exe --mode:bictojson` |
+| Convert .json to .bic | `nimbic.exe --mode:jsontobic` |
+| Convert .json to .html (requires 2da access)|`nimbic.exe --mode:jsontohtml` |
+| Give Toughness feat to Monks at level 10|`nimbic.exe --mode:addclassfeat --class:5 --level:10 --feat:40` |
+| Remove Deflect Arrows feat from Monks at level 2|`nimbic.exe --mode:removeclassfeat --class:5 --level:2 --feat:8` |
+| Increase Wizard HP per level by 6|`nimbic.exe --mode:alterclasshp --class:10 --hp:6` |
+| Maximize the HP earned per level for all characters and classes (requires 2da access)|`nimbic.exe --mode:maxhp` |
+| Give Silent Spell to Gnomes at level 1|`nimbic.exe --mode:addfeat --feat:33 --race:2` |
+| Give Half-orc Barbarians +2 Constitution and -2 Wisdom|`nimbic.exe --mode:modifyability --con:2 --wis:-2 --class:0 --race:5` |
+| Purge all backups found in the `servervault` except for the latest one|`nimbic.exe --mode:purgebackups --prod` |
+| Restore .bic backups in the `servervault` from directories dated 20241112_081500|`nimbic.exe --mode:restorebackup --restorefrom:20241112_081500 --prod` |

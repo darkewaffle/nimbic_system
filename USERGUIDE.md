@@ -131,8 +131,10 @@ These settings are intended to make it possible to make changes directly to enti
 |`--restorefrom`| Directory name as <br/> `BIC_Backup_YYYYMMDD_HHMMSS` <br/> *or just* <br/> `YYYYMMDD_HHMMSS` | This specifies what backup directory name Nimbic should use to perform a backup restoration. |
 
 ## Command Examples / Cheatsheet
-- Convert .bic to .json
-```nimbic.exe --mode:bictojson```
+Convert .bic to .json
+```
+nimbic.exe --mode:bictojson
+```
 
 - Convert .json to .bic
 ```

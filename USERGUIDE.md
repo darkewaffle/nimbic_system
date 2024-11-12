@@ -132,10 +132,12 @@ These settings are intended to make it possible to make changes directly to enti
 
 ## Command Examples / Cheatsheet
 - Convert .bic to .json
-`nimbic.exe --mode:bictojson`
+```nimbic.exe --mode:bictojson```
 
 - Convert .json to .bic
-`nimbic.exe --mode:jsontobic`
+```
+nimbic.exe --mode:jsontobic
+```
 
 - Convert .json to .html (requires 2da access)
 `nimbic.exe --mode:jsontohtml`

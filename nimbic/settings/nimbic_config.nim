@@ -14,7 +14,7 @@ const
     KeyOutputBIC = "outputbic"
     KeyOutputHTML = "outputhtml"
     KeyOverwriteHTML = "overwritehtml"
-    KeyInput2DA = "2dadir"
+    KeyInput2DA = "input2da"
     KeySqlite = "sqlite"
     KeyProduction = "production"
     KeyAutoCleanup = "autocleanup"

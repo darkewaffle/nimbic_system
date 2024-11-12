@@ -31,8 +31,8 @@ overwritehtml=true
 
 #Directory where 2DA files can be read. These are necessary for certain operations.
 #Currently only applies to --mode:maxhp and --mode:jsontohtml.
-#Ex: 2dadir=C:\Users\Name\Documents\NWN2da
-2dadir=
+#Ex: input2da=C:\Users\Name\Documents\NWN2da
+input2da=
 
 #Indicates whether or not nimbic should attempt to export/import Sqlite databases embedded in .bic files.
 #This should only be necessary if you wish to view or modify the database using an external program. Regardless

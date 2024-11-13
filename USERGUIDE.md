@@ -2,16 +2,16 @@
 # User Guide
 
 ## What does Nimbic do?
-Nimbic is intended to read Neverwinter Nights' .bic character files and then convert them into .json text files. Once they have been converted to .json then Nimbic (or any text editor, really) can modify them to adjust features of the character. Then when the adjustments are complete the .json file can be converted back into a playable .bic file that includes all of the changes in game.
+Nimbic is designed to read Neverwinter Nights' .bic character files and then convert them into .json text files. Once they have been converted to .json then Nimbic (or any text editor, really) can modify them to adjust features of the character. Then when the adjustments are complete the .json file can be converted back into a playable .bic file that includes all of the changes in game.
 
-If you just want to make changes to some personal character files Nimbic can do a lot of that but it may be easier to use other tools. However because it is directory driven and can apply changes at scale it could be useful for servers that wish to make changes to certain 2DA properties and then retrofit them onto all characters rather than forcing players to re-level them or introducing 'legacy' characters. I personally built it because I wanted to be able to, over time, continue to 'balance' characters against each other by granting automatic feats to classes or races, adjusting HP values, skill points and more.
+If you just want to make changes to some personal character files then Nimbic can do a lot of that but it may be easier to use other tools. However because it is directory driven and can apply changes at scale it could be useful for servers that wish to make changes to certain 2DA properties and then retrofit them onto all characters rather than forcing players to re-level or introducing 'legacy' characters. I personally built it because I wanted to be able to, over time, continue to 'balance' characters against each other by granting automatic feats to classes or races, adjusting HP values, skill points and more.
 
 Nimbic tries to make sure the changes will be compliant with ELC ('Enforce Legal Characters') when possible - however please keep in mind that may require changes to the server 2DA files as well. And some kinds of changes simply are not ELC compliant at all - for instance modifying a character's ability scores to have an additional +10 Strength will not, to my knowledge, ever be valid with ELC.
 
 Last but not least Nimbic can also generate human readable .html character sheets from .json including all basic character info, a table of every level with feat selections and skill ranks and a full spellbook. 
 
 ### Limitations
-Certain things you can change in 2DA just aren't really possible to apply to a character directly as they require input from the person that actually plays/builds the character. While Nimbic can, for example, grant a new automatic feat to a class it cannot address changing the levels at which a class earns epic bonus feats. Nimbic also does not support any skill point changes at this times.
+Certain things that you can change in 2DA just aren't really possible to apply to a character directly as they require input from the person that actually plays/builds the character. While Nimbic can, for example, grant a new automatic feat to a class it cannot address changing the levels at which a class earns epic bonus feats. Nimbic also does not support skill point changes at this time.
 
 
 
@@ -26,20 +26,20 @@ with each mode type contextually accepting (and sometimes requiring) additional 
   
 
 ### 1a. Mode
-This is the most important argument to provide as Nimbic will not operate without it. The mode tells Nimbic what kind of files to look for and how they should be read or changed. It accepts the following values.
+This is the most important information to provide as Nimbic will not operate without it. The mode tells Nimbic what kind of files to look for and how they should be read or changed. It accepts the following values.
 
 | File&nbsp;Conversion | Description | Requirements |
 |-|-|-|
 | `bictojson` | Nimbic will look for .bic files, convert them to .json and then write them to disk. This does not affect the .bic file. | `--input` <br/> `--output` <br/> *or* <br/> `nimbic.ini > inputbic` <br/> `nimbic.ini > outputjson` |
 | `jsontobic` | Nimbic will look for .json files, convert them to .bic and then write them to disk. | `--input` <br/> `--output` <br/> *or* <br/> `nimbic.ini > inputjson` <br/> `nimbic.ini > outputbic` |
-| `jsontohtml` | Nimbic will look for .json files, create a .html character sheet for each one and write the .html files to disk. | `--input` <br/> `--output` <br/> *or* <br/> `nimbic.ini > inputjson` <br/> `nimbic.ini > outputhtml` <br/><br/> *and* <br/><br/> `--input2da` <br/> *or* <br/> `nimbic.ini > 2dadir`|
+| `jsontohtml` | Nimbic will look for .json files, create a .html character sheet for each one and write the .html files to disk. | `--input` <br/> `--output` <br/> *or* <br/> `nimbic.ini > inputjson` <br/> `nimbic.ini > outputhtml` <br/><br/> *and* <br/><br/> `--2da` <br/> *or* <br/> `nimbic.ini > input2da`|
   ---
 | Character Changes | Description | Requirements In Addition To <br/><br/> `--input` <br/> *or* <br/> `nimbic.ini > inputjson` |
 |-|-|-|
 | `addclassfeat` <br/> `removeclassfeat`| Nimbic will add the specified feat to each character that has the required class at the required level. The feat will be added to the character at that specific class level. | `--class` <br/> `--level` <br/> `--feat` |
 | `addfeat` <br/> `removefeat` | Nimbic will add the specified feat to each character. | `--feat` |
 | `alterclasshp` | Nimbic increase or decrease the hit points a class earns each level. Hit points per level have a minimum of 1 and no defined maximum. | `--class` <br/> `--hp` |
-| `maxhp` | Nimbic will maximize the hit points a character has earned at each level up. | `--input2da` <br/> *or* <br/> `nimbic.ini > 2dadir` |
+| `maxhp` | Nimbic will maximize the hit points a character has earned at each level up. | `--2da` <br/> *or* <br/> `nimbic.ini > input2da` |
 | `modifyability` | Nimbic increase or decrease the base ability scores for a character. Base ability scores have a minimum of 3 and a maximum of 100. | At least one of <br/> `--str` <br/> `--dex` <br/> `--con` <br/> `--int` <br/> `--wis` <br/> `--cha`
 
 ### 1b. Arguments
@@ -84,6 +84,21 @@ nimbic.exe --mode:alterclasshp --class:0 --hp:4 --race:5 --subrace:plainsborne
 ```
 In this case the mode does the exact same thing *except* that there are additional requirements used to evaluate each character before the HP change takes place, thus making it so that only characters that have barbarian levels, are half-orc and have the Plainsborne subrace will be affected.
 
+---
+
+The following arguments are not supported as filters.
+
+```
+--feat
+--hp
+--str
+--dex
+--con
+--int
+--wis
+--cha
+```
+
 ## 2. Nimbic.ini Basic Settings
 The first (and, in fact, any) time you run Nimbic it will check for the existence of a *nimbic.ini* file in the same directory as *nimbic.exe*. If the file is not found then it will automatically create a copy. This file is used to pre-fill a number of settings that should make using Nimbic much more convenient and contains some 'advanced' settings as well.
 
@@ -100,19 +115,19 @@ The first (and, in fact, any) time you run Nimbic it will check for the existenc
 | `sqlite` | `true` or `false` | If using `bictojson` mode this tells Nimbic if it should try to extract embedded .sqlite3 databases from .bic files. Even if set to false the database will remain embedded in the .json as compressed text and should not be affected. <br/> If using `jsontobic` mode this tells Nimbic if it should look for a .sqlite3 file alongside the .json file and overwrite the the database data embedded in the .json file with the contents of the .sqlite3 file. <br/> Unless you want to inspect or make modifications directly to character databases it is probably best to leave this set to `false`.   
  
 ## 3. Directory Priority
-You might have noticed that you can specify a directory as both a commandline argument and as a setting in the nimbic.ini file. If you run a command that includes the `--input` or `--output` argument when the input and output directories are already defined in nimbic.ini as well then the commandline argument 'wins' and takes precedence. This means that if you want to manually input from or output to a specific directory you can do so while nimbic.ini will provide the other directory settings. The `--2da` argument and the `input2da` setting behave in the same way.
+You might have noticed that you can specify a directory as both a commandline argument and as a setting in the nimbic.ini file. If you run a command that includes the `--input` or `--output` argument while the input and output directories are already defined in nimbic.ini then the commandline argument 'wins' and takes precedence. This means that if you want to manually input from or output to a specific directory you can do so while nimbic.ini will continue to provide the other directory settings. The `--2da` argument and the `input2da` setting behave in the same way.
 
 There is one other scenario however - if nimbic.ini has a `servervault` setting defined *and* the `production` setting is set to `true` *and* a command is run with the `--prod` argument then the `servervault` directory will take precedence and be used for all input and output operations. See the **Advanced Settings and Production Operations** section below for details.
 
  ## 4. Advanced Settings and Production Operations
  **Warning, dragons ahead.**
  
-These settings are intended to make it possible to make changes directly to entire server vaults by iterating through each player folder and modifying files directly within it. Please be careful.
+These settings are intended to make it possible to make changes directly to entire server vaults by iterating through each player folder and creating or modifying files directly within it. Please be careful.
 
 | Advanced Settings | Value Accepted | Description | 
 |-|-|-|
 | `production` | `true` or `false` | This acts as a 'dual control' of sorts. Production operations can only be performed if this value is set to true and the `--prod` argument is also included in the command. |
-| `autocleanup` | `true` or `false` | This determines if `jsontobic` mode will automatically delete the .json and (if present) .sqlite3 files used to create the .bic file. |
+| `autocleanup` | `true` or `false` | This determines if `jsontobic` mode will automatically delete the .json and .sqlite3 (if present) files used to create the .bic file. |
 | `autobackup` | `true` or `false` | This determines whether or not `jsontobic` mode will automatically create a backup copy of .bic files prior to being overwritten. Backup files will be written to a subdirectory named `BIC_Backup_YYYYMMDD_HHMMSS` within the directory holding the .bic file. <br/> *Please keep in mind this could potentially significantly increase the amount of disk space your server vault consumes until the backups are purged. (See **Advanced Modes** below.)*  |
 | `servervault` | Directory&nbsp;Location | The server vault directory containing each player's individual character vault. When `--prod` is included in the command and `production=true` in nimbic.ini then the server vault and its subdirectories will act as both the input and output directories for the command (although `jsontohtml` will still write to the `outputhtml` directory.) |
 
@@ -145,3 +160,7 @@ These settings are intended to make it possible to make changes directly to enti
 | Give Half-orc Barbarians +2 Constitution and -2 Wisdom|`nimbic.exe --mode:modifyability --con:2 --wis:-2 --class:0 --race:5` |
 | Purge all backups found in the `servervault` except for the latest one|`nimbic.exe --mode:purgebackups --prod` |
 | Restore .bic backups in the `servervault` from directories dated 20241112_081500|`nimbic.exe --mode:restorebackup --restorefrom:20241112_081500 --prod` |
+
+## Credits
+
+Many thanks to the [neverwinter.nim project](https://github.com/niv/neverwinter.nim) whose code to convert GFF (.bic is a form of GFF) to .json and extract the Sqlite files within provides the basis this project.

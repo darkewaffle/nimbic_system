@@ -47,7 +47,7 @@ These values are input to specify what an operation will do or identify which ch
 const DirectoryHelp = """
     --input    = represents the directory holding input files for an operation
     --output   = represents the directory an operation will write files to
-    --input2da = directory where nimbic can read 2da files (only necessary for maxhp and jsontohtml modes)
+    --2da = directory where nimbic can read 2da files (only necessary for maxhp and jsontohtml modes)
     ** Note that directories and other advanced settings can be set in nimbic.ini instead **
 """
 
@@ -61,7 +61,7 @@ Grant Toughness to Wizards at Level 5...
     nimbic.exe --mode:addclassfeat --input:"C:\Users\Name\Documents\NWN\BICtoJSON" --output:"C:\Users\Name\Documents\NWN\BICtoJSON" --class:10 --level:5 --feat:40
 
 Maximize HP at each level using a set of 2da files to find the appropriate amount for each class...
-    nimbic.exe --mode:maxhp --input:"C:\Users\Name\Documents\NWN\BICtoJSON" --output:"C:\Users\Name\Documents\NWN\BICtoJSON" --input2da:"C:\Users\Name\Documents\NWN\2da"
+    nimbic.exe --mode:maxhp --input:"C:\Users\Name\Documents\NWN\BICtoJSON" --output:"C:\Users\Name\Documents\NWN\BICtoJSON" --2da:"C:\Users\Name\Documents\NWN\2da"
 
 Generate .html character sheets from .json files...
     nimbic.exe --mode:jsontohtml --input:"C:\Users\Name\Documents\NWN\BICtoJSON" --output:"C:\Users\Name\Documents\NWN\BICtoHTML"

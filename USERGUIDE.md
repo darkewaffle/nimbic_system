@@ -48,20 +48,20 @@ Arguments are additional options you can provide Nimbic to specify exactly what 
 
 |File&nbsp;Conversion Arguments| Values&nbsp;Accepted | Usage |
 |-|-|-|
-| `--input` | Text | The directory location of the files to be input into the mode operation. Depending on the selected mode this directory will be scanned for .bic or .json files. |
-| `--output` | Text | The directory location of the files to be output by the mode operation. Depending on the selected mode this directory will have .bic, .json or .html files written to it. |
-| `--2da` | Text | The directory location where Nimbic can read .2da files. These are used to lookup values such as the HP a class earns per level or to find descriptors for numeric IDs (like translating spell ID 107 into 'Magic Missile' for a character sheet).
+| `--input` | "Directory location" | The directory location of the files to be input into the mode operation. Depending on the selected mode this directory will be scanned for .bic or .json files. |
+| `--output` | "Directory location" | The directory location of the files to be output by the mode operation. Depending on the selected mode this directory will have .bic, .json or .html files written to it. |
+| `--2da` | "Directory location" | The directory location where Nimbic can read .2da files. These are used to lookup values such as the HP a class earns per level or to find descriptors for numeric IDs (like translating spell ID 107 into 'Magic Missile' for a character sheet).
 
 |Character&nbsp;Change Arguments| Values&nbsp;Accepted | Usage |
 |-|-|-|
 | `--level` | Integer 1 - 40 | Typically specifies the character level required for a character to be affected by a mode. However when used with a class mode it represents class level instead of character level. |
 | `--class` | Integer 0 - 254 | The class ID or index as found in classes.2da. For example barbarian = 0, Wizard = 10, Blackguard = 31, etc. |
 | `--race` | Integer 0 - 254 | The race ID or index as found in racial_types.2da. For example dwarf = 0, elf = 1, human = 6, etc. |
- | `--subrace` | Text | Text value that would match the what a player input into the Subrace field during character creation. However when reading the subrace field all symbols are removed. So if a character has 'Sun-Touched' as a subrace then you would want to input `--subrace:suntouched` in order to match it. |
- | `--feat` | Integer > 0 | The feat ID or index as found in feat.2da. For example Alertness = 0, Power Attack = 28, Great Constitution I = 774, etc. |
- | `--str` <br/> `--dex` <br/> `--con` <br/> `--int` <br/> `--wis` <br/> `--cha` | Integer | Integer value representing how much an ability score should be increased or decreased. Regardless of the argument value the resulting score assigned to the character is limited to the range of 3 - 100. |
- | `--hp` | Integer | Integer value representing how much a character's hit points gained per class level should be increased or decreased. Regardless of the argument value the hit points gained per level will always have a minimum of 1 with no defined maximum. |
- 
+| `--subrace` | Text | Text value that would match the what a player input into the Subrace field during character creation. However when reading the subrace field all symbols are removed. So if a character has 'Sun-Touched' as a subrace then you would want to input `--subrace:suntouched` in order to match it. |
+| `--feat` | Integer > 0 | The feat ID or index as found in feat.2da. For example Alertness = 0, Power Attack = 28, Great Constitution I = 774, etc. |
+| `--str` <br/> `--dex` <br/> `--con` <br/> `--int` <br/> `--wis` <br/> `--cha` | Integer | Integer value representing how much an ability score should be increased or decreased. Regardless of the argument value the resulting score assigned to the character is limited to the range of 3 - 100. |
+| `--hp` | Integer | Integer value representing how much a character's hit points gained per class level should be increased or decreased. Regardless of the argument value the hit points gained per level will always have a minimum of 1 with no defined maximum. |
+
 ### 1c. Filtering
 
 Arguments that are not strictly required for a mode can still be used to provide 'filters' that determine which characters should be affected by the mode. Behind the scenes each character is evaluated by a 'Does this character meet all the requirements?' function which will first check if a character has or meets all of the requirements included in the command before any action is taken. 

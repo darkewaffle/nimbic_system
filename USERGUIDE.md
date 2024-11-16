@@ -46,9 +46,9 @@ This is the most important information to provide as Nimbic will not operate wit
 
 Arguments are additional options you can provide Nimbic to specify exactly what a mode does. Some are optional, some are required on a per-mode basis. Optional arguments can usually be used to 'filter' which characters are affected. See **1c. Filtering** section below for details.
 
-|File&nbsp;Conversion Arguments| Values&nbsp;Accepted | Usage |
+|File&nbsp;Conversion Arguments| Values Accepted | Usage |
 |-|-|-|
-| `--input` | "Directory location" | The directory location of the files to be input into the mode operation. Depending on the selected mode this directory will be scanned for .bic or .json files. |
+| `--input` | "Directory&nbsp;location" | The directory location of the files to be input into the mode operation. Depending on the selected mode this directory will be scanned for .bic or .json files. |
 | `--output` | "Directory location" | The directory location of the files to be output by the mode operation. Depending on the selected mode this directory will have .bic, .json or .html files written to it. |
 | `--2da` | "Directory location" | The directory location where Nimbic can read .2da files. These are used to lookup values such as the HP a class earns per level or to find descriptors for numeric IDs (like translating spell ID 107 into 'Magic Missile' for a character sheet).
 

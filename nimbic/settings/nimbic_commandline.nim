@@ -49,7 +49,7 @@ proc GetSettingsFromCommandLine*(): SettingsPackage =
                         CommandLineSettings.Race = parseInt(val)
                         CommandLineSettings.RaceActive = true
 
-                    of "subrace", "sub":
+                    of "subrace":
                         CommandLineSettings.Subrace = val
                         CommandLineSettings.SubraceActive = true
 
@@ -57,7 +57,7 @@ proc GetSettingsFromCommandLine*(): SettingsPackage =
                         CommandLineSettings.Class = parseInt(val)
                         CommandLineSettings.ClassActive = true
 
-                    of "level", "lvl":
+                    of "level":
                         CommandLineSettings.Level = parseInt(val)
                         CommandLineSettings.LevelActive = true
 
@@ -79,7 +79,7 @@ proc GetSettingsFromCommandLine*(): SettingsPackage =
                     of "2da":
                         CommandLineSettings.Input2DA = Path(CleanDirectoryName(val))
 
-                    of "production", "prod":
+                    of "prod":
                         CommandLineSettings.ProductionState = true
 
                     of "restorefrom":

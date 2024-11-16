@@ -149,7 +149,7 @@ These settings are intended to make it possible to make changes directly to enti
 
 | Advanced Arguments| Values Accepted | Usage |
 |-|-|-|
-|`--prod`| This acts as a 'dual control' of sorts. Production operations can only be performed if this value is included in the command and `production=true` in nimbic.ini. |
+|`--prod`| No value | This acts as a 'dual control' of sorts. Production operations can only be performed if this value is included in the command and `production=true` in nimbic.ini. |
 |`--restorefrom`| Directory name as <br/> `BIC_Backup_YYYYMMDD_HHMMSS` <br/> *or just* <br/> `YYYYMMDD_HHMMSS` | This specifies what backup directory name Nimbic should use to perform a backup restoration. |
 
 ## Command Examples / Cheatsheet

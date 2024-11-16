@@ -30,19 +30,19 @@ type SettingsPackage* = object
 
     #Config file only
     ExpectSqlite*: bool
-    OverwriteHTML*: bool
     AutoCleanup*: bool
     AutoBackup*: bool
+    OverwriteHTML*: bool
     ServerVault*: Path
 
     #Directories can be input from command line or config.
     #Evaluated and assigned in nimbic_evaluate_settings
-    Input2DA*: Path
     InputBIC*: Path
     OutputJSON*: Path
     InputJSON*: Path
     OutputBIC*: Path
     OutputHTML*: Path
+    Input2DA*: Path
 
     #Production settings that only apply to Server Vault operations
     ProductionState*: bool
@@ -108,19 +108,19 @@ proc EchoSettings*(Input: SettingsPackage) =
 
     echo "Config file    "
     echo "ExpectSqlite   " & $Input.ExpectSqlite
-    echo "OverwriteHTML  " & $Input.OverwriteHTML
     echo "AutoCleanup    " & $Input.AutoCleanup
     echo "AutoBackup     " & $Input.AutoBackup
+    echo "OverwriteHTML  " & $Input.OverwriteHTML
     echo "ServerVault    " & $Input.ServerVault
     echo ""
 
     echo "Directory eval "
-    echo "Input2DA       " & $Input.Input2DA
     echo "InputBIC       " & $Input.InputBIC
     echo "OutputJSON     " & $Input.OutputJSON
     echo "InputJSON      " & $Input.InputJSON
     echo "OutputBIC      " & $Input.OutputBIC
     echo "OutputHTML     " & $Input.OutputHTML
+    echo "Input2DA       " & $Input.Input2DA
     echo ""
 
     echo "Production Settings"

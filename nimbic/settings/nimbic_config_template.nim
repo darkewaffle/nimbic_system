@@ -21,17 +21,9 @@ outputbic=
 #Ex: outputhtml=C:\Users\Name\Documents\NWN\JSONtoHTML
 outputhtml=
 
-#Determines if an HTML file should overwrite a file with the same name. If set to false
-#then the original file will not be overwritten and the new file will have a random number
-#added to the file name. This may be useful if characters in your vault share the same name
-#and class levels (which will cause them to generate the same file name).
-#Ex: overwritehtml=false
-#Ex: overwritehtml=true
-overwritehtml=true
-
 #Directory where 2DA files can be read. These are necessary for certain operations.
 #Currently only applies to --mode:maxhp and --mode:jsontohtml.
-#Ex: input2da=C:\Users\Name\Documents\NWN2da
+#Ex: input2da=C:\Users\Name\Documents\NWN\2da
 input2da=
 
 #Indicates whether or not nimbic should attempt to export/import Sqlite databases embedded in .bic files.
@@ -44,6 +36,27 @@ input2da=
 #Ex: sqlite=true
 #Ex: sqlite=false
 sqlite=false
+
+#Autocleanup determines whether or not jsontobic operations will automatically delete the .json and .sqlite3 files used to create the .bic file.
+#Ex: autocleanup=true
+#Ex: autocleanup=false
+autocleanup=false
+
+#Autobackup determines whether or not jsontobic operations will create a backup copy of .bic files prior to being overwritten.
+#If enabled then each time a .bic file will be overwritten it will first be copied to a new folder within the .bic directory with the name BIC_Backup_YYYYMMDD_HHMMSS
+#Ex: autobackup=true
+#Ex: autobackup=false
+autobackup=false
+
+#Determines if an HTML file should overwrite a file with the same name. If set to false
+#then the original file will not be overwritten and the new file will have a random number
+#added to the file name. This may be useful if characters in your vault share the same name
+#and class levels (which will cause them to generate the same file name).
+#Ex: overwritehtml=false
+#Ex: overwritehtml=true
+overwritehtml=true
+
+
 
 
 
@@ -59,17 +72,6 @@ sqlite=false
 #Ex: production=true
 #Ex: production=false
 production=false
-
-#Autocleanup determines whether or not jsontobic operations will automatically delete the .json and .sqlite3 files used to create the .bic file.
-#Ex: autocleanup=true
-#Ex: autocleanup=false
-autocleanup=false
-
-#Autobackup determines whether or not jsontobic operations will create a backup copy of .bic files prior to being overwritten.
-#If enabled then each time a .bic file will be overwritten it will first be copied to a new folder within the .bic directory with the name BIC_Backup_YYYYMMDD_HHMMSS
-#Ex: autobackup=true
-#Ex: autobackup=false
-autobackup=false
 
 #Directory of the server vault. When a production operation is performed (meaning production=true in this file and --prod or --production is included in the command)
 #then all operations will take place within the server vault subfolders corresponding to each player.

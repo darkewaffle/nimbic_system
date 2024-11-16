@@ -5,3 +5,5 @@
 ##### [Click Here For Quick Start Guide](https://github.com/darkewaffle/nimbic_system/blob/main/QUICKSTART.md)
 
 ##### [Click Here For Full User Guide](https://github.com/darkewaffle/nimbic_system/blob/main/USERGUIDE.md)
+
+##### [Click Here for .bic to .html Character Sheet Examples](https://github.com/darkewaffle/nimbic_system/tree/main/character_sheet_examples)

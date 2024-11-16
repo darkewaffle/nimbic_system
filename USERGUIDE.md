@@ -170,4 +170,4 @@ These settings are intended to make it possible to make changes directly to enti
 
 ## Credits
 
-Many thanks to the [neverwinter.nim project](https://github.com/niv/neverwinter.nim) whose code to convert GFF (.bic is a form of GFF) to .json and extract the Sqlite files within provided the basis this project.
+Many thanks to the [neverwinter.nim project](https://github.com/niv/neverwinter.nim) whose code to convert GFF (.bic is a form of GFF) to .json and extract the Sqlite files within provided the basis for this project.
